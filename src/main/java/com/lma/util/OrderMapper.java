@@ -26,6 +26,6 @@ private static final BookService bookService = new BookServiceImpl();
     public static String mapOrderToString(Order order){
         String issueDateString = LocalDateFormatter.localDateToString(order.getIssueDate());
         String dueDateString = LocalDateFormatter.localDateToString(order.getDueDate());
-        return String.format("%s_%s_%s_%s",order.getClient().toString(),order.getBook().getName(),issueDateString,dueDateString);
+        return String.format("%s_%s_%s_%s",order.getClient().getFullName(),order.getBook().getName(),issueDateString,dueDateString);
     }
 }

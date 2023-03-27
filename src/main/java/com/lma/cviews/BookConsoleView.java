@@ -5,8 +5,7 @@ import com.lma.service.impl.BookServiceImpl;
 import com.lma.util.ConsoleRangeReader;
 import com.lma.util.ConsoleReader;
 
-import static com.lma.constatns.CustomExceptions.BOOK_NAME_INPUT_MESSAGE;
-import static com.lma.constatns.CustomExceptions.DATE_INPUT_MESSAGE;
+import static com.lma.constatns.CustomMessages.*;
 
 public class BookConsoleView implements ConsoleView {
     private final static ConsoleView mainConsoleView = new MainMenuView();
@@ -31,6 +30,7 @@ public class BookConsoleView implements ConsoleView {
     @Override
     public void showItemMenu() {
         System.out.println(BOOKS_OPTION_MESSAGE);
+        System.out.print(CHOOSE_AN_OPTION_MESSAGE);
         int choice = ConsoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
         switch (choice) {
             case 0:

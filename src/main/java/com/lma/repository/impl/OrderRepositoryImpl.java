@@ -26,16 +26,16 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public Boolean addOrder(Order order) {
+    public Order addOrder(Order order) {
         if (ordersList.add(order)){
             try {
                 orderFileAccessor.writeLine(OrderMapper.mapOrderToString(order));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            return true;
+            return order;
         }
-        return false;
+        return null;
     }
 
     @Override

@@ -5,7 +5,8 @@ import com.lma.service.impl.AuthorServiceImpl;
 import com.lma.util.ConsoleRangeReader;
 import com.lma.util.ConsoleReader;
 
-import static com.lma.constatns.CustomExceptions.BOOK_NAME_INPUT_MESSAGE;
+import static com.lma.constatns.CustomMessages.BOOK_NAME_INPUT_MESSAGE;
+import static com.lma.constatns.CustomMessages.CHOOSE_AN_OPTION_MESSAGE;
 
 public class AuthorConsoleView implements ConsoleView{
     private  final static ConsoleView mainConsoleView = new MainMenuView();
@@ -26,9 +27,11 @@ public class AuthorConsoleView implements ConsoleView{
     private static final String AUTHOR_NAME_INPUT_MESSAGE = "Please, insert author name: ";
     private static final String AUTHOR_ADDED_SUCCESSFULLY_MESSAGE = "%s added successfully!\n";
 
+
     @Override
     public void showItemMenu() {
         System.out.println(AUTHOR_OPTION_MESSAGE);
+        System.out.print(CHOOSE_AN_OPTION_MESSAGE);
         int choice = ConsoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
         switch (choice) {
             case 0:

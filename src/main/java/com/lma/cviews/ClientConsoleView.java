@@ -5,6 +5,8 @@ import com.lma.service.impl.ClientServiceImpl;
 import com.lma.util.ConsoleRangeReader;
 import com.lma.util.ConsoleReader;
 
+import static com.lma.constatns.CustomMessages.CHOOSE_AN_OPTION_MESSAGE;
+
 public class ClientConsoleView implements ConsoleView {
     private  final static ConsoleView mainConsoleView = new MainMenuView();
     private static final ClientService clientService = new ClientServiceImpl();
@@ -29,6 +31,7 @@ public class ClientConsoleView implements ConsoleView {
     @Override
     public void showItemMenu() {
         System.out.println(CLIENT_OPTION_MESSAGE);
+        System.out.print(CHOOSE_AN_OPTION_MESSAGE);
         int choice = ConsoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
         switch (choice) {
             case 0:

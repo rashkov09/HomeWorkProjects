@@ -5,8 +5,7 @@ import com.lma.service.impl.OrderServiceImpl;
 import com.lma.util.ConsoleRangeReader;
 import com.lma.util.ConsoleReader;
 
-import static com.lma.constatns.CustomExceptions.BOOK_NAME_INPUT_MESSAGE;
-import static com.lma.constatns.CustomExceptions.DATE_INPUT_MESSAGE;
+import static com.lma.constatns.CustomMessages.*;
 
 
 public class OrderConsoleView implements ConsoleView {
@@ -35,11 +34,12 @@ public class OrderConsoleView implements ConsoleView {
     @Override
     public void showItemMenu() {
         System.out.println(ORDERS_OPTION_MESSAGE);
+        System.out.print(CHOOSE_AN_OPTION_MESSAGE);
         int choice = ConsoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
         switch (choice) {
             case 0:
-                mainConsoleView.showItemMenu();
-                break;
+               mainConsoleView.showItemMenu();
+                return;
             case 1:
                 printAllOrders();
                 break;
@@ -73,11 +73,7 @@ public class OrderConsoleView implements ConsoleView {
         String clientName = ConsoleReader.readString();
         System.out.println(BOOK_NAME_INPUT_MESSAGE);
         String bookName = ConsoleReader.readString();
-        if (orderService.createOrder(clientName, bookName)) {
-            System.out.println(ORDER_ADDED_SUCCESSFULLY_MESSAGE);
-        } else {
-            System.out.println(ORDER_NOT_ADDED_MESSAGE);
-        }
+        System.out.println(orderService.createOrder(clientName, bookName));
     }
 
     void printAllOrdersForClient() {

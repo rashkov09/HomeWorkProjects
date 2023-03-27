@@ -2,6 +2,9 @@ package com.lma.cviews;
 
 import com.lma.util.ConsoleRangeReader;
 
+import static com.lma.constatns.CustomMessages.CHOOSE_AN_OPTION_MESSAGE;
+import static java.lang.System.exit;
+
 public class MainMenuView implements ConsoleView {
     private final static ConsoleView authorConsoleView = new AuthorConsoleView();
     private final static ConsoleView bookConsoleView = new BookConsoleView();
@@ -23,11 +26,12 @@ public class MainMenuView implements ConsoleView {
     @Override
     public void showItemMenu() {
         System.out.println(OPTION_MESSAGE);
+        System.out.print(CHOOSE_AN_OPTION_MESSAGE);
         int choice = ConsoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
 
         switch (choice) {
             case 0:
-                break;
+                exit(1);
             case 1:
                 bookConsoleView.showItemMenu();
                 break;

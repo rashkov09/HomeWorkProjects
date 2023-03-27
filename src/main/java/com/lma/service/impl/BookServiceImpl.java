@@ -11,7 +11,7 @@ import com.lma.util.LocalDateFormatter;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import static com.lma.constatns.CustomExceptions.BOOK_NOT_FOUND_EXCEPTION;
+import static com.lma.constatns.CustomMessages.BOOK_NOT_FOUND_EXCEPTION;
 
 public class BookServiceImpl implements BookService {
     private final static AuthorService authorService = new AuthorServiceImpl();

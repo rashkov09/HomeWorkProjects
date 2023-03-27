@@ -9,10 +9,10 @@ import com.lma.service.ClientService;
 
 import java.util.NoSuchElementException;
 
-import static com.lma.constatns.CustomExceptions.NO_SUCH_CLIENT_EXCEPTION;
+import static com.lma.constatns.CustomMessages.NO_SUCH_CLIENT_EXCEPTION;
 
 public class ClientServiceImpl implements ClientService {
-    private  final static ClientRepository clientRepository = new ClientRepositoryImpl();
+    private final static ClientRepository clientRepository = new ClientRepositoryImpl();
     private final static BookService bookService = new BookServiceImpl();
 
     public ClientServiceImpl() {
@@ -27,13 +27,13 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void addClient(String firstName, String lastName) {
         // TODO to validate user input
-        Client client = new Client(firstName,lastName);
+        Client client = new Client(firstName, lastName);
         clientRepository.addClient(client);
     }
 
     @Override
     public Client getClientByFullName(String fullName) {
-       return clientRepository.getClientByFullName(fullName);
+        return clientRepository.getClientByFullName(fullName);
 
     }
 
@@ -46,32 +46,28 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public String getClientByLastName(String lastName) {
-        try {
-            return clientRepository.getClientByLastName(lastName).toString();
-        }catch (NoSuchElementException e){
-            return NO_SUCH_CLIENT_EXCEPTION;
-        }
+        StringBuilder builder = new StringBuilder();
+        clientRepository.getClientByLastName(lastName).forEach(client -> builder.append(client.toString()).append("\n"));
+        return builder.toString();
     }
 
     @Override
     public String getClientByFirstName(String firstName) {
-        try {
-            return clientRepository.getClientByFirstName(firstName).toString();
-        }catch (NoSuchElementException e ){
-            return NO_SUCH_CLIENT_EXCEPTION;
-        }
+        StringBuilder builder = new StringBuilder();
+        clientRepository.getClientByFirstName(firstName).forEach(client -> builder.append(client.toString()).append("\n"));
+        return builder.toString();
     }
 
     @Override
     public String getClients() {
         StringBuilder builder = new StringBuilder();
 
-         clientRepository.getClients().forEach(client ->
-                 builder
-                         .append(client.toString())
-                         .append("\n")
-         );
+        clientRepository.getClients().forEach(client ->
+                builder
+                        .append(client.toString())
+                        .append("\n")
+        );
 
-         return builder.toString();
+        return builder.toString();
     }
 }

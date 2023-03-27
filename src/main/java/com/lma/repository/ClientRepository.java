@@ -16,9 +16,9 @@ public interface ClientRepository {
 
     Client getClientByBook(Book book);
 
-    Client getClientByLastName(String lastName);
+    Set<Client> getClientByLastName(String lastName);
 
-    Client getClientByFirstName(String firstName);
+    Set<Client> getClientByFirstName(String firstName);
 
     Set<Client> getClients();
 }

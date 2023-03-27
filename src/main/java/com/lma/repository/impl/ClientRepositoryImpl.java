@@ -9,6 +9,8 @@ import com.lma.util.ClientMapper;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ClientRepositoryImpl implements ClientRepository {
     private static final ClientFileAccessor clientFileAccessor = new ClientFileAccessor();
@@ -31,13 +33,13 @@ public class ClientRepositoryImpl implements ClientRepository {
     }
 
     @Override
-    public Client getClientByLastName(String lastName) throws NoSuchElementException {
-        return clientList.stream().filter(client -> client.getLastName().equals(lastName)).findFirst().orElseThrow();
+    public Set<Client> getClientByLastName(String lastName)  {
+        return clientList.stream().filter(client -> client.getLastName().equals(lastName)).collect(Collectors.toSet());
     }
 
     @Override
-    public Client getClientByFirstName(String firstName) throws NoSuchElementException {
-        return clientList.stream().filter(client -> client.getLastName().equals(firstName)).findFirst().orElseThrow();
+    public Set<Client> getClientByFirstName(String firstName)  {
+        return clientList.stream().filter(client -> client.getFirstName().equals(firstName)).collect(Collectors.toSet());
     }
 
     @Override

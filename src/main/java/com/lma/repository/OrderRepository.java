@@ -9,7 +9,7 @@ import java.util.Set;
 public interface OrderRepository {
     void loadOrdersData();
 
-    Boolean addOrder(Order order);
+    Order addOrder(Order order);
 
     HashSet<Order> getAllOrders();
 

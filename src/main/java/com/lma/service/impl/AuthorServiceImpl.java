@@ -9,8 +9,8 @@ import com.lma.service.BookService;
 
 import java.util.NoSuchElementException;
 
-import static com.lma.constatns.CustomExceptions.BOOK_NOT_FOUND_EXCEPTION;
-import static com.lma.constatns.CustomExceptions.NO_SUCH_AUTHOR_EXCEPTION;
+import static com.lma.constatns.CustomMessages.BOOK_NOT_FOUND_EXCEPTION;
+import static com.lma.constatns.CustomMessages.NO_SUCH_AUTHOR_EXCEPTION;
 
 public class AuthorServiceImpl implements AuthorService {
 
