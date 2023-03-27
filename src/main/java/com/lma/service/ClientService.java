@@ -8,4 +8,12 @@ public interface ClientService {
     void addClient(String firstName, String lastName);
 
     Client getClientByFullName(String subValue);
+
+    String getClientByBookName(String bookName);
+
+    String getClientByLastName(String lastName);
+
+    String getClientByFirstName(String firstName);
+
+    String getClients();
 }

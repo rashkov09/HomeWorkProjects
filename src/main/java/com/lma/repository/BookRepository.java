@@ -17,4 +17,6 @@ public interface BookRepository {
     Set<Book> findBooksByAuthorName(String authorName);
 
     Book findBookByName(String bookName);
+
+    Set<Book> findBooksByIssueDate(String issueDate);
 }

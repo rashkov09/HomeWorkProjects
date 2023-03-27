@@ -1,11 +1,13 @@
 package com.lma.repository.impl;
 
 import com.lma.model.Author;
+import com.lma.model.Book;
 import com.lma.repository.AuthorRepository;
 import com.lma.util.AuthorFileAccessor;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 
 public class AuthorRepositoryImpl implements AuthorRepository {
     private final static AuthorFileAccessor authorFileAccessor = new AuthorFileAccessor();
@@ -41,7 +43,17 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
 
     @Override
-    public Author findAuthorByName(String name) {
-        return authorList.stream().filter(author -> author.getName().equals(name)).findFirst().orElse(null);
+    public Author findAuthorByName(String name) throws NoSuchElementException {
+        return authorList.stream().filter(author -> author.getName().equals(name)).findFirst().orElseThrow();
+    }
+
+    @Override
+    public Author findAuthorByBookName(Book book) throws NoSuchElementException {
+        return authorList.stream().filter(author -> author.getBooks().contains(book)).findFirst().orElseThrow();
+    }
+
+    @Override
+    public Author getAuthor(String authorName) {
+        return authorList.stream().filter(author -> author.getName().equals(authorName)).findFirst().orElse(null);
     }
 }

@@ -17,10 +17,10 @@ private static final BookService bookService = new BookServiceImpl();
     public static Order mapOrderFromString(String value) {
         String[] subValues=  value.split("_");
         Client client = clientService.getClientByFullName(subValues[0]);
-        Book book = bookService.getBookByName(subValues[1]);
+        Book book = bookService.getBook(subValues[1]);
         LocalDate issueDate = LocalDateFormatter.stringToLocalDate(subValues[2]);
         LocalDate dueDate = LocalDateFormatter.stringToLocalDate(subValues[2]);
-        return new Order(client,book,issueDate,dueDate);
+        return client != null && book !=null ? new Order(client,book,issueDate,dueDate.plusMonths(1)) : null;
     }
 
     public static String mapOrderToString(Order order){

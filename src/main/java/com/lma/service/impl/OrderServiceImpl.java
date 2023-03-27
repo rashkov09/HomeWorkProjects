@@ -8,6 +8,7 @@ import com.lma.repository.impl.OrderRepositoryImpl;
 import com.lma.service.BookService;
 import com.lma.service.ClientService;
 import com.lma.service.OrderService;
+import com.lma.util.LocalDateFormatter;
 
 import java.time.LocalDate;
 
@@ -17,19 +18,26 @@ public class OrderServiceImpl implements OrderService {
     private static final BookService bookService = new BookServiceImpl();
 
 
-
+    public OrderServiceImpl() {
+        seedOrders();
+    }
 
     @Override
     public void seedOrders() {
-        orderRepository.loadOrdersData();
+        try {
+            orderRepository.loadOrdersData();
+        }catch (NullPointerException e ){
+            System.out.println("Either book or client is missing. Please, check data!");
+        }
     }
 
     @Override
     public Boolean createOrder(String clientName, String bookName) {
-        // TODO to validate user input
         Client client = clientService.getClientByFullName(clientName);
-        Book book = bookService.getBookByName(bookName);
-        return orderRepository.addOrder(new Order(client,book,LocalDate.now(),LocalDate.now().plusMonths(1)));
+        Book book = bookService.getBook(bookName);
+        return
+               client != null && book != null ?
+                       orderRepository.addOrder(new Order(client,book,LocalDate.now(),LocalDate.now().plusMonths(1))) : false;
     }
 
     @Override
@@ -55,9 +63,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String getAllOrdersIssuedOn(LocalDate date) {
+    public String getAllOrdersIssuedOn(String date) {
         StringBuilder builder = new StringBuilder();
-         orderRepository.findOrderByIssueDateOn(date).forEach(order -> {
+         orderRepository.findOrderByIssueDateOn(LocalDateFormatter.stringToLocalDate(date)).forEach(order -> {
             builder
                     .append(order.toString())
                     .append("\n");
@@ -66,9 +74,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String getAllOrdersIssuedAfter(LocalDate date) {
+    public String getAllOrdersIssuedAfter(String date) {
         StringBuilder builder = new StringBuilder();
-        orderRepository.findOrderWithIssueDateAfter(date).forEach(order -> {
+        orderRepository.findOrderWithIssueDateAfter(LocalDateFormatter.stringToLocalDate(date)).forEach(order -> {
             builder
                     .append(order.toString())
                     .append("\n");
@@ -77,9 +85,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String getAllOrdersIssuedBefore(LocalDate date) {
+    public String getAllOrdersIssuedBefore(String date) {
         StringBuilder builder = new StringBuilder();
-        orderRepository.findOrderWithIssueDateBefore(date).forEach(order -> {
+        orderRepository.findOrderWithIssueDateBefore(LocalDateFormatter.stringToLocalDate(date)).forEach(order -> {
             builder
                     .append(order.toString())
                     .append("\n");

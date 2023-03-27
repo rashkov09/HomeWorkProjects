@@ -44,4 +44,22 @@ public class Order {
     public int hashCode() {
         return Objects.hash(getClient(), getBook());
     }
+
+    @Override
+    public String toString() {
+        return String.format("""
+                                  Client name: %s
+                                  Book details:
+                                                Book name: %s
+                                                Author name: %s
+                                                Published on: %s
+                                 Order issue date: %s
+                                 Order due date: %s
+                """, this.client.getFullName(),
+                this.book.getName(),
+                this.book.getAuthor().getName(),
+                this.book.getPublishDate(),
+                this.issueDate,
+                this.dueDate);
+    }
 }

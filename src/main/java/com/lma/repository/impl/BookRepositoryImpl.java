@@ -4,9 +4,11 @@ import com.lma.model.Book;
 import com.lma.repository.BookRepository;
 import com.lma.util.BookFileAccessor;
 import com.lma.util.BookMapper;
+import com.lma.util.LocalDateFormatter;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,8 +28,13 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public Book findBookByName(String bookName) {
-        return bookList.stream().filter(book -> book.getName().equals(bookName)).findFirst().orElse(null);
+    public Book findBookByName(String bookName) throws NoSuchElementException {
+        return bookList.stream().filter(book -> book.getName().equals(bookName)).findFirst().orElseThrow();
+    }
+
+    @Override
+    public Set<Book> findBooksByIssueDate(String publishDate) {
+        return bookList.stream().filter(book -> book.getPublishDate().equals(LocalDateFormatter.stringToLocalDate(publishDate))).collect(Collectors.toSet());
     }
 
     @Override

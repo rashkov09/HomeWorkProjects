@@ -60,4 +60,6 @@ public class Client {
     public int hashCode() {
         return Objects.hash(getFirstName(), getLastName());
     }
+
+
 }

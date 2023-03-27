@@ -16,6 +16,10 @@ public class Author {
         return name;
     }
 
+    public HashSet<Book> getBooks() {
+        return books;
+    }
+
     @Override
     public String toString() {
       StringBuilder builder = new StringBuilder();

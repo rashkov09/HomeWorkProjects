@@ -18,7 +18,11 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     public void loadOrdersData() {
-        orderFileAccessor.readAllLines().forEach(line -> ordersList.add(OrderMapper.mapOrderFromString(line)));
+        orderFileAccessor.readAllLines().forEach(line ->{
+            Order order = OrderMapper.mapOrderFromString(line);
+            if (order != null) ordersList.add(order);
+            else  throw new NullPointerException();
+        } );
     }
 
     @Override

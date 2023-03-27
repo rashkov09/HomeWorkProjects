@@ -11,8 +11,8 @@ public interface OrderService {
     Boolean createOrder(String clientName, String bookName);
     String getAllOrders();
     String getAllOrdersByClient(String clientName);
-    String getAllOrdersIssuedOn(LocalDate date);
-    String getAllOrdersIssuedAfter(LocalDate date);
-    String getAllOrdersIssuedBefore(LocalDate date);
+    String getAllOrdersIssuedOn(String date);
+    String getAllOrdersIssuedAfter(String date);
+    String getAllOrdersIssuedBefore(String date);
 
 }
