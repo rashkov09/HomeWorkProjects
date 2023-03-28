@@ -5,7 +5,7 @@ import com.lma.service.impl.OrderServiceImpl;
 import com.lma.util.ConsoleRangeReader;
 import com.lma.util.ConsoleReader;
 
-import static com.lma.constatns.CustomMessages.*;
+import static com.lma.constants.CustomMessages.*;
 
 
 public class OrderConsoleView implements ConsoleView {
@@ -28,6 +28,7 @@ public class OrderConsoleView implements ConsoleView {
     private static final String CLIENT_NAME_INPUT_MESSAGE = "Please, insert client name: ";
     private static final String ORDER_ADDED_SUCCESSFULLY_MESSAGE = "Order added successfully!";
     private static final String ORDER_NOT_ADDED_MESSAGE = "Something went wrong! Order not added!";
+    private static final String BOOK_COUNT_MESSAGE = "How many books would you like to order?";
     private static final String NO_ORDERS_BEFORE_MESSAGE = "No orders before %s found!\n";
     private static final String NO_ORDERS_AFTER_MESSAGE = "No orders after %s found!\n";
 
@@ -69,11 +70,16 @@ public class OrderConsoleView implements ConsoleView {
 
 
     public void addOrder() {
-        System.out.println(CLIENT_NAME_INPUT_MESSAGE);
-        String clientName = ConsoleReader.readString();
-        System.out.println(BOOK_NAME_INPUT_MESSAGE);
-        String bookName = ConsoleReader.readString();
-        System.out.println(orderService.createOrder(clientName, bookName));
+        System.out.println(BOOK_COUNT_MESSAGE);
+        int count = ConsoleReader.readInt();
+        while (count > 0) {
+            System.out.println(CLIENT_NAME_INPUT_MESSAGE);
+            String clientName = ConsoleReader.readString();
+            System.out.println(BOOK_NAME_INPUT_MESSAGE);
+            String bookName = ConsoleReader.readString();
+            System.out.println(orderService.addOrder(clientName, bookName));
+            count--;
+        }
     }
 
     void printAllOrdersForClient() {

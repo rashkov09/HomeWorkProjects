@@ -1,22 +1,22 @@
-package com.lma.util;
+package com.lma.accessor;
 
 import java.io.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.lma.constatns.Constants.FILE_NOT_FOUND_MESSAGE;
-import static com.lma.constatns.Paths.AUTHOR_FILE_PATH;
+import static com.lma.constants.Constants.FILE_NOT_FOUND_MESSAGE;
 
-public class AuthorFileAccessor {
+import static com.lma.constants.Paths.ORDERS_FILE_PATH;
+public class OrderFileAccessor {
     private final static BufferedWriter writer;
     private final static BufferedReader reader;
 
     static {
         try {
-            writer = new BufferedWriter(new FileWriter(AUTHOR_FILE_PATH,true));
-            reader = new BufferedReader(new FileReader(AUTHOR_FILE_PATH));
+            writer = new BufferedWriter(new FileWriter(ORDERS_FILE_PATH,true));
+            reader = new BufferedReader(new FileReader(ORDERS_FILE_PATH));
         } catch (IOException e) {
-            throw new RuntimeException(String.format(FILE_NOT_FOUND_MESSAGE,AUTHOR_FILE_PATH),e);
+            throw new RuntimeException(String.format(FILE_NOT_FOUND_MESSAGE,ORDERS_FILE_PATH),e);
         }
     }
 
@@ -33,5 +33,4 @@ public class AuthorFileAccessor {
             writer.flush();
         }
     }
-
 }

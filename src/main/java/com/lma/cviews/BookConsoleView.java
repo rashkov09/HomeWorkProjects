@@ -5,7 +5,7 @@ import com.lma.service.impl.BookServiceImpl;
 import com.lma.util.ConsoleRangeReader;
 import com.lma.util.ConsoleReader;
 
-import static com.lma.constatns.CustomMessages.*;
+import static com.lma.constants.CustomMessages.*;
 
 public class BookConsoleView implements ConsoleView {
     private final static ConsoleView mainConsoleView = new MainMenuView();
@@ -19,11 +19,13 @@ public class BookConsoleView implements ConsoleView {
                     2. Search for a book by name
                     3. Search for a book by publish date
                     4. Search for a book by author name
+                    5. Search for books starting with
                     5. Add book
                                         
                     0. Back
                     """;
     private static final String AUTHOR_NAME_INPUT_MESSAGE = "Please, insert author name: ";
+    private static final String SEARCH_VALUE_MESSAGE = "Please, insert query: ";
     private static final String BOOK_ADD_SUCCESS_MESSAGE = "Book %s added successfully!\n";
     private static final String BOOK_ADD_UNSUCCESSFUL_MESSAGE = "Book was not added! Please, try again!";
 
@@ -49,10 +51,19 @@ public class BookConsoleView implements ConsoleView {
                 printBookByAuthorName();
                 break;
             case 5:
+                printBookStartingWith();
+                break;
+            case 6:
                 addBook();
                 break;
         }
         showItemMenu();
+    }
+
+    private void printBookStartingWith() {
+        System.out.println(SEARCH_VALUE_MESSAGE);
+        String searchValue = ConsoleReader.readString();
+        System.out.println(bookService.findBooksStartingWith(searchValue));
     }
 
     private void printBookByAuthorName() {

@@ -1,20 +1,20 @@
 package com.lma.repository.impl;
 
+import com.lma.accessor.BookFileAccessor;
+import com.lma.mapper.BookMapper;
 import com.lma.model.Book;
 import com.lma.repository.BookRepository;
-import com.lma.util.BookFileAccessor;
-import com.lma.util.BookMapper;
 import com.lma.util.LocalDateFormatter;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class BookRepositoryImpl implements BookRepository {
     private final static BookFileAccessor bookFileAccessor = new BookFileAccessor();
-    private final static HashSet<Book> bookList = new HashSet<>();
+    private final static TreeSet<Book> bookList = new TreeSet<>();
 
 
     @Override
@@ -29,7 +29,7 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public Book findBookByName(String bookName) throws NoSuchElementException {
-        return bookList.stream().filter(book -> book.getName().equals(bookName)).findFirst().orElseThrow();
+        return bookList.stream().filter(book -> book.getName().equalsIgnoreCase(bookName)).findFirst().orElseThrow();
     }
 
     @Override
@@ -38,7 +38,13 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public HashSet<Book> getAllBooks() {
+    public boolean removeBook(Book book) {
+        return bookList.remove(book);
+
+    }
+
+    @Override
+    public Set<Book> getAllBooks() {
         return bookList;
     }
 

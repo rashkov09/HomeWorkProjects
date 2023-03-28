@@ -8,6 +8,7 @@ import com.lma.repository.impl.OrderRepositoryImpl;
 import com.lma.service.BookService;
 import com.lma.service.ClientService;
 import com.lma.service.OrderService;
+import com.lma.util.DateInputValidator;
 import com.lma.util.LocalDateFormatter;
 
 import java.time.LocalDate;
@@ -20,6 +21,7 @@ public class OrderServiceImpl implements OrderService {
     private static final String MISSING_DATA_EXCEPTION = "Either book or client is missing. Please, check data!";
     private static final String ORDER_ADDED_SUCCESSFULLY = "Order added successfully!";
     private static final String ORDER_ADDITION_FAILED = "Either client or book does not exist!";
+    private static final String INVALID_DATE_MESSAGE = "Invalid date! Please, try again with valid date.";
 
 
     public OrderServiceImpl() {
@@ -38,19 +40,32 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String createOrder(String clientName, String bookName) {
-        try {
-            Client client = clientService.getClientByFullName(clientName);
-            if (client == null){
-                return "Client does not exist, please insert again!";
+    public String addOrder(String clientName, String bookName) {
+        if (bookService.hasAvailableBooks()) {
+            try {
+                Client client = clientService.getClientByFullName(clientName);
+                if (client == null) {
+                    return "Client does not exist, please try again!";
+                }
+                Book book = bookService.getBook(bookName);
+                if (book == null) {
+                    return "Book does not exist, please try again!";
+                }
+                client.addBook(book);
+                Order order = new Order(client, book, LocalDate.now(), LocalDate.now().plusMonths(1));
+                if(orderRepository.addOrder(order)){
+                    client.addOrder(order);
+                };
+               if(bookService.removeBook(book)){
+                   System.out.println("Book removed!");
+               }
+            } catch (NoSuchElementException e) {
+                return ORDER_ADDITION_FAILED;
             }
-            Book book = bookService.getBook(bookName);
-            client.addBook(book);
-            client.addOrder(orderRepository.addOrder(new Order(client, book, LocalDate.now(), LocalDate.now().plusMonths(1))));
-        } catch (NoSuchElementException e) {
-            return ORDER_ADDITION_FAILED;
+            return ORDER_ADDED_SUCCESSFULLY;
+        } else {
+            return "No available book to order!";
         }
-        return ORDER_ADDED_SUCCESSFULLY;
     }
 
     @Override
@@ -74,10 +89,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public String getAllOrdersIssuedOn(String date) {
         StringBuilder builder = new StringBuilder();
-        orderRepository.findOrderByIssueDateOn(LocalDateFormatter.stringToLocalDate(date)).forEach(order -> builder
-                .append(order.toString())
-                .append("\n"));
-        return builder.toString();
+
+        if (DateInputValidator.validate(date)){
+            orderRepository.findOrderByIssueDateOn(LocalDateFormatter.stringToLocalDate(date)).forEach(order -> builder
+                    .append(order.toString())
+                    .append("\n"));
+            return builder.toString();
+        }
+        return INVALID_DATE_MESSAGE;
     }
 
     @Override
@@ -97,4 +116,5 @@ public class OrderServiceImpl implements OrderService {
                 .append("\n"));
         return builder.toString();
     }
+
 }

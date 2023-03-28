@@ -2,13 +2,12 @@ package com.lma.repository;
 
 import com.lma.model.Book;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public interface BookRepository {
 
 
-    HashSet<Book> getAllBooks();
+    Set<Book> getAllBooks();
 
     Boolean addBook(Book book);
 
@@ -19,4 +18,6 @@ public interface BookRepository {
     Book findBookByName(String bookName);
 
     Set<Book> findBooksByIssueDate(String issueDate);
+
+    boolean removeBook(Book book);
 }

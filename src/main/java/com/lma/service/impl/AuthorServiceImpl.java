@@ -9,8 +9,7 @@ import com.lma.service.BookService;
 
 import java.util.NoSuchElementException;
 
-import static com.lma.constatns.CustomMessages.BOOK_NOT_FOUND_EXCEPTION;
-import static com.lma.constatns.CustomMessages.NO_SUCH_AUTHOR_EXCEPTION;
+import static com.lma.constants.CustomMessages.*;
 
 public class AuthorServiceImpl implements AuthorService {
 
@@ -46,7 +45,7 @@ public class AuthorServiceImpl implements AuthorService {
                             .append("\n");
                 }
         );
-        return builder.toString();
+        return builder.isEmpty() ? EMPTY_RESULT_MESSAGE : builder.toString() ;
     }
 
     @Override

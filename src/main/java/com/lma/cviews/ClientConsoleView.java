@@ -5,7 +5,7 @@ import com.lma.service.impl.ClientServiceImpl;
 import com.lma.util.ConsoleRangeReader;
 import com.lma.util.ConsoleReader;
 
-import static com.lma.constatns.CustomMessages.CHOOSE_AN_OPTION_MESSAGE;
+import static com.lma.constants.CustomMessages.CHOOSE_AN_OPTION_MESSAGE;
 
 public class ClientConsoleView implements ConsoleView {
     private  final static ConsoleView mainConsoleView = new MainMenuView();

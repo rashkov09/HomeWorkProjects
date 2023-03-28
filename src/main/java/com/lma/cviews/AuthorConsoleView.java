@@ -5,8 +5,8 @@ import com.lma.service.impl.AuthorServiceImpl;
 import com.lma.util.ConsoleRangeReader;
 import com.lma.util.ConsoleReader;
 
-import static com.lma.constatns.CustomMessages.BOOK_NAME_INPUT_MESSAGE;
-import static com.lma.constatns.CustomMessages.CHOOSE_AN_OPTION_MESSAGE;
+import static com.lma.constants.CustomMessages.BOOK_NAME_INPUT_MESSAGE;
+import static com.lma.constants.CustomMessages.CHOOSE_AN_OPTION_MESSAGE;
 
 public class AuthorConsoleView implements ConsoleView{
     private  final static ConsoleView mainConsoleView = new MainMenuView();

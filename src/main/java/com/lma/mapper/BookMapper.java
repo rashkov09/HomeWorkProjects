@@ -1,7 +1,8 @@
-package com.lma.util;
+package com.lma.mapper;
 
 import com.lma.model.Author;
 import com.lma.model.Book;
+import com.lma.util.LocalDateFormatter;
 
 import java.time.LocalDate;
 

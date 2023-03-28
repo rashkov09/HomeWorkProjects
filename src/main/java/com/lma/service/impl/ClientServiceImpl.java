@@ -9,7 +9,8 @@ import com.lma.service.ClientService;
 
 import java.util.NoSuchElementException;
 
-import static com.lma.constatns.CustomMessages.NO_SUCH_CLIENT_EXCEPTION;
+import static com.lma.constants.CustomMessages.EMPTY_RESULT_MESSAGE;
+import static com.lma.constants.CustomMessages.NO_SUCH_CLIENT_EXCEPTION;
 
 public class ClientServiceImpl implements ClientService {
     private final static ClientRepository clientRepository = new ClientRepositoryImpl();
@@ -26,7 +27,6 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void addClient(String firstName, String lastName) {
-        // TODO to validate user input
         Client client = new Client(firstName, lastName);
         clientRepository.addClient(client);
     }
@@ -39,23 +39,27 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public String getClientByBookName(String bookName) {
-        Book book = bookService.getBook(bookName);
+        try {
+            Book book = bookService.getBook(bookName);
 
-        return clientRepository.getClientByBook(book).toString();
+            return clientRepository.getClientByBook(book).toString();
+        }catch (NoSuchElementException e){
+            return NO_SUCH_CLIENT_EXCEPTION;
+        }
     }
 
     @Override
     public String getClientByLastName(String lastName) {
         StringBuilder builder = new StringBuilder();
         clientRepository.getClientByLastName(lastName).forEach(client -> builder.append(client.toString()).append("\n"));
-        return builder.toString();
+        return builder.isEmpty() ? EMPTY_RESULT_MESSAGE : builder.toString() ;
     }
 
     @Override
     public String getClientByFirstName(String firstName) {
         StringBuilder builder = new StringBuilder();
         clientRepository.getClientByFirstName(firstName).forEach(client -> builder.append(client.toString()).append("\n"));
-        return builder.toString();
+        return builder.isEmpty() ? EMPTY_RESULT_MESSAGE : builder.toString() ;
     }
 
     @Override
@@ -68,6 +72,6 @@ public class ClientServiceImpl implements ClientService {
                         .append("\n")
         );
 
-        return builder.toString();
+        return builder.isEmpty() ? EMPTY_RESULT_MESSAGE : builder.toString() ;
     }
 }

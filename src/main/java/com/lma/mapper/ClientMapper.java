@@ -1,4 +1,4 @@
-package com.lma.util;
+package com.lma.mapper;
 
 import com.lma.model.Client;
 

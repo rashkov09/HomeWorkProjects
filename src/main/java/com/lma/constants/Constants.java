@@ -1,4 +1,4 @@
-package com.lma.constatns;
+package com.lma.constants;
 
 public class Constants {
 

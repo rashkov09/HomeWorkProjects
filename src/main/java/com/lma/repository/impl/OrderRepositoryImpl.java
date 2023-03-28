@@ -2,8 +2,8 @@ package com.lma.repository.impl;
 
 import com.lma.model.Order;
 import com.lma.repository.OrderRepository;
-import com.lma.util.OrderFileAccessor;
-import com.lma.util.OrderMapper;
+import com.lma.accessor.OrderFileAccessor;
+import com.lma.mapper.OrderMapper;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class OrderRepositoryImpl implements OrderRepository {
     private static final OrderFileAccessor orderFileAccessor = new OrderFileAccessor();
 
-    private static final HashSet<Order> ordersList = new HashSet<>();
+    private static final Set<Order> ordersList = new HashSet<>();
 
 
     @Override
@@ -26,20 +26,20 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public Order addOrder(Order order) {
+    public boolean addOrder(Order order) {
         if (ordersList.add(order)){
             try {
                 orderFileAccessor.writeLine(OrderMapper.mapOrderToString(order));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            return order;
+            return true;
         }
-        return null;
+        return false;
     }
 
     @Override
-    public HashSet<Order> getAllOrders() {
+    public Set<Order> getAllOrders() {
         return ordersList;
     }
 

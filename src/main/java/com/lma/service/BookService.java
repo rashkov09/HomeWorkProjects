@@ -15,9 +15,16 @@ public interface BookService {
 
     Set<Book> findBooksByAuthorName(String authorName);
 
+    String findBooksStartingWith(String value);
+
     String getBookByName(String subValue);
 
     String getBooksByAuthorName(String bookName);
 
     String getBooksByIssueDate(String issueDate);
+
+    boolean removeBook(Book book);
+
+    boolean hasAvailableBooks();
+
 }

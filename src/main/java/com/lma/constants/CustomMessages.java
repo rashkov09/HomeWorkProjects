@@ -1,4 +1,4 @@
-package com.lma.constatns;
+package com.lma.constants;
 
 public class CustomMessages {
 
@@ -11,4 +11,5 @@ public class CustomMessages {
     public static final String DATE_INPUT_MESSAGE = "Please, insert date in format dd/MM/yyyy: ";
 
     public static final String CHOOSE_AN_OPTION_MESSAGE = "Please, choose an option: ";
+    public static final String EMPTY_RESULT_MESSAGE = "No data found for these parameters. Please, try again! ";
 }

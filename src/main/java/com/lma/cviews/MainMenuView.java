@@ -2,7 +2,7 @@ package com.lma.cviews;
 
 import com.lma.util.ConsoleRangeReader;
 
-import static com.lma.constatns.CustomMessages.CHOOSE_AN_OPTION_MESSAGE;
+import static com.lma.constants.CustomMessages.CHOOSE_AN_OPTION_MESSAGE;
 import static java.lang.System.exit;
 
 public class MainMenuView implements ConsoleView {
