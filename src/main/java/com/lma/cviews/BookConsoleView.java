@@ -11,7 +11,7 @@ public class BookConsoleView implements ConsoleView {
     private final static ConsoleView mainConsoleView = new MainMenuView();
     public static final BookService bookService = new BookServiceImpl();
     private static final int MIN_MENU_OPTION = 0;
-    private static final int MAX_MENU_OPTION = 5;
+    private static final int MAX_MENU_OPTION = 6;
     private static final String BOOKS_OPTION_MESSAGE =
             """
                     Choose what to do with orders:
@@ -20,14 +20,13 @@ public class BookConsoleView implements ConsoleView {
                     3. Search for a book by publish date
                     4. Search for a book by author name
                     5. Search for books starting with
-                    5. Add book
+                    6. Add book
                                         
                     0. Back
                     """;
     private static final String AUTHOR_NAME_INPUT_MESSAGE = "Please, insert author name: ";
     private static final String SEARCH_VALUE_MESSAGE = "Please, insert query: ";
-    private static final String BOOK_ADD_SUCCESS_MESSAGE = "Book %s added successfully!\n";
-    private static final String BOOK_ADD_UNSUCCESSFUL_MESSAGE = "Book was not added! Please, try again!";
+
 
     @Override
     public void showItemMenu() {
@@ -93,11 +92,8 @@ public class BookConsoleView implements ConsoleView {
         System.out.println(DATE_INPUT_MESSAGE);
         String date = ConsoleReader.readString();
 
-        if (bookService.addBook(bookName, authorName, date)) {
-            System.out.printf((BOOK_ADD_SUCCESS_MESSAGE), bookName);
-        } else {
-            System.out.println(BOOK_ADD_UNSUCCESSFUL_MESSAGE);
-        }
+       System.out.println(bookService.addBook(bookName, authorName, date));
+
     }
 
     public void printBookByName() {

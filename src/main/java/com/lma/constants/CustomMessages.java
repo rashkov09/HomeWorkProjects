@@ -12,4 +12,6 @@ public class CustomMessages {
 
     public static final String CHOOSE_AN_OPTION_MESSAGE = "Please, choose an option: ";
     public static final String EMPTY_RESULT_MESSAGE = "No data found for these parameters. Please, try again! ";
+
+    public static final String INVALID_DATE_MESSAGE = "Invalid date! Please, try again with valid date.";
 }

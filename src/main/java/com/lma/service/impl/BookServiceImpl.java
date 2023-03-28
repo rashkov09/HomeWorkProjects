@@ -6,19 +6,21 @@ import com.lma.repository.BookRepository;
 import com.lma.repository.impl.BookRepositoryImpl;
 import com.lma.service.AuthorService;
 import com.lma.service.BookService;
+import com.lma.util.DateInputValidator;
 import com.lma.util.LocalDateFormatter;
 
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import static com.lma.constants.CustomMessages.BOOK_NOT_FOUND_EXCEPTION;
-import static com.lma.constants.CustomMessages.EMPTY_RESULT_MESSAGE;
+import static com.lma.constants.CustomMessages.*;
 
 public class BookServiceImpl implements BookService {
     private final static AuthorService authorService = new AuthorServiceImpl();
     private final static BookRepository bookRepository = new BookRepositoryImpl();
     private static final String NO_BOOKS_FOUND_MESSAGE = "No books written by %s found!\n";
     private static final String NO_BOOKS_FOUND_FOR_DATE_MESSAGE = "No books published on %s found!\n";
+    private static final String BOOK_ADD_SUCCESS_MESSAGE = "Book %s added successfully!\n";
+    private static final String BOOK_ADD_UNSUCCESSFUL_MESSAGE = "Book was not added! Please, try again!";
 
     public BookServiceImpl() {
         seedBooks();
@@ -30,12 +32,18 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Boolean addBook(String name, String authorName, String publishDate) {
-        authorService.addAuthor(authorName);
-        Author existingAuthor = authorService.getAuthor(authorName);
-        Book book = new Book(name, existingAuthor, LocalDateFormatter.stringToLocalDate(publishDate));
-        existingAuthor.addBook(book);
-        return bookRepository.addBook(book);
+    public String addBook(String name, String authorName, String publishDate) {
+        if (DateInputValidator.validate(publishDate)) {
+            authorService.addAuthor(authorName);
+            Author existingAuthor = authorService.getAuthor(authorName);
+            Book book = new Book(name, existingAuthor, LocalDateFormatter.stringToLocalDate(publishDate));
+            existingAuthor.addBook(book);
+            if(bookRepository.addBook(book)){
+                return BOOK_ADD_SUCCESS_MESSAGE;
+            }
+            return BOOK_ADD_UNSUCCESSFUL_MESSAGE;
+        }
+        return INVALID_DATE_MESSAGE;
     }
 
     @Override

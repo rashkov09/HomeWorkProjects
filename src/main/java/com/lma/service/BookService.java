@@ -7,7 +7,7 @@ import java.util.Set;
 public interface BookService {
 
     void seedBooks();
-    Boolean addBook(String name, String authorName, String publishDate);
+    String addBook(String name, String authorName, String publishDate);
 
     Book getBook(String name);
 

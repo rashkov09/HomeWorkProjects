@@ -14,6 +14,8 @@ import com.lma.util.LocalDateFormatter;
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
 
+import static com.lma.constants.CustomMessages.INVALID_DATE_MESSAGE;
+
 public class OrderServiceImpl implements OrderService {
     private static final OrderRepository orderRepository = new OrderRepositoryImpl();
     private static final ClientService clientService = new ClientServiceImpl();
@@ -21,7 +23,7 @@ public class OrderServiceImpl implements OrderService {
     private static final String MISSING_DATA_EXCEPTION = "Either book or client is missing. Please, check data!";
     private static final String ORDER_ADDED_SUCCESSFULLY = "Order added successfully!";
     private static final String ORDER_ADDITION_FAILED = "Either client or book does not exist!";
-    private static final String INVALID_DATE_MESSAGE = "Invalid date! Please, try again with valid date.";
+
 
 
     public OrderServiceImpl() {
