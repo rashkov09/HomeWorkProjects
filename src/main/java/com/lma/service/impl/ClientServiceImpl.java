@@ -26,8 +26,11 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public String addClient(String firstName, String lastName) {
-        Client client = new Client(firstName, lastName);
-        return clientRepository.addClient(client) ? CLIENT_ADDED_SUCCESSFULLY : CLIENT_ADDED_UNSUCCESSFULLY;
+        if (!firstName.isEmpty() && !lastName.isEmpty()) {
+            Client client = new Client(firstName, lastName);
+            return clientRepository.addClient(client) ? String.format(CLIENT_ADDED_SUCCESSFULLY, firstName + " " + lastName) : CLIENT_ADDED_UNSUCCESSFULLY;
+        }
+        return INVALID_CLIENT_NAME_MESSAGE;
     }
 
     @Override

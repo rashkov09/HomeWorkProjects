@@ -20,7 +20,7 @@ public class BookServiceImpl implements BookService {
     private static final String NO_BOOKS_FOUND_MESSAGE = "No books written by %s found!\n";
     private static final String NO_BOOKS_FOUND_FOR_DATE_MESSAGE = "No books published on that date found!\n";
     private static final String BOOK_ADD_SUCCESS_MESSAGE = "Book %s added successfully!\n";
-    private static final String BOOK_ADD_UNSUCCESSFUL_MESSAGE = "Book was not added! Please, try again!";
+    private static final String BOOK_ADD_UNSUCCESSFUL_MESSAGE = "Book was not added! Book already exists!";
 
     public BookServiceImpl() {
         seedBooks();
