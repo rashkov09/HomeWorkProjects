@@ -11,7 +11,7 @@ public class CustomMessages {
     public static final String CHOOSE_AN_OPTION_MESSAGE = "Please, choose an option: ";
     public static final String EMPTY_RESULT_MESSAGE = "No data found for these parameters. Please, try again! ";
     public static final String INVALID_DATE_MESSAGE = "Invalid date! Please, try again with valid date.";
-    public static final String CLIENT_ADDED_UNSUCCESSFULLY = "Could not add client, please try again!";
+    public static final String CLIENT_ADDED_UNSUCCESSFULLY = "Could not add client, client already exists!";
     public static final String CLIENT_ADDED_SUCCESSFULLY = "Client %s added successfully!";
     public static final String INVALID_AUTHOR_MESSAGE = "Please, insert a valid author name!";
     public static final String AUTHOR_ADDED_SUCCESSFULLY_MESSAGE = "%s added successfully!\n";
@@ -20,5 +20,6 @@ public class CustomMessages {
     public static final String NO_ORDERS_BEFORE_MESSAGE = "No orders before %s found!\n";
     public static final String NO_ORDERS_ON_MESSAGE = "No orders on %s found!\n";
     public static final String FILE_NOT_FOUND_MESSAGE = "File with path %s not found!\n";
+    public static final String INVALID_CLIENT_NAME_MESSAGE = "Invalid client name! Please, try again!\n";
 
 }
