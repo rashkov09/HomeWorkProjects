@@ -20,8 +20,8 @@ private static final BookService bookService = new BookServiceImpl();
         Client client = clientService.getClientByFullName(subValues[0]);
         Book book = bookService.getBook(subValues[1]);
         LocalDate issueDate = LocalDateFormatter.stringToLocalDate(subValues[2]);
-        LocalDate dueDate = LocalDateFormatter.stringToLocalDate(subValues[2]);
-        return client != null && book !=null ? new Order(client,book,issueDate,dueDate.plusMonths(1)) : null;
+        LocalDate dueDate = LocalDateFormatter.stringToLocalDate(subValues[3]);
+        return client != null && book !=null ? new Order(client,book,issueDate,dueDate) : null;
     }
 
     public static String mapOrderToString(Order order){

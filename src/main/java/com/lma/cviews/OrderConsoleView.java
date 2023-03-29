@@ -10,9 +10,10 @@ import static com.lma.constants.CustomMessages.*;
 
 public class OrderConsoleView implements ConsoleView {
     private final static ConsoleView mainConsoleView = new MainMenuView();
+    private final static ExtendDueDateConsoleView extendDueDateConsoleView = new ExtendDueDateConsoleView();
     private static final OrderService orderService = new OrderServiceImpl();
     private static final int MIN_MENU_OPTION = 0;
-    private static final int MAX_MENU_OPTION = 6;
+    private static final int MAX_MENU_OPTION = 7;
     private static final String ORDERS_OPTION_MESSAGE =
             """
                     Choose what to do with orders:
@@ -21,16 +22,14 @@ public class OrderConsoleView implements ConsoleView {
                     3. Print orders issued on
                     4. Print orders issued before
                     5. Print orders issued after
-                    6. Add order
+                    6. Extend order due date
+                    7. Add order
                         
                     0. Back
                     """;
     private static final String CLIENT_NAME_INPUT_MESSAGE = "Please, insert client name: ";
-    private static final String ORDER_ADDED_SUCCESSFULLY_MESSAGE = "Order added successfully!";
-    private static final String ORDER_NOT_ADDED_MESSAGE = "Something went wrong! Order not added!";
     private static final String BOOK_COUNT_MESSAGE = "How many books would you like to order?";
-    private static final String NO_ORDERS_BEFORE_MESSAGE = "No orders before %s found!\n";
-    private static final String NO_ORDERS_AFTER_MESSAGE = "No orders after %s found!\n";
+
 
     @Override
     public void showItemMenu() {
@@ -39,7 +38,7 @@ public class OrderConsoleView implements ConsoleView {
         int choice = ConsoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
         switch (choice) {
             case 0:
-               mainConsoleView.showItemMenu();
+                mainConsoleView.showItemMenu();
                 return;
             case 1:
                 printAllOrders();
@@ -56,11 +55,18 @@ public class OrderConsoleView implements ConsoleView {
             case 5:
                 printAllOrdersAfter();
                 break;
-            case 6:
+                case 6:
+                extendOrderDueDate();
+                break;
+            case 7:
                 addOrder();
                 break;
         }
         showItemMenu();
+    }
+
+    private void extendOrderDueDate() {
+        extendDueDateConsoleView.showItemMenu();
     }
 
 
@@ -91,12 +97,8 @@ public class OrderConsoleView implements ConsoleView {
     void printAllOrdersAfter() {
         System.out.println(DATE_INPUT_MESSAGE);
         String date = ConsoleReader.readString();
-       String result = orderService.getAllOrdersIssuedAfter(date);
-       if (!result.isEmpty()){
-           System.out.println(result);
-       }else {
-           System.out.printf(NO_ORDERS_AFTER_MESSAGE, date);
-       }
+        System.out.println(orderService.getAllOrdersIssuedAfter(date));
+
     }
 
     void printAllOrdersOn() {
@@ -108,12 +110,7 @@ public class OrderConsoleView implements ConsoleView {
     void printAllOrdersBefore() {
         System.out.println(DATE_INPUT_MESSAGE);
         String date = ConsoleReader.readString();
-        String result = orderService.getAllOrdersIssuedBefore(date);
-        if (!result.isEmpty()) {
-            System.out.println(result);
-        } else {
-          System.out.printf(NO_ORDERS_BEFORE_MESSAGE, date);
-        }
+        System.out.println(orderService.getAllOrdersIssuedBefore(date));
     }
 
 }

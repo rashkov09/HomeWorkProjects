@@ -17,7 +17,6 @@ public class AuthorServiceImpl implements AuthorService {
     private final static BookService bookService = new BookServiceImpl();
 
 
-
     public AuthorServiceImpl() {
         seedAuthors();
     }
@@ -29,10 +28,14 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Boolean addAuthor(String authorName) {
-
-      return authorRepository.addAuthor(new Author(authorName));
-
+    public String addAuthor(String authorName) {
+        if (authorName.isEmpty()) {
+            return INVALID_AUTHOR_MESSAGE;
+        }
+        if (authorRepository.addAuthor(new Author(authorName))) {
+            return String.format(AUTHOR_ADDED_SUCCESSFULLY_MESSAGE, authorName);
+        }
+        return String.format(FAILED_TO_ADD_AUTHOR, authorName);
     }
 
     @Override
@@ -45,11 +48,14 @@ public class AuthorServiceImpl implements AuthorService {
                             .append("\n");
                 }
         );
-        return builder.isEmpty() ? EMPTY_RESULT_MESSAGE : builder.toString() ;
+        return builder.isEmpty() ? EMPTY_RESULT_MESSAGE : builder.toString();
     }
 
     @Override
     public String findAuthorByName(String name) {
+        if (name.isEmpty()) {
+            return INVALID_AUTHOR_MESSAGE;
+        }
         return authorRepository.findAuthorByName(name).toString();
     }
 
@@ -59,11 +65,11 @@ public class AuthorServiceImpl implements AuthorService {
             Book book;
             try {
                 book = bookService.getBook(bookName);
-            }catch (NoSuchElementException e){
+            } catch (NoSuchElementException e) {
                 return BOOK_NOT_FOUND_EXCEPTION;
             }
             return authorRepository.findAuthorByBookName(book).toString();
-        }catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             return NO_SUCH_AUTHOR_EXCEPTION;
         }
     }

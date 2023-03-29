@@ -5,6 +5,7 @@ import com.lma.service.impl.ClientServiceImpl;
 import com.lma.util.ConsoleRangeReader;
 import com.lma.util.ConsoleReader;
 
+import static com.lma.constants.CustomMessages.BOOK_NAME_INPUT_MESSAGE;
 import static com.lma.constants.CustomMessages.CHOOSE_AN_OPTION_MESSAGE;
 
 public class ClientConsoleView implements ConsoleView {
@@ -26,7 +27,7 @@ public class ClientConsoleView implements ConsoleView {
 
     private static final String CLIENT_FIRSTNAME_INPUT_MESSAGE = "Please, insert client first name: ";
     private static final String CLIENT_LASTNAME_INPUT_MESSAGE = "Please, insert client last name: ";
-    private static final String BOOK_NAME_INPUT_MESSAGE = "Please, insert book name: ";
+
 
     @Override
     public void showItemMenu() {
@@ -44,10 +45,10 @@ public class ClientConsoleView implements ConsoleView {
                 printClientByFirstName();
                 break;
             case 3:
-                printClientByBook();
+                printClientByLastName();
                 break;
             case 4:
-                printClientByLastName();
+                printClientByBook();
                 break;
             case 5:
                 addClient();
@@ -85,6 +86,6 @@ public class ClientConsoleView implements ConsoleView {
         String firstName = ConsoleReader.readString();
         System.out.println(CLIENT_LASTNAME_INPUT_MESSAGE);
         String lastName = ConsoleReader.readString();
-        clientService.addClient(firstName,lastName);
+        System.out.println(clientService.addClient(firstName,lastName));
     }
 }

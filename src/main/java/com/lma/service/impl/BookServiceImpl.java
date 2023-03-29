@@ -18,7 +18,7 @@ public class BookServiceImpl implements BookService {
     private final static AuthorService authorService = new AuthorServiceImpl();
     private final static BookRepository bookRepository = new BookRepositoryImpl();
     private static final String NO_BOOKS_FOUND_MESSAGE = "No books written by %s found!\n";
-    private static final String NO_BOOKS_FOUND_FOR_DATE_MESSAGE = "No books published on %s found!\n";
+    private static final String NO_BOOKS_FOUND_FOR_DATE_MESSAGE = "No books published on that date found!\n";
     private static final String BOOK_ADD_SUCCESS_MESSAGE = "Book %s added successfully!\n";
     private static final String BOOK_ADD_UNSUCCESSFUL_MESSAGE = "Book was not added! Please, try again!";
 
@@ -34,12 +34,18 @@ public class BookServiceImpl implements BookService {
     @Override
     public String addBook(String name, String authorName, String publishDate) {
         if (DateInputValidator.validate(publishDate)) {
+            if (authorName.isEmpty()){
+                return "Author name not valid!";
+            }
+            if (name.isEmpty()){
+                return "Book name not valid!";
+            }
             authorService.addAuthor(authorName);
             Author existingAuthor = authorService.getAuthor(authorName);
             Book book = new Book(name, existingAuthor, LocalDateFormatter.stringToLocalDate(publishDate));
             existingAuthor.addBook(book);
             if(bookRepository.addBook(book)){
-                return BOOK_ADD_SUCCESS_MESSAGE;
+                return String.format(BOOK_ADD_SUCCESS_MESSAGE,book.getName());
             }
             return BOOK_ADD_UNSUCCESSFUL_MESSAGE;
         }
@@ -67,7 +73,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public String findBooksStartingWith(String value) {
         StringBuilder builder = new StringBuilder();
-        bookRepository.getAllBooks().stream().filter(book -> book.getName().toLowerCase().startsWith(value)).forEach(book -> builder.append(book).append("\n"));
+        bookRepository.getAllBooks().stream().filter(book -> book.getName().toLowerCase().startsWith(value.toLowerCase())).forEach(book -> builder.append(book).append("\n"));
         return builder.isEmpty() ? EMPTY_RESULT_MESSAGE : builder.toString();
     }
 
@@ -82,6 +88,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public String getBooksByAuthorName(String authorName) {
+        if (authorName.isEmpty()){
+            return INVALID_AUTHOR_MESSAGE;
+        }
         StringBuilder builder = new StringBuilder();
         bookRepository.findBooksByAuthorName(authorName).forEach(book ->
                 builder
@@ -99,7 +108,7 @@ public class BookServiceImpl implements BookService {
         bookRepository.findBooksByIssueDate(publishDate).forEach(book -> builder
                 .append(book)
                 .append("\n"));
-        return builder.isEmpty() ? String.format(NO_BOOKS_FOUND_FOR_DATE_MESSAGE, publishDate) : builder.toString();
+        return builder.isEmpty() ? NO_BOOKS_FOUND_FOR_DATE_MESSAGE: builder.toString();
     }
 
     @Override

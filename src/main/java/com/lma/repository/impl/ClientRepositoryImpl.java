@@ -1,16 +1,20 @@
 package com.lma.repository.impl;
 
+import com.lma.accessor.ClientFileAccessor;
+import com.lma.mapper.ClientMapper;
 import com.lma.model.Book;
 import com.lma.model.Client;
 import com.lma.repository.ClientRepository;
-import com.lma.accessor.ClientFileAccessor;
-import com.lma.mapper.ClientMapper;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.lma.constants.CustomMessages.FILE_NOT_FOUND_MESSAGE;
+import static com.lma.constants.Paths.CLIENT_FILE_PATH;
+
 
 public class ClientRepositoryImpl implements ClientRepository {
     private static final ClientFileAccessor clientFileAccessor = new ClientFileAccessor();
@@ -19,7 +23,11 @@ public class ClientRepositoryImpl implements ClientRepository {
 
     @Override
     public void loadClientData() {
-        clientFileAccessor.readAllLines().forEach(line -> clientList.add(ClientMapper.mapClientFromString(line)));
+        try {
+            clientFileAccessor.readAllLines().forEach(line -> clientList.add(ClientMapper.mapClientFromString(line)));
+        }catch (Exception e){
+            System.out.printf(FILE_NOT_FOUND_MESSAGE,CLIENT_FILE_PATH);
+        }
     }
 
     @Override
@@ -46,6 +54,11 @@ public class ClientRepositoryImpl implements ClientRepository {
     public Set<Client> getClients() {
         return clientList;
     }
+
+    @Override
+    public Client getClient(String clientName) {
+        return clientList.stream().filter(client -> client.getFullName().equals(clientName)).findFirst().orElseThrow();
+            }
 
     @Override
     public Boolean addClient(Client client) {

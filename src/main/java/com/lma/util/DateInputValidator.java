@@ -13,7 +13,7 @@ public final class DateInputValidator {
 
     public static Boolean validate(String date){
         Matcher matcher = pattern.matcher(date);
-        return matcher.matches();
+        return !date.isEmpty() && matcher.matches();
     }
 
 }

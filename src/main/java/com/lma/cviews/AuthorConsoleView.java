@@ -8,8 +8,8 @@ import com.lma.util.ConsoleReader;
 import static com.lma.constants.CustomMessages.BOOK_NAME_INPUT_MESSAGE;
 import static com.lma.constants.CustomMessages.CHOOSE_AN_OPTION_MESSAGE;
 
-public class AuthorConsoleView implements ConsoleView{
-    private  final static ConsoleView mainConsoleView = new MainMenuView();
+public class AuthorConsoleView implements ConsoleView {
+    private final static ConsoleView mainConsoleView = new MainMenuView();
     private final static AuthorService authorService = new AuthorServiceImpl();
     private static final int MIN_MENU_OPTION = 0;
     private static final int MAX_MENU_OPTION = 4;
@@ -20,13 +20,11 @@ public class AuthorConsoleView implements ConsoleView{
                     2. Search for a author by name
                     3. Search for a author by book name
                     4. Add author
-                    
+                                        
                     0. Back
                     """;
 
     private static final String AUTHOR_NAME_INPUT_MESSAGE = "Please, insert author name: ";
-    private static final String AUTHOR_ADDED_SUCCESSFULLY_MESSAGE = "%s added successfully!\n";
-
 
     @Override
     public void showItemMenu() {
@@ -47,7 +45,7 @@ public class AuthorConsoleView implements ConsoleView{
                 printAuthorByBook();
                 break;
             case 4:
-              addAuthor();
+                addAuthor();
                 break;
         }
         showItemMenu();
@@ -66,7 +64,6 @@ public class AuthorConsoleView implements ConsoleView{
     }
 
 
-
     public void printAllAuthors() {
         System.out.println(authorService.getAllAuthors());
     }
@@ -75,8 +72,6 @@ public class AuthorConsoleView implements ConsoleView{
     public void addAuthor() {
         System.out.println(AUTHOR_NAME_INPUT_MESSAGE);
         String authorName = ConsoleReader.readString();
-       if (authorService.addAuthor(authorName)){
-           System.out.printf(authorName,AUTHOR_ADDED_SUCCESSFULLY_MESSAGE);
-       };
+        System.out.println(authorService.addAuthor(authorName));
     }
 }

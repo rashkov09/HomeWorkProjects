@@ -5,7 +5,7 @@ import com.lma.model.Author;
 public interface AuthorService {
 
     void seedAuthors();
-    Boolean addAuthor(String authorName);
+    String addAuthor(String authorName);
     String getAllAuthors();
 
     String findAuthorByName(String name);

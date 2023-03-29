@@ -3,7 +3,6 @@ package com.lma.repository;
 import com.lma.model.Book;
 import com.lma.model.Client;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public interface ClientRepository {
@@ -21,4 +20,6 @@ public interface ClientRepository {
     Set<Client> getClientByFirstName(String firstName);
 
     Set<Client> getClients();
+
+    Client getClient(String clientName);
 }

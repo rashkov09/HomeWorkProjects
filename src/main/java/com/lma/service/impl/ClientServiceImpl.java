@@ -9,8 +9,7 @@ import com.lma.service.ClientService;
 
 import java.util.NoSuchElementException;
 
-import static com.lma.constants.CustomMessages.EMPTY_RESULT_MESSAGE;
-import static com.lma.constants.CustomMessages.NO_SUCH_CLIENT_EXCEPTION;
+import static com.lma.constants.CustomMessages.*;
 
 public class ClientServiceImpl implements ClientService {
     private final static ClientRepository clientRepository = new ClientRepositoryImpl();
@@ -26,9 +25,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void addClient(String firstName, String lastName) {
+    public String addClient(String firstName, String lastName) {
         Client client = new Client(firstName, lastName);
-        clientRepository.addClient(client);
+        return clientRepository.addClient(client) ? CLIENT_ADDED_SUCCESSFULLY : CLIENT_ADDED_UNSUCCESSFULLY;
     }
 
     @Override
@@ -43,7 +42,7 @@ public class ClientServiceImpl implements ClientService {
             Book book = bookService.getBook(bookName);
 
             return clientRepository.getClientByBook(book).toString();
-        }catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             return NO_SUCH_CLIENT_EXCEPTION;
         }
     }
@@ -52,26 +51,24 @@ public class ClientServiceImpl implements ClientService {
     public String getClientByLastName(String lastName) {
         StringBuilder builder = new StringBuilder();
         clientRepository.getClientByLastName(lastName).forEach(client -> builder.append(client.toString()).append("\n"));
-        return builder.isEmpty() ? EMPTY_RESULT_MESSAGE : builder.toString() ;
+        return builder.isEmpty() ? EMPTY_RESULT_MESSAGE : builder.toString();
     }
 
     @Override
     public String getClientByFirstName(String firstName) {
         StringBuilder builder = new StringBuilder();
         clientRepository.getClientByFirstName(firstName).forEach(client -> builder.append(client.toString()).append("\n"));
-        return builder.isEmpty() ? EMPTY_RESULT_MESSAGE : builder.toString() ;
+        return builder.isEmpty() ? EMPTY_RESULT_MESSAGE : builder.toString();
     }
 
     @Override
     public String getClients() {
         StringBuilder builder = new StringBuilder();
-
         clientRepository.getClients().forEach(client ->
                 builder
                         .append(client.toString())
                         .append("\n")
         );
-
-        return builder.isEmpty() ? EMPTY_RESULT_MESSAGE : builder.toString() ;
+        return builder.isEmpty() ? EMPTY_RESULT_MESSAGE : builder.toString();
     }
 }

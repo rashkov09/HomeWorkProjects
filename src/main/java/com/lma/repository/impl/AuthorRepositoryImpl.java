@@ -1,14 +1,17 @@
 package com.lma.repository.impl;
 
+import com.lma.accessor.AuthorFileAccessor;
 import com.lma.model.Author;
 import com.lma.model.Book;
 import com.lma.repository.AuthorRepository;
-import com.lma.accessor.AuthorFileAccessor;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
+
+import static com.lma.constants.CustomMessages.FILE_NOT_FOUND_MESSAGE;
+import static com.lma.constants.Paths.AUTHOR_FILE_PATH;
 
 public class AuthorRepositoryImpl implements AuthorRepository {
     private final static AuthorFileAccessor authorFileAccessor = new AuthorFileAccessor();
@@ -17,10 +20,14 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
     @Override
     public void loadAuthorData() {
-        authorFileAccessor.readAllLines().forEach(line -> {
-            Author author = new Author(line);
-            authorList.add(author);
-        });
+        try {
+            authorFileAccessor.readAllLines().forEach(line -> {
+                Author author = new Author(line);
+                authorList.add(author);
+            });
+        }catch (Exception e){
+            System.out.printf(FILE_NOT_FOUND_MESSAGE,AUTHOR_FILE_PATH);
+        }
     }
 
     @Override

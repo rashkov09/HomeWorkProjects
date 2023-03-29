@@ -1,5 +1,7 @@
 package com.lma.service;
 
+import com.lma.constants.enums.IncreasePeriod;
+
 public interface OrderService {
 
     void seedOrders();
@@ -10,4 +12,5 @@ public interface OrderService {
     String getAllOrdersIssuedAfter(String date);
     String getAllOrdersIssuedBefore(String date);
 
+    String extendOrderDueDate(String clientName, String bookName, int count, IncreasePeriod period);
 }
