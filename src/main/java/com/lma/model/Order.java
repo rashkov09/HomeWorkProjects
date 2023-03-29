@@ -9,11 +9,18 @@ public class Order {
     private LocalDate issueDate;
     private LocalDate dueDate;
 
+    public Order(Client client, Book book, LocalDate issueDate) {
+        this.client = client;
+        this.book = book;
+        this.issueDate = issueDate;
+        setDueDateDefault();
+    }
+
     public Order(Client client, Book book, LocalDate issueDate, LocalDate dueDate) {
         this.client = client;
         this.book = book;
         this.issueDate = issueDate;
-        this.dueDate = dueDate;
+        setDueDate(dueDate);
     }
 
     public Client getClient() {
@@ -33,6 +40,14 @@ public class Order {
         return dueDate;
     }
 
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public void setDueDateDefault() {
+        this.dueDate = this.issueDate.plusMonths(1);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -43,5 +58,23 @@ public class Order {
     @Override
     public int hashCode() {
         return Objects.hash(getClient(), getBook());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("""
+                                          Client name: %s
+                                          Book details:
+                                                        Book name: %s
+                                                        Author name: %s
+                                                        Published on: %s
+                                         Order issue date: %s
+                                         Order due date: %s
+                        """, this.client.getFullName(),
+                this.book.getName(),
+                this.book.getAuthor().getName(),
+                this.book.getPublishDate(),
+                this.issueDate,
+                this.dueDate);
     }
 }

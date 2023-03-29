@@ -1,4 +1,4 @@
-package com.lma.constatns;
+package com.lma.constants;
 
 public class Paths {
     public final static String AUTHOR_FILE_PATH = "src/authors.txt";

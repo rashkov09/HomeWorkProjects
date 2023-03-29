@@ -46,7 +46,7 @@ public class Client {
 
     @Override
     public String toString() {
-        return String.format("%s %s",firstName,lastName);
+        return String.format("Client name: %s %s\nBook count: %d\nOrder count: %d\n",this.firstName,this.lastName,this.books.size(),this.orders.size());
     }
 
     @Override
@@ -60,4 +60,6 @@ public class Client {
     public int hashCode() {
         return Objects.hash(getFirstName(), getLastName());
     }
+
+
 }

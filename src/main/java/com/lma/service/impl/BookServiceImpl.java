@@ -6,14 +6,21 @@ import com.lma.repository.BookRepository;
 import com.lma.repository.impl.BookRepositoryImpl;
 import com.lma.service.AuthorService;
 import com.lma.service.BookService;
+import com.lma.util.DateInputValidator;
 import com.lma.util.LocalDateFormatter;
 
+import java.util.NoSuchElementException;
 import java.util.Set;
+
+import static com.lma.constants.CustomMessages.*;
 
 public class BookServiceImpl implements BookService {
     private final static AuthorService authorService = new AuthorServiceImpl();
     private final static BookRepository bookRepository = new BookRepositoryImpl();
-
+    private static final String NO_BOOKS_FOUND_MESSAGE = "No books written by %s found!\n";
+    private static final String NO_BOOKS_FOUND_FOR_DATE_MESSAGE = "No books published on that date found!\n";
+    private static final String BOOK_ADD_SUCCESS_MESSAGE = "Book %s added successfully!\n";
+    private static final String BOOK_ADD_UNSUCCESSFUL_MESSAGE = "Book was not added! Please, try again!";
 
     public BookServiceImpl() {
         seedBooks();
@@ -25,15 +32,29 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void addBook(String name, String authorName, String publishDate) {
-        // TODO to validate user input
-      Book book = new Book(name,new Author(authorName), LocalDateFormatter.stringToLocalDate(publishDate));
-        bookRepository.addBook(book);
-        Author existingAuthor = authorService.findAuthorByName(authorName);
-
-        if (existingAuthor != null){
+    public String addBook(String name, String authorName, String publishDate) {
+        if (DateInputValidator.validate(publishDate)) {
+            if (authorName.isEmpty()){
+                return "Author name not valid!";
+            }
+            if (name.isEmpty()){
+                return "Book name not valid!";
+            }
+            authorService.addAuthor(authorName);
+            Author existingAuthor = authorService.getAuthor(authorName);
+            Book book = new Book(name, existingAuthor, LocalDateFormatter.stringToLocalDate(publishDate));
             existingAuthor.addBook(book);
+            if(bookRepository.addBook(book)){
+                return String.format(BOOK_ADD_SUCCESS_MESSAGE,book.getName());
+            }
+            return BOOK_ADD_UNSUCCESSFUL_MESSAGE;
         }
+        return INVALID_DATE_MESSAGE;
+    }
+
+    @Override
+    public Book getBook(String name) {
+        return bookRepository.findBookByName(name);
     }
 
 
@@ -41,7 +62,7 @@ public class BookServiceImpl implements BookService {
     public String getAllBooks() {
         StringBuilder builder = new StringBuilder();
         bookRepository.getAllBooks().forEach(book -> builder.append(book.toString()).append("\n"));
-        return builder.toString();
+        return builder.isEmpty() ? EMPTY_RESULT_MESSAGE : builder.toString();
     }
 
     @Override
@@ -50,7 +71,54 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book getBookByName(String bookName) {
-        return bookRepository.findBookByName(bookName);
+    public String findBooksStartingWith(String value) {
+        StringBuilder builder = new StringBuilder();
+        bookRepository.getAllBooks().stream().filter(book -> book.getName().toLowerCase().startsWith(value.toLowerCase())).forEach(book -> builder.append(book).append("\n"));
+        return builder.isEmpty() ? EMPTY_RESULT_MESSAGE : builder.toString();
+    }
+
+    @Override
+    public String getBookByName(String bookName) {
+        try {
+            return bookRepository.findBookByName(bookName).toString();
+        } catch (NoSuchElementException e) {
+            return BOOK_NOT_FOUND_EXCEPTION;
+        }
+    }
+
+    @Override
+    public String getBooksByAuthorName(String authorName) {
+        if (authorName.isEmpty()){
+            return INVALID_AUTHOR_MESSAGE;
+        }
+        StringBuilder builder = new StringBuilder();
+        bookRepository.findBooksByAuthorName(authorName).forEach(book ->
+                builder
+                        .append(book)
+                        .append("\n")
+        );
+
+        return builder.isEmpty() ? String.format(NO_BOOKS_FOUND_MESSAGE, authorName) : builder.toString();
+    }
+
+    @Override
+    public String getBooksByIssueDate(String publishDate) {
+        StringBuilder builder = new StringBuilder();
+
+        bookRepository.findBooksByIssueDate(publishDate).forEach(book -> builder
+                .append(book)
+                .append("\n"));
+        return builder.isEmpty() ? NO_BOOKS_FOUND_FOR_DATE_MESSAGE: builder.toString();
+    }
+
+    @Override
+    public boolean removeBook(Book book) {
+        return bookRepository.removeBook(book);
+
+    }
+
+    @Override
+    public boolean hasAvailableBooks() {
+        return bookRepository.getAllBooks().size() > 0;
     }
 }

@@ -3,7 +3,7 @@ package com.lma.model;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Book {
+public class Book implements Comparable<Book> {
     private String name;
     private Author author;
     private LocalDate publishDate;
@@ -53,5 +53,10 @@ public class Book {
     @Override
     public String toString() {
         return String.format("Book Name: %s\nAuthor Name: %s\nPublish Date: %s\n", this.name,this.author.getName(),this.publishDate.toString());
+    }
+
+    @Override
+    public int compareTo(Book o) {
+        return this.name.compareTo(o.getName());
     }
 }

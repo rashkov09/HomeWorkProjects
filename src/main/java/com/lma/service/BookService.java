@@ -7,11 +7,24 @@ import java.util.Set;
 public interface BookService {
 
     void seedBooks();
-    void addBook(String name, String authorName, String publishDate);
+    String addBook(String name, String authorName, String publishDate);
+
+    Book getBook(String name);
 
     String getAllBooks();
 
     Set<Book> findBooksByAuthorName(String authorName);
 
-    Book getBookByName(String subValue);
+    String findBooksStartingWith(String value);
+
+    String getBookByName(String subValue);
+
+    String getBooksByAuthorName(String bookName);
+
+    String getBooksByIssueDate(String issueDate);
+
+    boolean removeBook(Book book);
+
+    boolean hasAvailableBooks();
+
 }

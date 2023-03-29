@@ -1,11 +1,11 @@
-package com.lma.util;
+package com.lma.accessor;
 
 import java.io.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.lma.constatns.Constants.FILE_NOT_FOUND_MESSAGE;
-import static com.lma.constatns.Paths.AUTHOR_FILE_PATH;
+import static com.lma.constants.CustomMessages.FILE_NOT_FOUND_MESSAGE;
+import static com.lma.constants.Paths.AUTHOR_FILE_PATH;
 
 public class AuthorFileAccessor {
     private final static BufferedWriter writer;
