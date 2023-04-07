@@ -16,7 +16,7 @@ public class Author extends BaseEntity{
     public Author() {
     }
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     public String getName() {
         return name;
     }

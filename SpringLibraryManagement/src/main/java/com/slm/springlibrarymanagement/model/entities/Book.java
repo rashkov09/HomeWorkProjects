@@ -1,9 +1,11 @@
 package com.slm.springlibrarymanagement.model.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 @Entity
 @Table(name = "books")
