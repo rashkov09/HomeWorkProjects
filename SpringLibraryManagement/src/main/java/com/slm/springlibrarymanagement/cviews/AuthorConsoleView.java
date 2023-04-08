@@ -3,6 +3,7 @@ package com.slm.springlibrarymanagement.cviews;
 
 import com.slm.springlibrarymanagement.service.AuthorService;
 import com.slm.springlibrarymanagement.util.ConsoleRangeReader;
+import com.slm.springlibrarymanagement.util.ConsoleReader;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,7 +16,7 @@ public class AuthorConsoleView implements ConsoleView {
             """
                     Choose what to do with orders:
                     1. Print all authors
-                    2. Search for a author by name
+                    2. Search for a author by id
                     3. Search for a author by book name
                     4. Add author
                                         
@@ -30,49 +31,41 @@ public class AuthorConsoleView implements ConsoleView {
 
     @Override
     public void showItemMenu(ConsoleView invoker) {
+        authorService.importAuthors();
        System.out.println(AUTHOR_OPTION_MESSAGE);
         System.out.print("Please, choose an option: ");
         int choice = ConsoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
         switch (choice) {
             case 0:
-                invoker.showItemMenu(this);
+                authorService.backupToFile();
+                invoker.showItemMenu(invoker);
                 return;
             case 1:
+                printAll();
                 break;
-//            case 2:
-//                printAuthorByName();
-//                break;
-//            case 3:
-//                printAuthorByBook();
-//                break;
-//            case 4:
-//                addAuthor();
-//                break;
+            case 2:
+               // TODO implement findByID
+                break;
+            case 3:
+              // TODO implement findByBookName
+                break;
+            case 4:
+                addAuthor();
+                break;
         }
-        showItemMenu(this);
+        showItemMenu(invoker);
     }
 
-//    private void printAuthorByBook() {
-//        System.out.println(BOOK_NAME_INPUT_MESSAGE);
-//    String authorName = ConsoleReader.readString();
-//        System.out.println(authorService.findAuthorByBookName(authorName));
-//}
-//
-//    private void printAuthorByName() {
-//        System.out.println(AUTHOR_NAME_INPUT_MESSAGE);
-//        String authorName = ConsoleReader.readString();
-//        System.out.println(authorService.findAuthorByName(authorName));
-//    }
-//
-//
-//    public void printAllAuthors() {
-//        System.out.println(authorService.getAllAuthors());
-//    }
-//
-//
-//    public void addAuthor() {
-//        System.out.println(AUTHOR_NAME_INPUT_MESSAGE);
-//        String authorName = ConsoleReader.readString();
-//        System.out.println(authorService.addAuthor(authorName));
-//    }
+    private void addAuthor() {
+        System.out.println(AUTHOR_NAME_INPUT_MESSAGE);
+        String authorName = ConsoleReader.readString();
+        // TODO validate input
+        System.out.println(authorService.insertAuthor(authorName));
+    }
+
+    private void printAll() {
+        System.out.println(authorService.findAllAuthors());
+    }
+
+
 }
