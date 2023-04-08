@@ -8,6 +8,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "orders")
+@SequenceGenerator(name = "default_gen", sequenceName = "orders_seq", allocationSize = 1)
 public class Order extends BaseEntity{
     private Client client;
     private Set<Book> books;

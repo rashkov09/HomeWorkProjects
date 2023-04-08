@@ -1,14 +1,12 @@
 package com.slm.springlibrarymanagement.model.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "books")
+@SequenceGenerator(name = "default_gen", sequenceName = "books_seq", allocationSize = 1)
 public class Book extends BaseEntity {
     private static final Integer DEFAULT_NUMBER_OF_COPIES = 0;
     private String name;

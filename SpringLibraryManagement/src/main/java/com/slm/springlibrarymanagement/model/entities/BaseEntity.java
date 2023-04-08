@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class BaseEntity {
     private Long id;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "default_gen")
     public Long getId(){
         return id;
     }

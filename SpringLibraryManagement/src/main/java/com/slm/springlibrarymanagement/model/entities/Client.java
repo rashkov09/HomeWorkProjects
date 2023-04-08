@@ -2,6 +2,7 @@ package com.slm.springlibrarymanagement.model.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 
@@ -9,6 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "clients")
+@SequenceGenerator(name = "default_gen", sequenceName = "clients_seq", allocationSize = 1)
 public class Client extends BaseEntity{
     private String firstName;
     private String lastName;

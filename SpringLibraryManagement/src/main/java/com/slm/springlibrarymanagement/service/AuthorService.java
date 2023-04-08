@@ -1,16 +1,22 @@
 package com.slm.springlibrarymanagement.service;
 
+import com.slm.springlibrarymanagement.exceptions.*;
+import com.slm.springlibrarymanagement.exceptions.author.AuthorAlreadyExistsException;
+import com.slm.springlibrarymanagement.exceptions.author.AuthorNotFoundException;
+import com.slm.springlibrarymanagement.exceptions.author.InvalidAuthorNameException;
 import com.slm.springlibrarymanagement.model.entities.Author;
-
-import java.util.Set;
 
 public interface AuthorService {
 
-    String findAllAuthors();
+    String findAllAuthors() throws NoEntriesFoundException;
 
-    String insertAuthor(String author);
+    String insertAuthor(String author) throws InvalidAuthorNameException, AuthorAlreadyExistsException;
 
-    void importAuthors();
+    void importAuthors() throws FileForEntityNotFound;
 
-    void backupToFile();
+    void backupToFile() throws BackUpFailedException;
+
+    Author findAuthorByName(String authorName) throws InvalidAuthorNameException, AuthorNotFoundException;
+
+    Author findAuthorById(String authorId) throws InvalidIdException, AuthorNotFoundException;
 }
