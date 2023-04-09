@@ -1,6 +1,6 @@
 package com.slm.springlibrarymanagement.exceptions;
 
-public class InvalidDateException extends Exception{
+public class InvalidDateException extends Exception {
     private static final String INVALID_DATE_MESSAGE = """
             Invalid date in the file!
                 

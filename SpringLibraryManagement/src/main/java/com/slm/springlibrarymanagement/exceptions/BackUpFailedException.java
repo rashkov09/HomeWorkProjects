@@ -1,6 +1,6 @@
 package com.slm.springlibrarymanagement.exceptions;
 
-public class BackUpFailedException extends Exception{
+public class BackUpFailedException extends Exception {
     private static final String BACKUP_FAILED_EXCEPTION = """
             Backup to file failed!
                 

@@ -1,10 +1,6 @@
 package com.slm.springlibrarymanagement.model.entities;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.LazyCollection;
-import org.springframework.data.repository.cdi.Eager;
-import org.springframework.data.util.Lazy;
 
 import java.util.Objects;
 import java.util.Set;

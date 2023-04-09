@@ -1,21 +1,14 @@
 package com.slm.springlibrarymanagement.cviews;
 
-import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
 import com.slm.springlibrarymanagement.service.AuthorService;
 import com.slm.springlibrarymanagement.service.BookService;
 import com.slm.springlibrarymanagement.util.ConsoleRangeReader;
 import com.slm.springlibrarymanagement.util.ConsoleReader;
-import jakarta.servlet.http.Cookie;
-import org.hibernate.action.internal.OrphanRemovalAction;
 import org.springframework.stereotype.Component;
-
-import java.security.CodeSigner;
 
 @Component
 public class BookConsoleView implements ConsoleView {
-    public final BookService bookService;
-    public final AuthorService authorService;
     private static final int MIN_MENU_OPTION = 0;
     private static final int MAX_MENU_OPTION = 6;
     private static final String BOOKS_OPTION_MESSAGE =
@@ -34,13 +27,14 @@ public class BookConsoleView implements ConsoleView {
     private static final String BOOK_NAME_INPUT_MESSAGE = "Please, insert book name: ";
     private static final String AUTHOR_NAME_INPUT_MESSAGE = "Please, insert valid author name: ";
     private static final String BOOK_ISSUE_DATE_MESSAGE = """
-        Can be empty if you are adding copies of a book!
-        Please, insert book issue date (dd/MM/yyyy):""";
+            Can be empty if you are adding copies of a book!
+            Please, insert book issue date (dd/MM/yyyy):""";
     private static final String BOOK_ISSUE_DATE_SEARCH_MESSAGE = """
-        Please, insert book issue date (dd/MM/yyyy): """;
-
+            Please, insert book issue date (dd/MM/yyyy): """;
     private static final String BOOK_NUMBER_OF_COPIES_MESSAGE = "Please, insert number of copies: ";
     private static final String QUERY_NAME_PREFIX = "Please, insert value for search: ";
+    public final BookService bookService;
+    public final AuthorService authorService;
 
     public BookConsoleView(BookService bookService, AuthorService authorService) {
         this.bookService = bookService;
@@ -81,9 +75,9 @@ public class BookConsoleView implements ConsoleView {
     private void printBookStartingWith() {
         System.out.println(QUERY_NAME_PREFIX);
         String prefix = ConsoleReader.readString();
-        try{
+        try {
             System.out.println(bookService.findBooksByNameStartingWith(prefix));
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -91,9 +85,9 @@ public class BookConsoleView implements ConsoleView {
     private void printBookByAuthorName() {
         System.out.println(AUTHOR_NAME_INPUT_MESSAGE);
         String authorName = ConsoleReader.readString();
-        try{
+        try {
             System.out.println(bookService.findBooksByAuthorName(authorName));
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -101,9 +95,9 @@ public class BookConsoleView implements ConsoleView {
     private void printBookByIssueDate() {
         System.out.println(BOOK_ISSUE_DATE_SEARCH_MESSAGE);
         String issueDate = ConsoleReader.readString();
-        try{
+        try {
             System.out.println(bookService.findBookByIssueDate(issueDate));
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -113,7 +107,7 @@ public class BookConsoleView implements ConsoleView {
         String bookName = ConsoleReader.readString();
         try {
             System.out.println(bookService.findBookByName(bookName));
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }

@@ -1,8 +1,6 @@
 package com.slm.springlibrarymanagement.cviews;
 
 
-import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
-import com.slm.springlibrarymanagement.exceptions.FileForEntityNotFound;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
 import com.slm.springlibrarymanagement.service.AuthorService;
 import com.slm.springlibrarymanagement.util.ConsoleRangeReader;
@@ -12,7 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthorConsoleView implements ConsoleView {
 
-    private final AuthorService authorService;
     private static final int MIN_MENU_OPTION = 0;
     private static final int MAX_MENU_OPTION = 4;
     private static final String AUTHOR_OPTION_MESSAGE =
@@ -25,9 +22,9 @@ public class AuthorConsoleView implements ConsoleView {
                                         
                     0. Back
                     """;
-
     private static final String AUTHOR_NAME_INPUT_MESSAGE = "Please, insert author name: ";
     private static final String AUTHOR_ID_INPUT_MESSAGE = "Please, insert author ID: ";
+    private final AuthorService authorService;
 
     public AuthorConsoleView(AuthorService authorService) {
         this.authorService = authorService;

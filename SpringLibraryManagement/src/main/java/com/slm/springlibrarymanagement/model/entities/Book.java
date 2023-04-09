@@ -51,15 +51,15 @@ public class Book extends BaseEntity {
     }
 
     public void setNumberOfCopies(Integer numberOfCopies) {
-        if (numberOfCopies == null || numberOfCopies <DEFAULT_NUMBER_OF_COPIES ){
+        if (numberOfCopies == null || numberOfCopies < DEFAULT_NUMBER_OF_COPIES) {
             this.numberOfCopies = DEFAULT_NUMBER_OF_COPIES;
         } else {
             this.numberOfCopies = numberOfCopies;
         }
     }
 
-    public void addCopies(Integer numberOfCopies){
-        setNumberOfCopies(getNumberOfCopies()+numberOfCopies);
+    public void addCopies(Integer numberOfCopies) {
+        setNumberOfCopies(getNumberOfCopies() + numberOfCopies);
     }
 
 }

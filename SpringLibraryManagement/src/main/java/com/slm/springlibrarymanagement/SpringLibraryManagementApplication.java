@@ -15,7 +15,7 @@ public class SpringLibraryManagementApplication implements CommandLineRunner {
     }
 
     public static void main(String[] args) {
-     SpringApplication.run(SpringLibraryManagementApplication.class, args);
+        SpringApplication.run(SpringLibraryManagementApplication.class, args);
 
     }
 

@@ -9,7 +9,7 @@ import java.util.Set;
 @Entity
 @Table(name = "orders")
 @SequenceGenerator(name = "default_gen", sequenceName = "orders_seq", allocationSize = 1)
-public class Order extends BaseEntity{
+public class Order extends BaseEntity {
     private Client client;
     private Set<Book> books;
     private LocalDateTime issueDate;
@@ -18,6 +18,7 @@ public class Order extends BaseEntity{
 
     public Order() {
     }
+
     @ManyToOne
     public Client getClient() {
         return client;
@@ -26,6 +27,7 @@ public class Order extends BaseEntity{
     public void setClient(Client client) {
         this.client = client;
     }
+
     @ManyToMany
     public Set<Book> getBooks() {
         return books;
@@ -43,6 +45,7 @@ public class Order extends BaseEntity{
     public void setIssueDate(LocalDateTime issueDate) {
         this.issueDate = issueDate;
     }
+
     @Column(nullable = false)
     public LocalDateTime getDueDate() {
         return dueDate;
@@ -51,6 +54,7 @@ public class Order extends BaseEntity{
     public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
     }
+
     @Nullable
     public LocalDateTime getStampModified() {
         return stampModified;

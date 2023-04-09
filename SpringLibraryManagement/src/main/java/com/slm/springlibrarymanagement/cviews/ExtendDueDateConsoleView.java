@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ExtendDueDateConsoleView implements ConsoleView {
-    private final  OrderService orderService;
     private static final int MIN_MENU_OPTION = 0;
     private static final int MAX_MENU_OPTION = 3;
     private static final String EXTEND_DUE_DATE_MESSAGE = """
@@ -17,15 +16,16 @@ public class ExtendDueDateConsoleView implements ConsoleView {
                 
                 0. Back
             """;
+    private final OrderService orderService;
 
 
-    public ExtendDueDateConsoleView( OrderService orderService) {
+    public ExtendDueDateConsoleView(OrderService orderService) {
         this.orderService = orderService;
     }
 
     @Override
     public void showItemMenu(ConsoleView invoker) {
-       System.out.println(EXTEND_DUE_DATE_MESSAGE);
+        System.out.println(EXTEND_DUE_DATE_MESSAGE);
 //        System.out.print(CHOOSE_AN_OPTION_MESSAGE);
 //        int choice = ConsoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
 //        switch (choice) {

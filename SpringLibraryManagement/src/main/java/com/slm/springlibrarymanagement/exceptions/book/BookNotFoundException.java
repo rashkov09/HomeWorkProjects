@@ -1,6 +1,6 @@
 package com.slm.springlibrarymanagement.exceptions.book;
 
-public class BookNotFoundException extends Exception{
+public class BookNotFoundException extends Exception {
     private static final String BOOK_NOT_FOUND_MESSAGE = """
             Book not found!
                 

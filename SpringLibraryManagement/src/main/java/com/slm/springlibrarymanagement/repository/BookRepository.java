@@ -8,7 +8,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Set;
 
 @Repository
-public interface BookRepository extends JpaRepository<Book,Long> {
+public interface BookRepository extends JpaRepository<Book, Long> {
     Book findByName(String bookName);
 
     Book findByIssueDate(TemporalAccessor issueDate);

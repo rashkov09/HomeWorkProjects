@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.slm.springlibrarymanagement.constants.Paths.*;
+import static com.slm.springlibrarymanagement.constants.Paths.BOOKS_FILE_PATH;
 
 @Component
 public class BookFileAccessor {
@@ -17,11 +17,11 @@ public class BookFileAccessor {
         try {
             reader = new BufferedReader(new FileReader(BOOKS_FILE_PATH));
         } catch (IOException e) {
-            throw new RuntimeException(String.format("File not with path %s found",BOOKS_FILE_PATH),e);
+            throw new RuntimeException(String.format("File not with path %s found", BOOKS_FILE_PATH), e);
         }
     }
 
-    public List<String> readAllLines(){
+    public List<String> readAllLines() {
         return reader.lines().collect(Collectors.toList());
     }
 
@@ -31,7 +31,7 @@ public class BookFileAccessor {
             backupWriter.append(line).append("\n");
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }finally {
+        } finally {
             backupWriter.flush();
         }
     }
