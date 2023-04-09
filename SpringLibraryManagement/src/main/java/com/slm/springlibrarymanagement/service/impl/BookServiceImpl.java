@@ -19,6 +19,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -33,6 +35,7 @@ public class BookServiceImpl implements BookService {
             --------------------------------------------------
             | Book ID: %d
             | Book name: %s
+            | Written by: %s
             | Issued on: %s
             | Copies: %d
             --------------------------------------------------
@@ -93,7 +96,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public String findAllBooks() throws NoEntriesFoundException {
         StringBuilder builder = new StringBuilder();
-        bookRepository.findAll().forEach(book -> builder.append(String.format(BOOK_TEMPLATE, book.getId(), book.getName(), book.getIssueDate(), book.getNumberOfCopies())));
+        bookRepository.findAll().forEach(book -> builder.append(String.format(BOOK_TEMPLATE, book.getId(), book.getName(),book.getAuthor().getName(), book.getIssueDate(), book.getNumberOfCopies())));
         if (builder.toString().isEmpty() || builder.toString().isBlank()) {
             throw new NoEntriesFoundException();
         }
@@ -128,7 +131,7 @@ public class BookServiceImpl implements BookService {
         } else {
             book.addCopies(Integer.parseInt(numberOfCopies));
             bookRepository.save(book);
-            builder.append(String.format("Copy of %s added successfully!", book.getName()));
+            builder.append(String.format("%s copies of %s added successfully!",numberOfCopies, book.getName()));
         }
         return builder.toString();
     }
@@ -155,6 +158,36 @@ public class BookServiceImpl implements BookService {
         if (book == null) {
             throw new BookNotFoundException();
         }
-        return String.format(BOOK_TEMPLATE,book.getId(),book.getName(),formatter.format(book.getIssueDate()),book.getNumberOfCopies());
+        return String.format(BOOK_TEMPLATE,book.getId(),book.getName(),book.getAuthor().getName(),formatter.format(book.getIssueDate()),book.getNumberOfCopies());
+    }
+
+    @Override
+    public String findBookByIssueDate(String issueDate) throws BookNotFoundException {
+        Book book = bookRepository.findByIssueDate(LocalDate.parse(issueDate,formatter));
+        if (book == null){
+            throw new BookNotFoundException();
+        }
+        return String.format(BOOK_TEMPLATE,book.getId(),book.getName(),book.getAuthor().getName(),book.getIssueDate(), book.getNumberOfCopies());
+    }
+
+    @Override
+    public String findBooksByAuthorName(String authorName) throws AuthorNotFoundException, InvalidAuthorNameException {
+        StringBuilder builder = new StringBuilder();
+        Author author = authorService.findAuthorByName(authorName);
+        author.getBooks().forEach(book -> {
+            builder.append(String.format(BOOK_TEMPLATE,book.getId(),book.getName(),book.getAuthor().getName(),book.getIssueDate(), book.getNumberOfCopies()));
+        });
+        return builder.toString();
+    }
+
+    @Override
+    public String findBooksByNameStartingWith(String prefix) throws BookNotFoundException {
+        StringBuilder builder = new StringBuilder();
+        Set<Book> books = bookRepository.findByNameStartingWith(prefix);
+        if (books.isEmpty()){
+            throw new BookNotFoundException();
+        }
+        books.forEach(book -> builder.append(String.format(BOOK_TEMPLATE,book.getId(),book.getName(),book.getAuthor().getName(),book.getIssueDate(), book.getNumberOfCopies())));
+        return builder.toString();
     }
 }
