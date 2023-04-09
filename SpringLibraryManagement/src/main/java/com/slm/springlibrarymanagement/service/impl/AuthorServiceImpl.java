@@ -67,10 +67,17 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     private String formatAuthorName(String authorName) {
+        StringBuilder builder =new StringBuilder();
         String[] names = authorName.split("\\s");
-        String firstName= transformString(names[0]);
-        String lastName = transformString(names[1]);
-        return String.format("%s %s",firstName,lastName);
+        for (int i = 0; i < names.length ; i++) {
+            if (i == names.length-1){
+                builder.append(transformString(names[i]));
+            } else{
+                builder.append(transformString(names[i])).append(" ");
+            }
+        }
+
+        return builder.toString();
     }
 
     private String transformString(String name) {
@@ -149,7 +156,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     private boolean isValidAuthorName(String authorName) {
-        String regex = "^[a-z-A-Z.+]+ [A-Za-z]+$";
+        String regex = "^(([a-z-A-Z]+.+)+|[a-zA-Z]+) [A-Za-z]+$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(authorName);
         return !matcher.matches();

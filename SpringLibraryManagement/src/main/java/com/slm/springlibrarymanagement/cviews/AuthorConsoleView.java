@@ -35,21 +35,11 @@ public class AuthorConsoleView implements ConsoleView {
 
     @Override
     public void showItemMenu(ConsoleView invoker) {
-        try {
-            authorService.importAuthors();
-        } catch (FileForEntityNotFound e) {
-            System.out.printf(e.getMessage(), "authors");
-        }
         System.out.println(AUTHOR_OPTION_MESSAGE);
         System.out.print("Please, choose an option: ");
         int choice = ConsoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
         switch (choice) {
             case 0:
-                try {
-                    authorService.backupToFile();
-                } catch (BackUpFailedException e) {
-                    System.out.println(e.getMessage());
-                }
                 invoker.showItemMenu(invoker);
                 return;
             case 1:

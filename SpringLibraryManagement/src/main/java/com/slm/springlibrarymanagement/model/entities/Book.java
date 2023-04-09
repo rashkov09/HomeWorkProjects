@@ -11,14 +11,14 @@ public class Book extends BaseEntity {
     private static final Integer DEFAULT_NUMBER_OF_COPIES = 0;
     private String name;
     private Author author;
-    private LocalDate localeDate;
+    private LocalDate issueDate;
     private Integer numberOfCopies;
 
 
     public Book() {
     }
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     public String getName() {
         return name;
     }
@@ -37,12 +37,12 @@ public class Book extends BaseEntity {
     }
 
     @Column(nullable = false)
-    public LocalDate getLocaleDate() {
-        return localeDate;
+    public LocalDate getIssueDate() {
+        return issueDate;
     }
 
-    public void setLocaleDate(LocalDate localeDate) {
-        this.localeDate = localeDate;
+    public void setIssueDate(LocalDate issueDate) {
+        this.issueDate = issueDate;
     }
 
     @Column(nullable = false)
