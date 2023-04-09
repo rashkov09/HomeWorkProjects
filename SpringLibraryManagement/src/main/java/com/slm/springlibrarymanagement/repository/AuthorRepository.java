@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AuthorRepository extends JpaRepository<Author,Long> {
+public interface AuthorRepository extends JpaRepository<Author, Long> {
     @Query("select a from Author a")
     List<Author> findAll();
 

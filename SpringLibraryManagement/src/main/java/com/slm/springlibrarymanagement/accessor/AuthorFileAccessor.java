@@ -19,11 +19,11 @@ public class AuthorFileAccessor {
 
             reader = new BufferedReader(new FileReader(AUTHOR_FILE_PATH));
         } catch (IOException e) {
-            throw new RuntimeException(String.format("File not with path %s found",CLIENT_FILE_PATH),e);
+            throw new RuntimeException(String.format("File not with path %s found", CLIENT_FILE_PATH), e);
         }
     }
 
-    public List<String> readAllLines(){
+    public List<String> readAllLines() {
         return reader.lines().collect(Collectors.toList());
     }
 
@@ -33,7 +33,7 @@ public class AuthorFileAccessor {
             backupWriter.append(line).append("\n");
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }finally {
+        } finally {
             backupWriter.flush();
         }
     }

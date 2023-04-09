@@ -1,6 +1,6 @@
 package com.slm.springlibrarymanagement.exceptions;
 
-public class InvalidIdException extends Exception{
+public class InvalidIdException extends Exception {
     private static final String INVALID_ID_MESSAGE = """
             Invalid ID!
                 

@@ -1,42 +1,43 @@
 package com.slm.springlibrarymanagement.service.impl;
 
 import com.slm.springlibrarymanagement.accessor.AuthorFileAccessor;
-import com.slm.springlibrarymanagement.exceptions.*;
+import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
+import com.slm.springlibrarymanagement.exceptions.FileForEntityNotFound;
+import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
+import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
 import com.slm.springlibrarymanagement.exceptions.author.AuthorAlreadyExistsException;
 import com.slm.springlibrarymanagement.exceptions.author.AuthorNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.author.InvalidAuthorNameException;
 import com.slm.springlibrarymanagement.model.entities.Author;
 import com.slm.springlibrarymanagement.repository.AuthorRepository;
 import com.slm.springlibrarymanagement.service.AuthorService;
+import com.slm.springlibrarymanagement.util.InputValidator;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
 
+    private static final String AUTHORS_VIEW_TEMPLATE = "| %s |\n";
     private final AuthorRepository authorRepository;
     private final AuthorFileAccessor authorFileAccessor;
+    private final InputValidator inputValidator;
 
-    private static final String AUTHORS_VIEW_TEMPLATE = "| %s |\n";
 
-
-    public AuthorServiceImpl(AuthorRepository authorRepository, AuthorFileAccessor authorFileAccessor) {
+    public AuthorServiceImpl(AuthorRepository authorRepository, AuthorFileAccessor authorFileAccessor, InputValidator inputValidator) {
         this.authorRepository = authorRepository;
         this.authorFileAccessor = authorFileAccessor;
+        this.inputValidator = inputValidator;
     }
 
 
     @Override
     public String findAllAuthors() throws NoEntriesFoundException {
         StringBuilder builder = new StringBuilder();
-        authorRepository.findAll().forEach(author -> {
-            builder.append(String.format(AUTHORS_VIEW_TEMPLATE, author.toString()));
-        });
+        authorRepository.findAll().forEach(author -> builder.append(String.format(AUTHORS_VIEW_TEMPLATE, author.toString())));
         if (builder.toString().isEmpty() || builder.toString().isBlank()) {
             throw new NoEntriesFoundException();
         }
@@ -47,7 +48,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public String insertAuthor(String authorName) throws InvalidAuthorNameException, AuthorAlreadyExistsException {
         String result = "";
-        if (isValidAuthorName(authorName)) {
+        if (inputValidator.isNotValidFullName(authorName)) {
             throw new InvalidAuthorNameException();
         }
         Author author = new Author();
@@ -67,12 +68,12 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     private String formatAuthorName(String authorName) {
-        StringBuilder builder =new StringBuilder();
+        StringBuilder builder = new StringBuilder();
         String[] names = authorName.split("\\s");
-        for (int i = 0; i < names.length ; i++) {
-            if (i == names.length-1){
+        for (int i = 0; i < names.length; i++) {
+            if (i == names.length - 1) {
                 builder.append(transformString(names[i]));
-            } else{
+            } else {
                 builder.append(transformString(names[i])).append(" ");
             }
         }
@@ -81,10 +82,10 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     private String transformString(String name) {
-        String firstLetter = name.substring(0,1).toUpperCase();
+        String firstLetter = name.substring(0, 1).toUpperCase();
         String restOfName = name.substring(1);
 
-        return String.format("%s%s",firstLetter,restOfName);
+        return String.format("%s%s", firstLetter, restOfName);
     }
 
     @Override
@@ -115,11 +116,9 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public void backupToFile() throws BackUpFailedException {
         StringBuilder builder = new StringBuilder();
-        authorRepository.findAll().forEach(author -> {
-            builder
-                    .append(String.format("%d. %s", author.getId(), author.getName()))
-                    .append("\n");
-        });
+        authorRepository.findAll().forEach(author -> builder
+                .append(String.format("%d. %s", author.getId(), author.getName()))
+                .append("\n"));
 
         try {
             authorFileAccessor.writeLine(builder.toString().trim());
@@ -130,7 +129,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Author findAuthorByName(String authorName) throws InvalidAuthorNameException, AuthorNotFoundException {
-        if (isValidAuthorName(authorName)) {
+        if (inputValidator.isNotValidFullName(authorName)) {
             throw new InvalidAuthorNameException();
         }
         Author author = authorRepository.findByName(authorName);
@@ -153,13 +152,6 @@ public class AuthorServiceImpl implements AuthorService {
             throw new InvalidIdException();
         }
         return author;
-    }
-
-    private boolean isValidAuthorName(String authorName) {
-        String regex = "^(([a-z-A-Z]+.+)+|[a-zA-Z]+) [A-Za-z]+$";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(authorName);
-        return !matcher.matches();
     }
 
 }

@@ -6,8 +6,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class OrderConsoleView implements ConsoleView {
-    private final  ExtendDueDateConsoleView extendDueDateConsoleView;
-    private final OrderService orderService;
     private static final int MIN_MENU_OPTION = 0;
     private static final int MAX_MENU_OPTION = 7;
     private static final String ORDERS_OPTION_MESSAGE =
@@ -25,41 +23,43 @@ public class OrderConsoleView implements ConsoleView {
                     """;
     private static final String CLIENT_NAME_INPUT_MESSAGE = "Please, insert client name: ";
     private static final String BOOK_COUNT_MESSAGE = "How many books would you like to order?";
+    private final ExtendDueDateConsoleView extendDueDateConsoleView;
+    private final OrderService orderService;
 
-    public OrderConsoleView( ExtendDueDateConsoleView extendDueDateConsoleView, OrderService orderService) {
+    public OrderConsoleView(ExtendDueDateConsoleView extendDueDateConsoleView, OrderService orderService) {
         this.extendDueDateConsoleView = extendDueDateConsoleView;
         this.orderService = orderService;
     }
 
     @Override
     public void showItemMenu(ConsoleView invoker) {
-       System.out.println(ORDERS_OPTION_MESSAGE);
+        System.out.println(ORDERS_OPTION_MESSAGE);
         System.out.print("Please choose an option: ");
         int choice = ConsoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
         switch (choice) {
             case 0:
-               // mainConsoleView.showItemMenu();
+                // mainConsoleView.showItemMenu();
                 return;
             case 1:
-               // printAllOrders();
+                // printAllOrders();
                 break;
             case 2:
-               // printAllOrdersForClient();
+                // printAllOrdersForClient();
                 break;
             case 3:
-              //  printAllOrdersOn();
+                //  printAllOrdersOn();
                 break;
             case 4:
-              //  printAllOrdersBefore();
+                //  printAllOrdersBefore();
                 break;
             case 5:
-               // printAllOrdersAfter();
+                // printAllOrdersAfter();
                 break;
-                case 6:
-              //  extendOrderDueDate();
+            case 6:
+                //  extendOrderDueDate();
                 break;
             case 7:
-               // addOrder();
+                // addOrder();
                 break;
         }
         showItemMenu(this);
