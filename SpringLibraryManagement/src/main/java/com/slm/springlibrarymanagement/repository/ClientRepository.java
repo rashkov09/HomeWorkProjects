@@ -13,4 +13,6 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     Set<Client> findByFirstName(String firstName);
 
     Set<Client>  findByLastName(String lastName);
+
+    Client findClientByFirstNameAndLastName(String firstName,String lastName);
 }

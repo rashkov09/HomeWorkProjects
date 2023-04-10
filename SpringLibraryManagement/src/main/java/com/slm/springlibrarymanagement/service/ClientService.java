@@ -20,4 +20,8 @@ public interface ClientService {
     String findClientsByFirstName(String firstName) throws InvalidClientFirstNameException, ClientNotFoundException;
 
     String findClientsByLastName(String lastName) throws InvalidClientLastNameException, ClientNotFoundException;
+
+    Client findClientByFullName(String fullName) throws ClientNotFoundException;
+
+    Client findClientById(Long clientId) throws ClientNotFoundException;
 }

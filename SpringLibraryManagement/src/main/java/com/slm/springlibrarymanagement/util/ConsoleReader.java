@@ -24,4 +24,14 @@ public final class ConsoleReader {
         return input;
     }
 
+    public static Long readLong() {
+        while (!scanner.hasNextLong()) {
+            String input = scanner.next();
+            System.out.printf(INVALID_INT, input);
+        }
+        long input = scanner.nextLong();
+        scanner.nextLine();
+        return input;
+    }
+
 }

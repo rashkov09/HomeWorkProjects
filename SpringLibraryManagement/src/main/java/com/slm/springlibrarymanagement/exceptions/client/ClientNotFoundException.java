@@ -2,7 +2,7 @@ package com.slm.springlibrarymanagement.exceptions.client;
 
 public class ClientNotFoundException extends Exception {
     private static final String CLIENT_NOT_FOUND_MESSAGE = """
-            Client with criteria not found!
+            Client with selected criteria not found!
             """;
 
     @Override

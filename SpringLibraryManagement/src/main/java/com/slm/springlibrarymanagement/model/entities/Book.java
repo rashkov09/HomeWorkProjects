@@ -3,6 +3,7 @@ package com.slm.springlibrarymanagement.model.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Table(name = "books")
@@ -13,6 +14,8 @@ public class Book extends BaseEntity {
     private Author author;
     private LocalDate issueDate;
     private Integer numberOfCopies;
+
+    private Set<Order> orders;
 
 
     public Book() {
@@ -57,9 +60,26 @@ public class Book extends BaseEntity {
             this.numberOfCopies = numberOfCopies;
         }
     }
+    @OneToMany(mappedBy = "book", fetch = FetchType.EAGER)
+    public Set<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
+    }
 
     public void addCopies(Integer numberOfCopies) {
         setNumberOfCopies(getNumberOfCopies() + numberOfCopies);
     }
 
+    @Override
+    public String toString() {
+        return "Book{" +
+                "name='" + name + '\'' +
+                ", author=" + author +
+                ", issueDate=" + issueDate +
+                ", numberOfCopies=" + numberOfCopies +
+                '}';
+    }
 }

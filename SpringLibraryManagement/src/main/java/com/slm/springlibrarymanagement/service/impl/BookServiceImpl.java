@@ -1,10 +1,7 @@
 package com.slm.springlibrarymanagement.service.impl;
 
 import com.slm.springlibrarymanagement.accessor.BookFileAccessor;
-import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
-import com.slm.springlibrarymanagement.exceptions.FileForEntityNotFound;
-import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
-import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
+import com.slm.springlibrarymanagement.exceptions.*;
 import com.slm.springlibrarymanagement.exceptions.author.AuthorAlreadyExistsException;
 import com.slm.springlibrarymanagement.exceptions.author.AuthorNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.author.InvalidAuthorNameException;
@@ -15,11 +12,12 @@ import com.slm.springlibrarymanagement.model.entities.Book;
 import com.slm.springlibrarymanagement.repository.BookRepository;
 import com.slm.springlibrarymanagement.service.AuthorService;
 import com.slm.springlibrarymanagement.service.BookService;
+import com.slm.springlibrarymanagement.util.CustomDateFormatter;
+import com.slm.springlibrarymanagement.util.InputValidator;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -27,7 +25,7 @@ import java.util.Set;
 @Service
 public class BookServiceImpl implements BookService {
 
-    private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+    private final CustomDateFormatter formatter;
     private final static String UNEXPECTED_EXCEPTION_MESSAGE = "This is not expected! Invalid author name in file!";
     private final static String BOOK_TEMPLATE = """
             --------------------------------------------------
@@ -42,10 +40,18 @@ public class BookServiceImpl implements BookService {
     private final AuthorService authorService;
     private final BookFileAccessor bookFileAccessor;
 
-    public BookServiceImpl(BookRepository bookRepository, AuthorService authorService, BookFileAccessor bookFileAccessor) {
+    private final InputValidator inputValidator;
+
+    public BookServiceImpl(CustomDateFormatter formatter,
+                           BookRepository bookRepository,
+                           AuthorService authorService,
+                           BookFileAccessor bookFileAccessor,
+                           InputValidator inputValidator) {
+        this.formatter = formatter;
         this.bookRepository = bookRepository;
         this.authorService = authorService;
         this.bookFileAccessor = bookFileAccessor;
+        this.inputValidator = inputValidator;
     }
 
     @Override
@@ -73,10 +79,10 @@ public class BookServiceImpl implements BookService {
         if (splitBookData[0].contains(".")) {
             String[] splitId = splitBookData[0].split("\\.", 2);
             book.setName(splitId[1]);
-            book.setIssueDate(LocalDate.parse(splitBookData[2]));
+            book.setIssueDate(LocalDate.parse(splitBookData[2],formatter.getFormatter()));
         } else {
             book.setName(splitBookData[0]);
-            book.setIssueDate(LocalDate.parse(splitBookData[2], formatter));
+            book.setIssueDate(LocalDate.parse(splitBookData[2], formatter.getFormatter()));
         }
         try {
             authorService.insertAuthor(splitBookData[1]);
@@ -91,15 +97,18 @@ public class BookServiceImpl implements BookService {
         } catch (InvalidAuthorNameException a1) {
             throw new RuntimeException(UNEXPECTED_EXCEPTION_MESSAGE);
         }
-
-
         book.setNumberOfCopies(1);
     }
 
     @Override
     public String findAllBooks() throws NoEntriesFoundException {
         StringBuilder builder = new StringBuilder();
-        bookRepository.findAll().forEach(book -> builder.append(String.format(BOOK_TEMPLATE, book.getId(), book.getName(), book.getAuthor().getName(), book.getIssueDate(), book.getNumberOfCopies())));
+        bookRepository.findAll().forEach(book -> builder.append(String.format(BOOK_TEMPLATE,
+                book.getId(),
+                book.getName(),
+                book.getAuthor().getName(),
+                book.getIssueDate(),
+                book.getNumberOfCopies())));
         if (builder.toString().isEmpty() || builder.toString().isBlank()) {
             throw new NoEntriesFoundException();
         }
@@ -108,7 +117,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public String insertBook(String authorId, String bookName, String issueDate, String numberOfCopies) throws InvalidIdException, AuthorNotFoundException, InvalidNumberOfCopies {
+    public String insertBook(String authorId, String bookName, String issueDate, String numberOfCopies) throws InvalidIdException, AuthorNotFoundException, InvalidNumberOfCopies, InvalidDateException {
         StringBuilder builder = new StringBuilder();
         Book book = bookRepository.findByName(bookName);
         try {
@@ -116,13 +125,16 @@ public class BookServiceImpl implements BookService {
         } catch (NumberFormatException e) {
             throw new InvalidNumberOfCopies();
         }
+        if (inputValidator.isNotValidDate(issueDate)) {
+            throw new InvalidDateException();
+        }
         if (book == null) {
             book = new Book();
             try {
                 Author author = authorService.findAuthorById(authorId);
                 book.setAuthor(author);
                 book.setName(bookName);
-                book.setIssueDate(LocalDate.parse(issueDate, formatter));
+                book.setIssueDate(LocalDate.parse(issueDate, formatter.getFormatter()));
                 book.setNumberOfCopies(1);
                 bookRepository.save(book);
                 builder.append(String.format("Book %s added successfully!", book.getName()));
@@ -143,7 +155,10 @@ public class BookServiceImpl implements BookService {
     public void backupToFile() throws BackUpFailedException {
         StringBuilder builder = new StringBuilder();
         bookRepository.findAll().forEach(book -> builder
-                .append(String.format("%d.%s_%s_%s", book.getId(), book.getName(), book.getAuthor().getName(), book.getIssueDate()))
+                .append(String.format("%d.%s_%s_%s",
+                        book.getId(), book.getName(),
+                        book.getAuthor().getName(),
+                        book.getIssueDate().format(formatter.getFormatter())))
                 .append("\n"));
 
         try {
@@ -159,12 +174,17 @@ public class BookServiceImpl implements BookService {
         if (book == null) {
             throw new BookNotFoundException();
         }
-        return String.format(BOOK_TEMPLATE, book.getId(), book.getName(), book.getAuthor().getName(), formatter.format(book.getIssueDate()), book.getNumberOfCopies());
+        return String.format(BOOK_TEMPLATE,
+                book.getId(),
+                book.getName(),
+                book.getAuthor().getName(),
+                formatter.getFormatter().format(book.getIssueDate()),
+                book.getNumberOfCopies());
     }
 
     @Override
     public String findBookByIssueDate(String issueDate) throws BookNotFoundException {
-        Book book = bookRepository.findByIssueDate(LocalDate.parse(issueDate, formatter));
+        Book book = bookRepository.findByIssueDate(LocalDate.parse(issueDate, formatter.getFormatter()));
         if (book == null) {
             throw new BookNotFoundException();
         }
@@ -186,7 +206,26 @@ public class BookServiceImpl implements BookService {
         if (books.isEmpty()) {
             throw new BookNotFoundException();
         }
-        books.forEach(book -> builder.append(String.format(BOOK_TEMPLATE, book.getId(), book.getName(), book.getAuthor().getName(), book.getIssueDate(), book.getNumberOfCopies())));
+        books.forEach(book -> builder.append(String.format(BOOK_TEMPLATE,
+                book.getId(),
+                book.getName(),
+                book.getAuthor().getName(),
+                book.getIssueDate(),
+                book.getNumberOfCopies())));
         return builder.toString();
+    }
+
+    @Override
+    public Book findBookById(Long bookId) throws BookNotFoundException {
+        Book book = bookRepository.findById(bookId).orElse(null);
+        if (book == null){
+            throw new BookNotFoundException();
+        }
+        return book;
+    }
+
+    @Override
+    public void updateBook(Book book) {
+        bookRepository.save(book);
     }
 }

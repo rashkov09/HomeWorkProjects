@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 @Service
@@ -32,7 +33,10 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public String findAllClients() throws NoEntriesFoundException {
         StringBuilder builder = new StringBuilder();
-        clientRepository.findAll().forEach(client -> builder.append(String.format(CLIENT_VIEW_TEMPLATE, client.getId(), client.getFirstName(), client.getLastName())).append("\n"));
+        clientRepository.findAll().forEach(client -> builder.append(String.format(CLIENT_VIEW_TEMPLATE,
+                client.getId(),
+                client.getFirstName(),
+                client.getLastName())).append("\n"));
         if (builder.toString().isEmpty() || builder.toString().isBlank()) {
             throw new NoEntriesFoundException();
         }
@@ -42,6 +46,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void importClients() throws FileForEntityNotFound {
+        Random randomPhone = new Random();
         try {
             findAllClients();
         } catch (NoEntriesFoundException e) {
@@ -50,11 +55,11 @@ public class ClientServiceImpl implements ClientService {
                 clientFileAccessor.readAllLines().forEach(line -> {
                     Client client = new Client();
                     if (line.contains(".")) {
-                        String[] splitData = line.split("\\.\\s", 2);
+                        String[] splitData = line.split("\\.", 2);
                         String[] names = splitData[1].split("\\s");
                         client.setFirstName(names[0]);
                         client.setLastName(names[1]);
-                        // TODO add other fields for client
+                        client.setPhoneNumber("+"+ randomPhone.nextInt(111111111,999999999));
 
                     } else {
                         String[] names = line.split("\\s");
@@ -153,5 +158,24 @@ public class ClientServiceImpl implements ClientService {
         }
         clients.forEach(client -> builder.append(client.toString()).append("\n"));
         return builder.toString();
+    }
+
+    @Override
+    public Client findClientByFullName(String fullName) throws ClientNotFoundException {
+        String[] names = fullName.split("\\s");
+        Client client = clientRepository.findClientByFirstNameAndLastName(names[0],names[1]);
+        if (client == null){
+            throw new ClientNotFoundException();
+        }
+        return client;
+    }
+
+    @Override
+    public Client findClientById(Long clientId) throws ClientNotFoundException {
+        Client client = clientRepository.findById(clientId).orElse(null);
+        if (client == null){
+            throw new ClientNotFoundException();
+        }
+        return client ;
     }
 }

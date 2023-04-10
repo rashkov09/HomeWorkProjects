@@ -3,10 +3,10 @@ package com.slm.springlibrarymanagement.cviews;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.FileForEntityNotFound;
 import com.slm.springlibrarymanagement.exceptions.InvalidDateException;
-import com.slm.springlibrarymanagement.repository.ClientRepository;
 import com.slm.springlibrarymanagement.service.AuthorService;
 import com.slm.springlibrarymanagement.service.BookService;
 import com.slm.springlibrarymanagement.service.ClientService;
+import com.slm.springlibrarymanagement.service.OrderService;
 import com.slm.springlibrarymanagement.util.ConsoleRangeReader;
 import org.springframework.stereotype.Component;
 
@@ -34,11 +34,10 @@ public class MainMenuView implements ConsoleView {
     private final AuthorService authorService;
     private final BookService bookService;
     private final ClientService clientService;
-    private final ClientRepository clientRepository;
+    private final OrderService orderService;
 
     public MainMenuView(ConsoleView authorConsoleView, ConsoleView bookConsoleView,
-                        ConsoleView clientConsoleView, ConsoleView orderConsoleView, AuthorService authorService, BookService bookService, ClientService clientService,
-                        ClientRepository clientRepository) {
+                        ConsoleView clientConsoleView, ConsoleView orderConsoleView, AuthorService authorService, BookService bookService, ClientService clientService, OrderService orderService) {
         this.authorConsoleView = authorConsoleView;
         this.bookConsoleView = bookConsoleView;
         this.clientConsoleView = clientConsoleView;
@@ -46,8 +45,8 @@ public class MainMenuView implements ConsoleView {
         this.authorService = authorService;
         this.bookService = bookService;
         this.clientService = clientService;
+        this.orderService = orderService;
         IS_INITIALIZED = false;
-        this.clientRepository = clientRepository;
     }
 
     @Override
@@ -95,6 +94,11 @@ public class MainMenuView implements ConsoleView {
         } catch (BackUpFailedException e) {
             System.out.println(e.getMessage());
         }
+        try {
+            orderService.backupToFile();
+        } catch (BackUpFailedException e) {
+            System.out.println(e.getMessage());
+        }
 
     }
 
@@ -116,6 +120,11 @@ public class MainMenuView implements ConsoleView {
                 clientService.importClients();
             } catch (FileForEntityNotFound e) {
                 throw new RuntimeException(String.format(e.getMessage(), "clients"));
+            }
+            try {
+                orderService.importOrders();
+            }catch (FileForEntityNotFound e){
+                throw new RuntimeException(String.format(e.getMessage(), "orders"));
             }
 
             IS_INITIALIZED = true;
