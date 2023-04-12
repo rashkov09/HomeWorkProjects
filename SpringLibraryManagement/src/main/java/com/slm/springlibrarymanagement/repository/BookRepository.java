@@ -16,7 +16,7 @@ public interface BookRepository {
 
     void backupToFile() throws BackUpFailedException;
 
-    List<Book> findAll();
+    List<Book> findAllBooks();
 
     Book findByName(String bookName) throws NoSuchElementException;
 
@@ -24,9 +24,9 @@ public interface BookRepository {
 
     Set<Book> findByNameStartingWith(String prefix);
 
-    void saveAll(List<Book> bookList);
-
     Book findById(Long bookId) throws NoSuchElementException;
 
     boolean addBook(Book book);
+
+    boolean updateBook(Book book) throws SQLException;
 }

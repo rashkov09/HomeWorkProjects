@@ -1,6 +1,9 @@
 package com.slm.springlibrarymanagement.service;
 
-import com.slm.springlibrarymanagement.exceptions.*;
+import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
+import com.slm.springlibrarymanagement.exceptions.InvalidDateException;
+import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
+import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
 import com.slm.springlibrarymanagement.exceptions.author.AuthorNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.author.InvalidAuthorNameException;
 import com.slm.springlibrarymanagement.exceptions.book.BookNotFoundException;
@@ -17,9 +20,9 @@ public interface BookService {
 
     void backupToFile() throws BackUpFailedException;
 
-    String findBookByName(String bookName) throws BookNotFoundException;
+    Book findBookByName(String bookName) throws BookNotFoundException;
 
-    String findBookByIssueDate(String issueDate) throws BookNotFoundException;
+    Book findBookByIssueDate(String issueDate) throws BookNotFoundException;
 
     String findBooksByAuthorName(String authorName) throws BookNotFoundException, AuthorNotFoundException, InvalidAuthorNameException;
 
@@ -27,7 +30,7 @@ public interface BookService {
 
     Book findBookById(Long bookId) throws BookNotFoundException;
 
-    void updateBook(Book book);
+    void updateBook(Book book) throws SQLException;
 
     void loadBookData() throws SQLException;
 }

@@ -1,6 +1,5 @@
 package com.slm.springlibrarymanagement.service.impl;
 
-import com.slm.springlibrarymanagement.accessor.ClientFileAccessor;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
 import com.slm.springlibrarymanagement.exceptions.client.*;
@@ -11,11 +10,9 @@ import com.slm.springlibrarymanagement.util.InputValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -72,9 +69,10 @@ public class ClientServiceImpl implements ClientService {
         } catch (ClientNotFoundException e) {
             client.setPhoneNumber(phoneNumber);
 
-            if(clientRepository.addClient(client)){
+            if (clientRepository.addClient(client)) {
                 return String.format("Client %s added successfully!", client.fullName());
-            };
+            }
+            ;
         }
         return "Client was not added successfully! Please, try again!";
     }
@@ -123,7 +121,7 @@ public class ClientServiceImpl implements ClientService {
     public Client findClientByFullName(String fullName) throws ClientNotFoundException {
         try {
             return clientRepository.findClientByFirstNameAndLastName(fullName);
-        }catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             throw new ClientNotFoundException();
         }
     }

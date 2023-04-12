@@ -5,6 +5,7 @@ import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
 import com.slm.springlibrarymanagement.exceptions.book.BookNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.book.InsufficientBookQuantityException;
+import com.slm.springlibrarymanagement.exceptions.book.InvalidNumberOfCopies;
 import com.slm.springlibrarymanagement.exceptions.client.ClientNotFoundException;
 import com.slm.springlibrarymanagement.model.entities.Book;
 import com.slm.springlibrarymanagement.model.entities.Client;
@@ -18,10 +19,8 @@ import com.slm.springlibrarymanagement.util.InputValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -53,8 +52,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public String findAllOrders() throws NoEntriesFoundException {
         StringBuilder builder = new StringBuilder();
-        orderRepository.findAll().forEach(order -> builder.append(order.toString()).append("\n"));
-
+        orderRepository.findAllOrders().forEach(order -> builder.append(order.toString()).append("\n"));
         if (builder.isEmpty()) {
             throw new NoEntriesFoundException();
         }
@@ -62,48 +60,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void importOrders() {
-        try {
-            findAllOrders();
-        } catch (NoEntriesFoundException e) {
-            List<Order> orderList = new ArrayList<>();
-            try {
-                orderFileAccessor.readAllLines().forEach(line -> {
-                    Order order = new Order();
-                    String[] splitData = line.split("\\.\\s", 2);
-                    String[] orderData = splitData[1].split("_");
-                    try {
-                        Client client = clientService.findClientByFullName(orderData[0]);
-                        order.setClient(client);
-                    } catch (Exception a) {
-                        throw new RuntimeException(a.getMessage());
-                    }
-                    if (inputValidator.isNotValidDate(orderData[1]) || inputValidator.isNotValidDate(orderData[2])) {
-                        throw new RuntimeException();
-                    }
-                    LocalDate issueDate = LocalDate.parse(orderData[1]);
-                    order.setIssueDate(issueDate);
-                    orderList.add(order);
-                });
-
-            } catch (Exception ex) {
-                throw new RuntimeException(ex.getMessage());
-            }
-            if (orderList.isEmpty()) {
-                return;
-            }
-            orderRepository.saveAll(orderList);
-        }
+    public void loadBookData() throws SQLException {
+        orderRepository.loadOrderData();
     }
+
 
     @Override
     public void backupToFile() throws BackUpFailedException {
-        StringBuilder builder = new StringBuilder();
-
+        orderRepository.backupToFile();
     }
 
     @Override
-    public String insertOrder(Long clientId, Long bookId, Integer bookCount) throws InsufficientBookQuantityException {
+    public String insertOrder(Long clientId, Long bookId, Integer bookCount) throws InsufficientBookQuantityException, InvalidNumberOfCopies {
         Client client;
         Book book;
         Order order = new Order();
@@ -120,14 +88,23 @@ public class OrderServiceImpl implements OrderService {
         if (book.getNumberOfCopies() < bookCount) {
             throw new InsufficientBookQuantityException();
         }
+        if (bookCount <= 0){
+            throw new InvalidNumberOfCopies();
+        }
         order.setClient(client);
         order.setBook(book);
         order.setIssueDate(LocalDate.now());
         order.setBookCount(bookCount);
-        orderRepository.addOrder(order);
-        book.setNumberOfCopies(-bookCount);
-        bookService.updateBook(book);
+       if( orderRepository.addOrder(order)){
+           book.removeBooks(bookCount);
+           try {
+               bookService.updateBook(book);
+           } catch (SQLException e) {
+               throw new RuntimeException("Failed to update book!");
+           }
 
-        return String.format("Order of client %s for %d copies of book %s placed,successfully!", client.fullName(), bookCount, book.getName());
+           return String.format("Order of client %s for %d copies of book %s placed,successfully!", client.fullName(), bookCount, book.getName());
+       }
+       return "Order addition failed!";
     }
 }

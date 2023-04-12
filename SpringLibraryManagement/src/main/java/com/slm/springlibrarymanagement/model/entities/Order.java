@@ -1,5 +1,8 @@
 package com.slm.springlibrarymanagement.model.entities;
 
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
 import java.time.LocalDate;
 
 
@@ -15,7 +18,8 @@ public class Order extends BaseEntity {
     public Order() {
     }
 
-
+    @ManyToOne
+    @JoinColumn(name = "client")
     public Client getClient() {
         return client;
     }
@@ -24,7 +28,8 @@ public class Order extends BaseEntity {
         this.client = client;
     }
 
-
+    @ManyToOne
+    @JoinColumn(name = "book")
     public Book getBook() {
         return book;
     }
@@ -70,13 +75,7 @@ public class Order extends BaseEntity {
 
     @Override
     public String toString() {
-        return "Order{" +
-                "client=" + client +
-                ", book=" + book +
-                ", issueDate=" + issueDate +
-                ", dueDate=" + dueDate +
-                ", bookCount=" + bookCount +
-                ", stampModified=" + stampModified +
-                '}';
+        return String.format("Order ID: %d\nClient: %s\nBook: %s\nIssue date: %s\nDue date: %s\nBook count: %d\n",
+                getId(),getClient().fullName(),getBook().getName(),getIssueDate(),getDueDate(),getBookCount());
     }
 }

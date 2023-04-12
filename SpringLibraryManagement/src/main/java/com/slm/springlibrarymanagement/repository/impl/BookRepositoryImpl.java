@@ -1,5 +1,6 @@
 package com.slm.springlibrarymanagement.repository.impl;
 
+import com.slm.springlibrarymanagement.constants.ClassesEnum;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
 import com.slm.springlibrarymanagement.exceptions.author.AuthorNotFoundException;
@@ -23,12 +24,12 @@ import java.util.stream.Collectors;
 
 @Repository
 public class BookRepositoryImpl implements BookRepository {
+    private static final String INSERT_BOOK_SQL = "INSERT INTO slm.books (name, author, issue_date, number_of_copies) VALUES(?,?,?,?)";
+    private static final String UPDATE_BOOK_SQL = "UPDATE slm.books SET number_of_copies=? WHERE id=?";
     private static List<Book> bookList;
     public final DataLoaderService<Book> dataLoaderService;
     public final DataWriterService<Book> dataWriterService;
     public final AuthorService authorService;
-
-    private static final String INSERT_BOOK_SQL = "INSERT INTO slm.books (name, author, issue_date, number_of_copies) VALUES(?,?,?,?)";
 
 
     @Autowired
@@ -42,7 +43,7 @@ public class BookRepositoryImpl implements BookRepository {
     @Override
     public void loadBookData() throws SQLException {
         String sql = "SELECT * FROM slm.books";
-        bookList = dataLoaderService.loadDataFromDb(sql, new Book());
+        bookList = dataLoaderService.loadDataFromDb(sql, ClassesEnum.Book);
         bookList.forEach(book -> {
             try {
                 book.setAuthor(authorService.findAuthorById(String.valueOf(book.getAuthor().getId())));
@@ -51,7 +52,7 @@ public class BookRepositoryImpl implements BookRepository {
             }
         });
         if (bookList.isEmpty()) {
-            bookList = dataLoaderService.loadDataFromFile(new Book());
+            bookList = dataLoaderService.loadDataFromFile(ClassesEnum.Book);
             bookList.forEach(book -> {
                 try {
                     book.setAuthor(authorService.findAuthorByName(book.getAuthor().getName()));
@@ -65,15 +66,15 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public void backupToFile() throws BackUpFailedException {
-        dataWriterService.writeDataToFile(bookList,new Book());
+        dataWriterService.writeDataToFile(bookList, ClassesEnum.Book);
     }
 
     private void addAll() throws SQLException {
-        dataWriterService.saveAll(INSERT_BOOK_SQL, bookList, new Book());
+        dataWriterService.saveAll(INSERT_BOOK_SQL, bookList, ClassesEnum.Book);
     }
 
     @Override
-    public List<Book> findAll() {
+    public List<Book> findAllBooks() {
         return bookList;
     }
 
@@ -92,10 +93,6 @@ public class BookRepositoryImpl implements BookRepository {
         return bookList.stream().filter(book -> book.getName().toLowerCase().startsWith(prefix.toLowerCase())).collect(Collectors.toSet());
     }
 
-    @Override
-    public void saveAll(List<Book> bookList) {
-
-    }
 
     @Override
     public Book findById(Long bookId) throws NoSuchElementException {
@@ -111,5 +108,10 @@ public class BookRepositoryImpl implements BookRepository {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean updateBook(Book book) throws SQLException {
+        return dataWriterService.update(UPDATE_BOOK_SQL,book,ClassesEnum.Book);
     }
 }
