@@ -1,30 +1,21 @@
 package com.slm.springlibrarymanagement.model.entities;
 
-import jakarta.annotation.Nullable;
-import jakarta.persistence.*;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Set;
 
-@Entity
-@Table(name = "orders")
-@SequenceGenerator(name = "default_gen", sequenceName = "orders_seq", allocationSize = 1)
+
 public class Order extends BaseEntity {
+    private static final Integer DEFAULT_DUE_DATE_PERIOD = 1;
     private Client client;
-
     private Book book;
     private LocalDate issueDate;
     private LocalDate dueDate;
     private Integer bookCount;
     private LocalDate stampModified;
 
-    private static final Integer DEFAULT_DUE_DATE_PERIOD =1;
-
     public Order() {
     }
 
-    @ManyToOne
+
     public Client getClient() {
         return client;
     }
@@ -33,7 +24,7 @@ public class Order extends BaseEntity {
         this.client = client;
     }
 
-    @ManyToOne
+
     public Book getBook() {
         return book;
     }
@@ -42,7 +33,7 @@ public class Order extends BaseEntity {
         this.book = book;
     }
 
-    @Column(nullable = false)
+
     public LocalDate getIssueDate() {
         return issueDate;
     }
@@ -53,7 +44,6 @@ public class Order extends BaseEntity {
         setStampModified(issueDate);
     }
 
-    @Column(nullable = false)
     public LocalDate getDueDate() {
         return dueDate;
     }
@@ -62,9 +52,12 @@ public class Order extends BaseEntity {
         this.dueDate = issueDate.plusMonths(DEFAULT_DUE_DATE_PERIOD);
     }
 
-    @Nullable
     public LocalDate getStampModified() {
         return stampModified;
+    }
+
+    public void setStampModified(LocalDate stampModified) {
+        this.stampModified = stampModified;
     }
 
     public Integer getBookCount() {
@@ -73,10 +66,6 @@ public class Order extends BaseEntity {
 
     public void setBookCount(Integer bookCount) {
         this.bookCount = bookCount;
-    }
-
-    public void setStampModified(LocalDate stampModified) {
-        this.stampModified = stampModified;
     }
 
     @Override

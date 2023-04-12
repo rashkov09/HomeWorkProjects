@@ -5,7 +5,10 @@ import com.slm.springlibrarymanagement.service.AuthorService;
 import com.slm.springlibrarymanagement.service.BookService;
 import com.slm.springlibrarymanagement.util.ConsoleRangeReader;
 import com.slm.springlibrarymanagement.util.ConsoleReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 @Component
 public class BookConsoleView implements ConsoleView {
@@ -36,6 +39,7 @@ public class BookConsoleView implements ConsoleView {
     public final BookService bookService;
     public final AuthorService authorService;
 
+    @Autowired
     public BookConsoleView(BookService bookService, AuthorService authorService) {
         this.bookService = bookService;
         this.authorService = authorService;
@@ -129,6 +133,7 @@ public class BookConsoleView implements ConsoleView {
         try {
             System.out.println(bookService.insertBook(authorId, bookName, issueDate, numberOfCopies));
         } catch (Exception e) {
+            System.out.println(Arrays.toString(e.getStackTrace()));
             System.out.println(e.getMessage());
         }
     }

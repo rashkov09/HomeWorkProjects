@@ -28,4 +28,6 @@ public interface BookService {
     Book findBookById(Long bookId) throws BookNotFoundException;
 
     void updateBook(Book book);
+
+    void loadBookData();
 }

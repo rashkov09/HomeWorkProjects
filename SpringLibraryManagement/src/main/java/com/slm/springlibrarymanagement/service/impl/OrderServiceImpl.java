@@ -15,7 +15,7 @@ import com.slm.springlibrarymanagement.service.ClientService;
 import com.slm.springlibrarymanagement.service.OrderService;
 import com.slm.springlibrarymanagement.util.CustomDateFormatter;
 import com.slm.springlibrarymanagement.util.InputValidator;
-import org.aspectj.weaver.ast.Or;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -25,6 +25,7 @@ import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
+    private static final String ORDER_FILE_FORMAT_TEMPLATE = "%d.%s_%s_%s_%s";
     private final OrderRepository orderRepository;
     private final ClientService clientService;
     private final BookService bookService;
@@ -32,10 +33,7 @@ public class OrderServiceImpl implements OrderService {
     private final CustomDateFormatter formatter;
     private final OrderFileAccessor orderFileAccessor;
 
-
-    private static final String ORDER_FILE_FORMAT_TEMPLATE = "%d.%s_%s_%s_%s";
-
-
+    @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
                             ClientService clientService,
                             BookService bookService,
@@ -57,7 +55,7 @@ public class OrderServiceImpl implements OrderService {
         StringBuilder builder = new StringBuilder();
         orderRepository.findAll().forEach(order -> builder.append(order.toString()).append("\n"));
 
-        if (builder.isEmpty()){
+        if (builder.isEmpty()) {
             throw new NoEntriesFoundException();
         }
         return builder.toString();
@@ -139,7 +137,7 @@ public class OrderServiceImpl implements OrderService {
         order.setBook(book);
         order.setIssueDate(LocalDate.now());
         order.setBookCount(bookCount);
-        orderRepository.save(order);
+        orderRepository.addOrder(order);
         book.setNumberOfCopies(-bookCount);
         bookService.updateBook(book);
 

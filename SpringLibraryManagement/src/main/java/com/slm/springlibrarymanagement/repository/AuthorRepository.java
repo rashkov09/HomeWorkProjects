@@ -1,17 +1,25 @@
 package com.slm.springlibrarymanagement.repository;
 
+import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
 import com.slm.springlibrarymanagement.model.entities.Author;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
-@Repository
-public interface AuthorRepository extends JpaRepository<Author, Long> {
-    @Query("select a from Author a")
+
+public interface AuthorRepository {
+
+    void loadAuthors() throws SQLException, InvalidIdException;
+
     List<Author> findAll();
 
 
-    Author findByName(String authorName);
+    Author findByName(String authorName) throws NoSuchElementException;
+
+    Author findById(Long id) throws NoSuchElementException;
+
+    void addAll(List<Author> authorsList);
+
+    boolean addAuthor(Author author);
 }

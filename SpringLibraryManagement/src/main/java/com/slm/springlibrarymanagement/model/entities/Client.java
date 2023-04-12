@@ -1,23 +1,18 @@
 package com.slm.springlibrarymanagement.model.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
 
-import java.util.Set;
 
-@Entity
-@Table(name = "clients")
-@SequenceGenerator(name = "default_gen", sequenceName = "clients_seq", allocationSize = 1)
 public class Client extends BaseEntity {
     private String firstName;
     private String lastName;
     private String address;
     private String phoneNumber;
-    private Set<Order> orders;
+
 
     public Client() {
     }
 
-    @Column(nullable = false)
     public String getFirstName() {
         return firstName;
     }
@@ -26,7 +21,7 @@ public class Client extends BaseEntity {
         this.firstName = firstName;
     }
 
-    @Column(nullable = false)
+
     public String getLastName() {
         return lastName;
     }
@@ -44,7 +39,7 @@ public class Client extends BaseEntity {
         this.address = address;
     }
 
-    @Column(nullable = false, unique = true)
+
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -53,15 +48,6 @@ public class Client extends BaseEntity {
         this.phoneNumber = phoneNumber;
     }
 
-    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
-
-    public Set<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(Set<Order> orders) {
-        this.orders = orders;
-    }
 
     public String fullName() {
         return String.format("%s %s", this.firstName, this.lastName);
@@ -73,10 +59,9 @@ public class Client extends BaseEntity {
                         %d. %s %s
                             Address: %s
                             PhoneNumber: %s
-                            Orders count: %d
                         """, this.getId(), getFirstName(), getLastName(),
                 getAddress() == null ? "none" : getAddress(),
-                getPhoneNumber() == null ? "none" : getPhoneNumber()
-                , getOrders().size());
+                getPhoneNumber() == null ? "none" : getPhoneNumber());
+
     }
 }

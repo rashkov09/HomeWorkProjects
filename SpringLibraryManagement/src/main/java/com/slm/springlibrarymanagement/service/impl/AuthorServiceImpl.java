@@ -12,11 +12,15 @@ import com.slm.springlibrarymanagement.model.entities.Author;
 import com.slm.springlibrarymanagement.repository.AuthorRepository;
 import com.slm.springlibrarymanagement.service.AuthorService;
 import com.slm.springlibrarymanagement.util.InputValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
@@ -27,6 +31,7 @@ public class AuthorServiceImpl implements AuthorService {
     private final InputValidator inputValidator;
 
 
+    @Autowired
     public AuthorServiceImpl(AuthorRepository authorRepository, AuthorFileAccessor authorFileAccessor, InputValidator inputValidator) {
         this.authorRepository = authorRepository;
         this.authorFileAccessor = authorFileAccessor;
@@ -47,7 +52,6 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public String insertAuthor(String authorName) throws InvalidAuthorNameException, AuthorAlreadyExistsException {
-        String result = "";
         if (inputValidator.isNotValidFullName(authorName)) {
             throw new InvalidAuthorNameException();
         }
@@ -57,14 +61,12 @@ public class AuthorServiceImpl implements AuthorService {
 
         try {
             author = findAuthorByName(authorName);
-            if (author != null) {
-                throw new AuthorAlreadyExistsException();
-            }
         } catch (AuthorNotFoundException e) {
-            authorRepository.save(author);
-            result = String.format("Author %s added successfully!", author.getName());
+            if(authorRepository.addAuthor(author)) {
+             return   String.format("Author %s added successfully!", author.getName());
+            }
         }
-        return !result.isEmpty() ? result : "Something went wrong! Please, try again";
+        return  "Something went wrong! Please, try again";
     }
 
     private String formatAuthorName(String authorName) {
@@ -109,7 +111,7 @@ public class AuthorServiceImpl implements AuthorService {
             } catch (Exception ex) {
                 throw new FileForEntityNotFound();
             }
-            authorRepository.saveAll(authorsList);
+            authorRepository.addAll(authorsList);
         }
     }
 
@@ -132,26 +134,33 @@ public class AuthorServiceImpl implements AuthorService {
         if (inputValidator.isNotValidFullName(authorName)) {
             throw new InvalidAuthorNameException();
         }
-        Author author = authorRepository.findByName(authorName);
-        if (author == null) {
+        try {
+            return authorRepository.findByName(authorName);
+        } catch (NoSuchElementException e) {
             throw new AuthorNotFoundException();
         }
-        return author;
     }
 
     @Override
     public Author findAuthorById(String authorId) throws InvalidIdException, AuthorNotFoundException {
         Author author;
         try {
-            Long id = Long.parseLong(authorId);
-            author = authorRepository.findById(id).orElse(null);
+
+            author = authorRepository.findById(Long.parseLong(authorId));
             if (author == null) {
                 throw new AuthorNotFoundException();
             }
         } catch (NumberFormatException e) {
             throw new InvalidIdException();
+        } catch (EmptyResultDataAccessException s) {
+            throw new AuthorNotFoundException();
         }
         return author;
+    }
+
+    @Override
+    public void loadAuthorData() throws SQLException, InvalidIdException {
+        authorRepository.loadAuthors();
     }
 
 }

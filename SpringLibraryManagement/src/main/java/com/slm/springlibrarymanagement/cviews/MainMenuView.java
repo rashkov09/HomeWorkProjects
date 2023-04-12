@@ -8,6 +8,7 @@ import com.slm.springlibrarymanagement.service.BookService;
 import com.slm.springlibrarymanagement.service.ClientService;
 import com.slm.springlibrarymanagement.service.OrderService;
 import com.slm.springlibrarymanagement.util.ConsoleRangeReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static java.lang.System.exit;
@@ -36,6 +37,7 @@ public class MainMenuView implements ConsoleView {
     private final ClientService clientService;
     private final OrderService orderService;
 
+    @Autowired
     public MainMenuView(ConsoleView authorConsoleView, ConsoleView bookConsoleView,
                         ConsoleView clientConsoleView, ConsoleView orderConsoleView, AuthorService authorService, BookService bookService, ClientService clientService, OrderService orderService) {
         this.authorConsoleView = authorConsoleView;
@@ -52,7 +54,10 @@ public class MainMenuView implements ConsoleView {
     @Override
     public void showItemMenu(ConsoleView invoker) {
         try {
-            initDataFromFile();
+            // initDataFromFile();
+            authorService.loadAuthorData();
+            clientService.loadClientData();
+            bookService.loadBookData();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -123,7 +128,7 @@ public class MainMenuView implements ConsoleView {
             }
             try {
                 orderService.importOrders();
-            }catch (FileForEntityNotFound e){
+            } catch (FileForEntityNotFound e) {
                 throw new RuntimeException(String.format(e.getMessage(), "orders"));
             }
 

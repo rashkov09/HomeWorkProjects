@@ -9,6 +9,8 @@ import com.slm.springlibrarymanagement.exceptions.author.AuthorNotFoundException
 import com.slm.springlibrarymanagement.exceptions.author.InvalidAuthorNameException;
 import com.slm.springlibrarymanagement.model.entities.Author;
 
+import java.sql.SQLException;
+
 public interface AuthorService {
 
     String findAllAuthors() throws NoEntriesFoundException;
@@ -22,4 +24,7 @@ public interface AuthorService {
     Author findAuthorByName(String authorName) throws InvalidAuthorNameException, AuthorNotFoundException;
 
     Author findAuthorById(String authorId) throws InvalidIdException, AuthorNotFoundException;
+
+
+    void loadAuthorData() throws SQLException, InvalidIdException;
 }

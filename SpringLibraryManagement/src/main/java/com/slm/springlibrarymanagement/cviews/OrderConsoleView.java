@@ -6,6 +6,7 @@ import com.slm.springlibrarymanagement.service.ClientService;
 import com.slm.springlibrarymanagement.service.OrderService;
 import com.slm.springlibrarymanagement.util.ConsoleRangeReader;
 import com.slm.springlibrarymanagement.util.ConsoleReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -32,6 +33,7 @@ public class OrderConsoleView implements ConsoleView {
     private final ClientService clientService;
     private final BookService bookService;
 
+    @Autowired
     public OrderConsoleView(ExtendDueDateConsoleView extendDueDateConsoleView, OrderService orderService, ClientService clientService, BookService bookService) {
         this.extendDueDateConsoleView = extendDueDateConsoleView;
         this.orderService = orderService;
@@ -49,7 +51,7 @@ public class OrderConsoleView implements ConsoleView {
                 invoker.showItemMenu(this);
                 return;
             case 1:
-                 printAllOrders();
+                printAllOrders();
                 break;
             case 2:
                 // printAllOrdersForClient();
@@ -74,9 +76,9 @@ public class OrderConsoleView implements ConsoleView {
     }
 
     private void printAllOrders() {
-        try{
+        try {
             System.out.println(orderService.findAllOrders());
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }

@@ -1,6 +1,6 @@
 package com.slm.springlibrarymanagement.exceptions.book;
 
-public class InsufficientBookQuantityException extends Exception{
+public class InsufficientBookQuantityException extends Exception {
     private static final String NOT_ENOUGH_BOOKS_MESSAGE = """
             Not enough books!
                 

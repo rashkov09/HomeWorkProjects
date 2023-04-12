@@ -9,6 +9,7 @@ import com.slm.springlibrarymanagement.model.entities.Client;
 import com.slm.springlibrarymanagement.repository.ClientRepository;
 import com.slm.springlibrarymanagement.service.ClientService;
 import com.slm.springlibrarymanagement.util.InputValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ public class ClientServiceImpl implements ClientService {
     private final ClientFileAccessor clientFileAccessor;
     private final InputValidator inputValidator;
 
+    @Autowired
     public ClientServiceImpl(ClientRepository clientRepository, ClientFileAccessor clientFileAccessor, InputValidator inputValidator) {
         this.clientRepository = clientRepository;
         this.clientFileAccessor = clientFileAccessor;
@@ -59,7 +61,7 @@ public class ClientServiceImpl implements ClientService {
                         String[] names = splitData[1].split("\\s");
                         client.setFirstName(names[0]);
                         client.setLastName(names[1]);
-                        client.setPhoneNumber("+"+ randomPhone.nextInt(111111111,999999999));
+                        client.setPhoneNumber("+" + randomPhone.nextInt(111111111, 999999999));
 
                     } else {
                         String[] names = line.split("\\s");
@@ -113,7 +115,7 @@ public class ClientServiceImpl implements ClientService {
         } catch (ClientNotFoundException e) {
             client.setPhoneNumber(phoneNumber);
 
-            clientRepository.save(client);
+            clientRepository.addClient(client);
         }
 
 
@@ -163,8 +165,8 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Client findClientByFullName(String fullName) throws ClientNotFoundException {
         String[] names = fullName.split("\\s");
-        Client client = clientRepository.findClientByFirstNameAndLastName(names[0],names[1]);
-        if (client == null){
+        Client client = clientRepository.findClientByFirstNameAndLastName(names[0], names[1]);
+        if (client == null) {
             throw new ClientNotFoundException();
         }
         return client;
@@ -172,10 +174,15 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client findClientById(Long clientId) throws ClientNotFoundException {
-        Client client = clientRepository.findById(clientId).orElse(null);
-        if (client == null){
+        Client client = clientRepository.findById(clientId);
+        if (client == null) {
             throw new ClientNotFoundException();
         }
-        return client ;
+        return client;
+    }
+
+    @Override
+    public void loadClientData() {
+        clientRepository.loadClients();
     }
 }

@@ -14,18 +14,19 @@ import com.slm.springlibrarymanagement.service.AuthorService;
 import com.slm.springlibrarymanagement.service.BookService;
 import com.slm.springlibrarymanagement.util.CustomDateFormatter;
 import com.slm.springlibrarymanagement.util.InputValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 @Service
 public class BookServiceImpl implements BookService {
 
-    private final CustomDateFormatter formatter;
     private final static String UNEXPECTED_EXCEPTION_MESSAGE = "This is not expected! Invalid author name in file!";
     private final static String BOOK_TEMPLATE = """
             --------------------------------------------------
@@ -36,12 +37,14 @@ public class BookServiceImpl implements BookService {
             | Copies: %d
             --------------------------------------------------
             """;
+    private final CustomDateFormatter formatter;
     private final BookRepository bookRepository;
     private final AuthorService authorService;
     private final BookFileAccessor bookFileAccessor;
 
     private final InputValidator inputValidator;
 
+    @Autowired
     public BookServiceImpl(CustomDateFormatter formatter,
                            BookRepository bookRepository,
                            AuthorService authorService,
@@ -79,7 +82,7 @@ public class BookServiceImpl implements BookService {
         if (splitBookData[0].contains(".")) {
             String[] splitId = splitBookData[0].split("\\.", 2);
             book.setName(splitId[1]);
-            book.setIssueDate(LocalDate.parse(splitBookData[2],formatter.getFormatter()));
+            book.setIssueDate(LocalDate.parse(splitBookData[2], formatter.getFormatter()));
         } else {
             book.setName(splitBookData[0]);
             book.setIssueDate(LocalDate.parse(splitBookData[2], formatter.getFormatter()));
@@ -119,7 +122,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public String insertBook(String authorId, String bookName, String issueDate, String numberOfCopies) throws InvalidIdException, AuthorNotFoundException, InvalidNumberOfCopies, InvalidDateException {
         StringBuilder builder = new StringBuilder();
-        Book book = bookRepository.findByName(bookName);
+
         try {
             Integer.parseInt(numberOfCopies);
         } catch (NumberFormatException e) {
@@ -128,25 +131,29 @@ public class BookServiceImpl implements BookService {
         if (inputValidator.isNotValidDate(issueDate)) {
             throw new InvalidDateException();
         }
-        if (book == null) {
-            book = new Book();
+        try {
+            Book book = bookRepository.findByName(bookName);
+            book.addCopies(Integer.parseInt(numberOfCopies));
+            bookRepository.addBook(book);
+            builder.append(String.format("%s copies of %s added successfully!", numberOfCopies, book.getName()));
+        } catch (NoSuchElementException e) {
+            Book book = new Book();
             try {
                 Author author = authorService.findAuthorById(authorId);
                 book.setAuthor(author);
                 book.setName(bookName);
                 book.setIssueDate(LocalDate.parse(issueDate, formatter.getFormatter()));
-                book.setNumberOfCopies(1);
-                bookRepository.save(book);
-                builder.append(String.format("Book %s added successfully!", book.getName()));
-            } catch (InvalidIdException e) {
+                book.setNumberOfCopies(Integer.parseInt(numberOfCopies));
+                if (bookRepository.addBook(book)) {
+                    builder.append(String.format("Book %s added successfully!", book.getName()));
+                } else {
+                    builder.append(String.format("Book %s not added!", book.getName()));
+                }
+            } catch (InvalidIdException i) {
                 throw new InvalidIdException();
             } catch (AuthorNotFoundException a) {
                 throw new AuthorNotFoundException();
             }
-        } else {
-            book.addCopies(Integer.parseInt(numberOfCopies));
-            bookRepository.save(book);
-            builder.append(String.format("%s copies of %s added successfully!", numberOfCopies, book.getName()));
         }
         return builder.toString();
     }
@@ -192,10 +199,11 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public String findBooksByAuthorName(String authorName) throws AuthorNotFoundException, InvalidAuthorNameException {
+    public String findBooksByAuthorName(String authorName) {
         StringBuilder builder = new StringBuilder();
-        Author author = authorService.findAuthorByName(authorName);
-        author.getBooks().forEach(book -> builder.append(String.format(BOOK_TEMPLATE, book.getId(), book.getName(), book.getAuthor().getName(), book.getIssueDate(), book.getNumberOfCopies())));
+        bookRepository.findAll().stream().filter(book -> book.getAuthor().getName().equals(authorName)).forEach(book -> {
+            builder.append(String.format(BOOK_TEMPLATE,book.getId(),book.getName(),book.getAuthor().getName(),book.getIssueDate(),book.getNumberOfCopies()));
+        });
         return builder.toString();
     }
 
@@ -217,8 +225,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book findBookById(Long bookId) throws BookNotFoundException {
-        Book book = bookRepository.findById(bookId).orElse(null);
-        if (book == null){
+        Book book = bookRepository.findById(bookId);
+        if (book == null) {
             throw new BookNotFoundException();
         }
         return book;
@@ -226,6 +234,11 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void updateBook(Book book) {
-        bookRepository.save(book);
+        bookRepository.addBook(book);
+    }
+
+    @Override
+    public void loadBookData() {
+        bookRepository.loadBookData();
     }
 }
