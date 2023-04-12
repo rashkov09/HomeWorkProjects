@@ -99,20 +99,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void backupToFile() throws BackUpFailedException {
         StringBuilder builder = new StringBuilder();
-        orderRepository.findAll().forEach(order -> builder
-                .append(String.format(ORDER_FILE_FORMAT_TEMPLATE,
-                        order.getId(),
-                        order.getClient().fullName(),
-                        order.getBook().getName(),
-                        order.getIssueDate().format(formatter.getFormatter()),
-                        order.getDueDate().format(formatter.getFormatter())))
-                .append("\n"));
 
-        try {
-            orderFileAccessor.writeLine(builder.toString().trim());
-        } catch (IOException e) {
-            throw new BackUpFailedException();
-        }
     }
 
     @Override

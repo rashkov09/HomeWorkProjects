@@ -7,9 +7,9 @@ import com.slm.springlibrarymanagement.exceptions.book.BookNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.book.InvalidNumberOfCopies;
 import com.slm.springlibrarymanagement.model.entities.Book;
 
-public interface BookService {
+import java.sql.SQLException;
 
-    void importBooks() throws FileForEntityNotFound, InvalidDateException;
+public interface BookService {
 
     String findAllBooks() throws NoEntriesFoundException;
 
@@ -29,5 +29,5 @@ public interface BookService {
 
     void updateBook(Book book);
 
-    void loadBookData();
+    void loadBookData() throws SQLException;
 }

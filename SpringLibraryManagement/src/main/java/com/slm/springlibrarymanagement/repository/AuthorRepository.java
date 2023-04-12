@@ -1,5 +1,6 @@
 package com.slm.springlibrarymanagement.repository;
 
+import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
 import com.slm.springlibrarymanagement.model.entities.Author;
 
@@ -19,7 +20,7 @@ public interface AuthorRepository {
 
     Author findById(Long id) throws NoSuchElementException;
 
-    void addAll(List<Author> authorsList);
-
     boolean addAuthor(Author author);
+
+    boolean writeDataToFile() throws BackUpFailedException;
 }

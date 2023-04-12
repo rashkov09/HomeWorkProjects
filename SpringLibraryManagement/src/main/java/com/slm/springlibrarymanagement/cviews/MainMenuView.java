@@ -27,7 +27,6 @@ public class MainMenuView implements ConsoleView {
                                         
                     0. Exit
                     """;
-    private static boolean IS_INITIALIZED;
     private final ConsoleView authorConsoleView;
     private final ConsoleView bookConsoleView;
     private final ConsoleView clientConsoleView;
@@ -36,6 +35,7 @@ public class MainMenuView implements ConsoleView {
     private final BookService bookService;
     private final ClientService clientService;
     private final OrderService orderService;
+    private static boolean IS_LOADED;
 
     @Autowired
     public MainMenuView(ConsoleView authorConsoleView, ConsoleView bookConsoleView,
@@ -48,18 +48,20 @@ public class MainMenuView implements ConsoleView {
         this.bookService = bookService;
         this.clientService = clientService;
         this.orderService = orderService;
-        IS_INITIALIZED = false;
+        IS_LOADED = false;
     }
 
     @Override
     public void showItemMenu(ConsoleView invoker) {
-        try {
-            // initDataFromFile();
-            authorService.loadAuthorData();
-            clientService.loadClientData();
-            bookService.loadBookData();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        if (!IS_LOADED) {
+            try {
+                authorService.loadAuthorData();
+                clientService.loadClientData();
+                bookService.loadBookData();
+                IS_LOADED = true;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
         System.out.println(OPTION_MESSAGE);
         System.out.print("Please choose an option: ");
@@ -105,34 +107,5 @@ public class MainMenuView implements ConsoleView {
             System.out.println(e.getMessage());
         }
 
-    }
-
-    private void initDataFromFile() throws RuntimeException {
-        if (!IS_INITIALIZED) {
-            try {
-                authorService.importAuthors();
-            } catch (FileForEntityNotFound e) {
-                throw new RuntimeException(String.format(e.getMessage(), "authors"));
-            }
-            try {
-                bookService.importBooks();
-            } catch (FileForEntityNotFound e) {
-                throw new RuntimeException(String.format(e.getMessage(), "books"));
-            } catch (InvalidDateException a) {
-                throw new RuntimeException(a.getMessage());
-            }
-            try {
-                clientService.importClients();
-            } catch (FileForEntityNotFound e) {
-                throw new RuntimeException(String.format(e.getMessage(), "clients"));
-            }
-            try {
-                orderService.importOrders();
-            } catch (FileForEntityNotFound e) {
-                throw new RuntimeException(String.format(e.getMessage(), "orders"));
-            }
-
-            IS_INITIALIZED = true;
-        }
     }
 }

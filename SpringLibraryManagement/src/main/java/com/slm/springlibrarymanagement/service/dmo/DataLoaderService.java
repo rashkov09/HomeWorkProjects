@@ -4,5 +4,7 @@ import java.util.List;
 
 public interface DataLoaderService<T> {
 
-    List<T> loadData(String sql, T object);
+    List<T> loadDataFromDb(String sql, T object);
+
+    List<T> loadDataFromFile(T object);
 }

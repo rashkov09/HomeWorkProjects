@@ -17,8 +17,6 @@ public interface AuthorService {
 
     String insertAuthor(String author) throws InvalidAuthorNameException, AuthorAlreadyExistsException;
 
-    void importAuthors() throws FileForEntityNotFound;
-
     void backupToFile() throws BackUpFailedException;
 
     Author findAuthorByName(String authorName) throws InvalidAuthorNameException, AuthorNotFoundException;

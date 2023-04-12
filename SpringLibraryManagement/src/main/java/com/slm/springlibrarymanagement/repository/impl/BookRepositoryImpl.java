@@ -1,15 +1,19 @@
 package com.slm.springlibrarymanagement.repository.impl;
 
+import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
 import com.slm.springlibrarymanagement.exceptions.author.AuthorNotFoundException;
+import com.slm.springlibrarymanagement.exceptions.author.InvalidAuthorNameException;
 import com.slm.springlibrarymanagement.model.entities.Book;
 import com.slm.springlibrarymanagement.repository.BookRepository;
 import com.slm.springlibrarymanagement.service.AuthorService;
 import com.slm.springlibrarymanagement.service.dmo.DataLoaderService;
 import com.slm.springlibrarymanagement.service.dmo.DataWriterService;
 import com.slm.springlibrarymanagement.service.dmo.impl.DataLoaderServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.sql.SQLException;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +28,10 @@ public class BookRepositoryImpl implements BookRepository {
     public final DataWriterService<Book> dataWriterService;
     public final AuthorService authorService;
 
+    private static final String INSERT_BOOK_SQL = "INSERT INTO slm.books (name, author, issue_date, number_of_copies) VALUES(?,?,?,?)";
 
+
+    @Autowired
     public BookRepositoryImpl(DataLoaderServiceImpl<Book> dataLoaderService, DataWriterService<Book> dataWriterService, AuthorService authorService) {
         this.dataLoaderService = dataLoaderService;
         this.dataWriterService = dataWriterService;
@@ -33,16 +40,36 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public void loadBookData() {
+    public void loadBookData() throws SQLException {
         String sql = "SELECT * FROM slm.books";
-        bookList = dataLoaderService.loadData(sql, new Book());
+        bookList = dataLoaderService.loadDataFromDb(sql, new Book());
         bookList.forEach(book -> {
             try {
-                book.setAuthor(authorService.findAuthorById(String.valueOf(book.getId())));
+                book.setAuthor(authorService.findAuthorById(String.valueOf(book.getAuthor().getId())));
             } catch (InvalidIdException | AuthorNotFoundException e) {
                 throw new RuntimeException(e);
             }
         });
+        if (bookList.isEmpty()) {
+            bookList = dataLoaderService.loadDataFromFile(new Book());
+            bookList.forEach(book -> {
+                try {
+                    book.setAuthor(authorService.findAuthorByName(book.getAuthor().getName()));
+                } catch (AuthorNotFoundException | InvalidAuthorNameException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            addAll();
+        }
+    }
+
+    @Override
+    public void backupToFile() throws BackUpFailedException {
+        dataWriterService.writeDataToFile(bookList,new Book());
+    }
+
+    private void addAll() throws SQLException {
+        dataWriterService.saveAll(INSERT_BOOK_SQL, bookList, new Book());
     }
 
     @Override
@@ -77,8 +104,7 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public boolean addBook(Book book) {
-        String sql = "INSERT INTO slm.books (name, author, issue_date, number_of_copies) VALUES(?,?,?,?)";
-        Long id = dataWriterService.save(sql, book);
+        Long id = dataWriterService.save(INSERT_BOOK_SQL, book);
         if (id != 0L) {
             book.setId(id);
             bookList.add(book);

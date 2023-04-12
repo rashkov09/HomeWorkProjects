@@ -55,4 +55,8 @@ public class ApplicationBeanConfiguration {
     }
 
 
+    @Bean
+    public StringBuilder builder(){
+        return new StringBuilder();
+    }
 }

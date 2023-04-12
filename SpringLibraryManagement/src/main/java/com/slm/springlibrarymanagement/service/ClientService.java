@@ -13,8 +13,6 @@ import java.sql.SQLException;
 public interface ClientService {
     String findAllClients() throws NoEntriesFoundException;
 
-    void importClients() throws FileForEntityNotFound;
-
     void backupToFile() throws BackUpFailedException;
 
     String insertClient(String firstName, String lastName, String address, String phoneNumber) throws InvalidClientFirstNameException, InvalidClientLastNameException, InvalidClientPhoneException, ClientAlreadyExistsException;

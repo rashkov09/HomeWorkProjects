@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +27,6 @@ import java.util.Set;
 
 @Service
 public class BookServiceImpl implements BookService {
-
-    private final static String UNEXPECTED_EXCEPTION_MESSAGE = "This is not expected! Invalid author name in file!";
     private final static String BOOK_TEMPLATE = """
             --------------------------------------------------
             | Book ID: %d
@@ -40,7 +39,6 @@ public class BookServiceImpl implements BookService {
     private final CustomDateFormatter formatter;
     private final BookRepository bookRepository;
     private final AuthorService authorService;
-    private final BookFileAccessor bookFileAccessor;
 
     private final InputValidator inputValidator;
 
@@ -48,60 +46,13 @@ public class BookServiceImpl implements BookService {
     public BookServiceImpl(CustomDateFormatter formatter,
                            BookRepository bookRepository,
                            AuthorService authorService,
-                           BookFileAccessor bookFileAccessor,
                            InputValidator inputValidator) {
         this.formatter = formatter;
         this.bookRepository = bookRepository;
         this.authorService = authorService;
-        this.bookFileAccessor = bookFileAccessor;
         this.inputValidator = inputValidator;
     }
 
-    @Override
-    public void importBooks() throws FileForEntityNotFound {
-        try {
-            findAllBooks();
-        } catch (NoEntriesFoundException e) {
-            List<Book> bookList = new ArrayList<>();
-            try {
-                bookFileAccessor.readAllLines().forEach(line -> {
-                    Book book = new Book();
-                    setBookData(line, book);
-                    bookList.add(book);
-                });
-            } catch (Exception ex) {
-                throw new FileForEntityNotFound();
-            }
-            bookRepository.saveAll(bookList);
-        }
-    }
-
-    private void setBookData(String line, Book book) {
-        Author author;
-        String[] splitBookData = line.split("_");
-        if (splitBookData[0].contains(".")) {
-            String[] splitId = splitBookData[0].split("\\.", 2);
-            book.setName(splitId[1]);
-            book.setIssueDate(LocalDate.parse(splitBookData[2], formatter.getFormatter()));
-        } else {
-            book.setName(splitBookData[0]);
-            book.setIssueDate(LocalDate.parse(splitBookData[2], formatter.getFormatter()));
-        }
-        try {
-            authorService.insertAuthor(splitBookData[1]);
-        } catch (AuthorAlreadyExistsException a) {
-            try {
-                author = authorService.findAuthorByName(splitBookData[1]);
-                book.setAuthor(author);
-
-            } catch (Exception e1) {
-                throw new RuntimeException(UNEXPECTED_EXCEPTION_MESSAGE);
-            }
-        } catch (InvalidAuthorNameException a1) {
-            throw new RuntimeException(UNEXPECTED_EXCEPTION_MESSAGE);
-        }
-        book.setNumberOfCopies(1);
-    }
 
     @Override
     public String findAllBooks() throws NoEntriesFoundException {
@@ -160,50 +111,42 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void backupToFile() throws BackUpFailedException {
-        StringBuilder builder = new StringBuilder();
-        bookRepository.findAll().forEach(book -> builder
-                .append(String.format("%d.%s_%s_%s",
-                        book.getId(), book.getName(),
-                        book.getAuthor().getName(),
-                        book.getIssueDate().format(formatter.getFormatter())))
-                .append("\n"));
+        bookRepository.backupToFile();
 
-        try {
-            bookFileAccessor.writeLine(builder.toString().trim());
-        } catch (IOException e) {
-            throw new BackUpFailedException();
-        }
     }
 
     @Override
     public String findBookByName(String bookName) throws BookNotFoundException {
-        Book book = bookRepository.findByName(bookName);
-        if (book == null) {
+        try {
+            Book book = bookRepository.findByName(bookName);
+            return String.format(BOOK_TEMPLATE,
+                    book.getId(),
+                    book.getName(),
+                    book.getAuthor().getName(),
+                    formatter.getFormatter().format(book.getIssueDate()),
+                    book.getNumberOfCopies());
+        } catch (NoSuchElementException e) {
             throw new BookNotFoundException();
         }
-        return String.format(BOOK_TEMPLATE,
-                book.getId(),
-                book.getName(),
-                book.getAuthor().getName(),
-                formatter.getFormatter().format(book.getIssueDate()),
-                book.getNumberOfCopies());
     }
 
     @Override
     public String findBookByIssueDate(String issueDate) throws BookNotFoundException {
-        Book book = bookRepository.findByIssueDate(LocalDate.parse(issueDate, formatter.getFormatter()));
-        if (book == null) {
+        try {
+            Book book = bookRepository.findByIssueDate(LocalDate.parse(issueDate, formatter.getFormatter()));
+            return String.format(BOOK_TEMPLATE, book.getId(), book.getName(), book.getAuthor().getName(), book.getIssueDate(), book.getNumberOfCopies());
+        } catch (NoSuchElementException e) {
             throw new BookNotFoundException();
         }
-        return String.format(BOOK_TEMPLATE, book.getId(), book.getName(), book.getAuthor().getName(), book.getIssueDate(), book.getNumberOfCopies());
     }
 
     @Override
     public String findBooksByAuthorName(String authorName) {
         StringBuilder builder = new StringBuilder();
         bookRepository.findAll().stream().filter(book -> book.getAuthor().getName().equals(authorName)).forEach(book -> {
-            builder.append(String.format(BOOK_TEMPLATE,book.getId(),book.getName(),book.getAuthor().getName(),book.getIssueDate(),book.getNumberOfCopies()));
+            builder.append(String.format(BOOK_TEMPLATE, book.getId(), book.getName(), book.getAuthor().getName(), book.getIssueDate(), book.getNumberOfCopies()));
         });
+
         return builder.toString();
     }
 
@@ -225,11 +168,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book findBookById(Long bookId) throws BookNotFoundException {
-        Book book = bookRepository.findById(bookId);
-        if (book == null) {
+        try {
+            return bookRepository.findById(bookId);
+        } catch (NoSuchElementException e) {
             throw new BookNotFoundException();
         }
-        return book;
+
     }
 
     @Override
@@ -238,7 +182,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void loadBookData() {
+    public void loadBookData() throws SQLException {
         bookRepository.loadBookData();
     }
 }
