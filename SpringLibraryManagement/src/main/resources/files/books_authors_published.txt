@@ -1,56 +1,58 @@
-1.Pilot Of Dusk_A. Jennings Ballington_1997-09-01
-2.Sage Of The Mountain_A. Jennings Ballington_2001-06-27
-3.Heirs Of Utopia_J. C. Northcott_2018-08-17
-4.Knights Without Courage_A. Jennings Ballington_2015-07-25
-5.Pirates And Companions_J. C. Northcott_2021-06-22
-6.Pig Of My Country_J. C. Northcott_1997-02-18
-7.Queen Of Fantasy_Victorine Northup_2001-12-13
-8.Tigers Of Excelsior_Randolph V. Hawthorn_2004-03-28
-9.Dinos In My House_Randolph V. Hawthorn_2007-02-27
-10.Chickens And Sheep_Victorine Northup_2013-04-29
-11.Follower Of The Sea_Randolph V. Hawthorn_2003-09-30
-12.Ancestor Of Dread_Randolph V. Hawthorn_2013-05-22
-13.Companions Of The Gods_Jonathan Ballers_2002-04-03
-14.Supporters Of The Forest_Jonathan Ballers_2012-01-18
-15.Secretaries And Ancestors_Jonathan Ballers_1993-10-19
-16.Werewolf Of The Stars_J. C. N. Jencarris_2001-05-07
-17.Necromancer Of The Future_J. C. N. Jencarris_2014-07-06
-18.Hobgoblins Of The North_J. C. N. Jencarris_2008-09-19
-19.Robots Without Flaws_Annie Anson_2010-04-12
-20.Dwarves And Summoners_Noris Jenblood_1995-10-25
-21.Angel In The Forest_J. C. Noziz_2011-09-08
-22.Freak Without A Voice_Annie Anson_2022-03-09
-23.Horses At The Crypts_J. C. Noziz_1998-12-22
-24.Snakes Without Eyes_J. C. Northcott_2003-07-15
-25.Students And Animals_Annie Anson_2012-08-03
-26.Officer Program_R. V. Raymonds_1996-06-22
-27.Parrot Of Humor_Annie Anson_2010-02-13
-28.Man Mocks Me_R. V. Raymonds_2017-07-14
-29.Fish Has Been Naughty_R. V. Raymonds_2000-07-13
-30.Hunter And Butcher_A. Jennings Ballington_2020-03-13
-31.Tortoise Of The Void_Carla Ruby School_2000-12-20
-32.Soldier Of A Stranger_A. Jennings Ballington_2016-03-16
-33.Men Of The Moon_Carla Ruby School_2009-09-01
-34.Slaves In My Country_A. Jennings Ballington_1994-10-01
-35.Butchers And Rebels_Noris Jenblood_2017-01-15
-36.Men Of The Jungle_Noris Jenblood_1999-06-19
-37.Leaders With Tradition_Noris Jenblood_2010-08-19
-38.Insects Of Medicine_Noris Jenblood_2002-07-01
-39.Emperors Of The Lakes_Carla Ruby School_2003-11-03
-40.Fish And Rodents_Jonathan Ballers_2015-01-27
-41.Girlfriend Of The Ocean_Carla Ruby School_1999-12-23
-42.Angel With A Spaceship_Victorine Northup_2001-08-11
-43.Leader Of The Future_R. V. Raymonds_2017-09-04
-44.Veterans Of Death_R. V. Raymonds_2016-09-24
-45.Commanders Of Mars_Randolph V. Hawthorn_1999-05-13
-46.Children And Martians_Victorine Northup_2007-12-30
-47.Memory man_David Baldacci_2015-09-09
-48.Nightwork: A Novel_Nora Roberts_2022-05-24
-49.1984_George Orwell_1949-06-08
-50.Uncommon Danger_Eric Ambler_1937-09-21
-51.Tales of Barabia_Tom Tomson_2012-12-12
-52.Tales of Insomnia_Urban Taler_2014-07-28
-53.Dreams_Tudor Todorov_1989-02-20
-54.Danger_Me Owlson_2012-12-12
-55.The Hobbit_J. R. R. Tolkin_1937-09-21
-56.Lord Of The Rings_J. R. R. Tolkin_2000-02-02
+1.Pilot Of Dusk_A. Jennings Ballington_01/09/1997
+2.Sage Of The Mountain_A. Jennings Ballington_27/06/2001
+3.Heirs Of Utopia_J. C. Northcott_17/08/2018
+4.Knights Without Courage_A. Jennings Ballington_25/07/2015
+5.Pirates And Companions_J. C. Northcott_22/06/2021
+6.Pig Of My Country_J. C. Northcott_18/02/1997
+7.Queen Of Fantasy_Victorine Northup_13/12/2001
+8.Tigers Of Excelsior_Randolph V. Hawthorn_28/03/2004
+9.Dinos In My House_Randolph V. Hawthorn_27/02/2007
+10.Chickens And Sheep_Victorine Northup_29/04/2013
+11.Follower Of The Sea_Randolph V. Hawthorn_30/09/2003
+12.Ancestor Of Dread_Randolph V. Hawthorn_22/05/2013
+13.Companions Of The Gods_Jonathan Ballers_03/04/2002
+14.Supporters Of The Forest_Jonathan Ballers_18/01/2012
+15.Secretaries And Ancestors_Jonathan Ballers_19/10/1993
+16.Werewolf Of The Stars_J. C. N. Jencarris_07/05/2001
+17.Necromancer Of The Future_J. C. N. Jencarris_06/07/2014
+18.Hobgoblins Of The North_J. C. N. Jencarris_19/09/2008
+19.Robots Without Flaws_Annie Anson_12/04/2010
+20.Dwarves And Summoners_Noris Jenblood_25/10/1995
+21.Angel In The Forest_J. C. Noziz_08/09/2011
+22.Freak Without A Voice_Annie Anson_09/03/2022
+23.Horses At The Crypts_J. C. Noziz_22/12/1998
+24.Snakes Without Eyes_J. C. Northcott_15/07/2003
+25.Students And Animals_Annie Anson_03/08/2012
+26.Officer Program_R. V. Raymonds_22/06/1996
+27.Parrot Of Humor_Annie Anson_13/02/2010
+28.Man Mocks Me_R. V. Raymonds_14/07/2017
+29.Fish Has Been Naughty_R. V. Raymonds_13/07/2000
+30.Hunter And Butcher_A. Jennings Ballington_13/03/2020
+31.Tortoise Of The Void_Carla Ruby School_20/12/2000
+32.Soldier Of A Stranger_A. Jennings Ballington_16/03/2016
+33.Men Of The Moon_Carla Ruby School_01/09/2009
+34.Slaves In My Country_A. Jennings Ballington_01/10/1994
+35.Butchers And Rebels_Noris Jenblood_15/01/2017
+36.Men Of The Jungle_Noris Jenblood_19/06/1999
+37.Leaders With Tradition_Noris Jenblood_19/08/2010
+38.Insects Of Medicine_Noris Jenblood_01/07/2002
+39.Emperors Of The Lakes_Carla Ruby School_03/11/2003
+40.Fish And Rodents_Jonathan Ballers_27/01/2015
+41.Girlfriend Of The Ocean_Carla Ruby School_23/12/1999
+42.Angel With A Spaceship_Victorine Northup_11/08/2001
+43.Leader Of The Future_R. V. Raymonds_04/09/2017
+44.Veterans Of Death_R. V. Raymonds_24/09/2016
+45.Commanders Of Mars_Randolph V. Hawthorn_13/05/1999
+46.Children And Martians_Victorine Northup_30/12/2007
+47.Memory man_David Baldacci_09/09/2015
+48.Nightwork: A Novel_Nora Roberts_24/05/2022
+49.1984_George Orwell_08/06/1949
+50.Uncommon Danger_Eric Ambler_21/09/1937
+51.Tales of Barabia_Tom Tomson_12/12/2012
+52.Tales of Insomnia_Urban Taler_28/07/2014
+53.Dreams_Tudor Todorov_20/02/1989
+54.Danger_Me Owlson_12/12/2012
+55.The Hobbit_J. R. R. Tolkin_21/09/1937
+56.Lord Of The Rings_J. R. R. Tolkin_02/02/2000
+57.The Book_Me Owlson_02/02/1997
+58.The Dawn_R. V. Raymonds_02/02/1987

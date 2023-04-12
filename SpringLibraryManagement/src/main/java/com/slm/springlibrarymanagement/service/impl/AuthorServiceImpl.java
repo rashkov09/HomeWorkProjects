@@ -1,8 +1,6 @@
 package com.slm.springlibrarymanagement.service.impl;
 
-import com.slm.springlibrarymanagement.accessor.AuthorFileAccessor;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
-import com.slm.springlibrarymanagement.exceptions.FileForEntityNotFound;
 import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
 import com.slm.springlibrarymanagement.exceptions.author.AuthorAlreadyExistsException;
@@ -12,25 +10,25 @@ import com.slm.springlibrarymanagement.model.entities.Author;
 import com.slm.springlibrarymanagement.repository.AuthorRepository;
 import com.slm.springlibrarymanagement.service.AuthorService;
 import com.slm.springlibrarymanagement.util.InputValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.SQLException;
+import java.util.NoSuchElementException;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
 
     private static final String AUTHORS_VIEW_TEMPLATE = "| %s |\n";
     private final AuthorRepository authorRepository;
-    private final AuthorFileAccessor authorFileAccessor;
     private final InputValidator inputValidator;
 
 
-    public AuthorServiceImpl(AuthorRepository authorRepository, AuthorFileAccessor authorFileAccessor, InputValidator inputValidator) {
+    @Autowired
+    public AuthorServiceImpl(AuthorRepository authorRepository, InputValidator inputValidator) {
         this.authorRepository = authorRepository;
-        this.authorFileAccessor = authorFileAccessor;
         this.inputValidator = inputValidator;
+
     }
 
 
@@ -47,7 +45,6 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public String insertAuthor(String authorName) throws InvalidAuthorNameException, AuthorAlreadyExistsException {
-        String result = "";
         if (inputValidator.isNotValidFullName(authorName)) {
             throw new InvalidAuthorNameException();
         }
@@ -57,14 +54,17 @@ public class AuthorServiceImpl implements AuthorService {
 
         try {
             author = findAuthorByName(authorName);
-            if (author != null) {
-                throw new AuthorAlreadyExistsException();
-            }
         } catch (AuthorNotFoundException e) {
-            authorRepository.save(author);
-            result = String.format("Author %s added successfully!", author.getName());
+            if (authorRepository.addAuthor(author)) {
+                return String.format("Author %s added successfully!", author.getName());
+            }
         }
-        return !result.isEmpty() ? result : "Something went wrong! Please, try again";
+        return "Something went wrong! Please, try again";
+    }
+
+    @Override
+    public void backupToFile() throws BackUpFailedException {
+        authorRepository.writeDataToFile();
     }
 
     private String formatAuthorName(String authorName) {
@@ -89,69 +89,34 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public void importAuthors() throws FileForEntityNotFound {
-        try {
-            findAllAuthors();
-        } catch (NoEntriesFoundException e) {
-            List<Author> authorsList = new ArrayList<>();
-            try {
-                authorFileAccessor.readAllLines().forEach(line -> {
-                    Author author = new Author();
-                    if (line.contains(".")) {
-                        String[] splitData = line.split("\\.\\s", 2);
-                        author.setName(splitData[1]);
-                    } else {
-                        author.setName(line);
-                    }
-                    authorsList.add(author);
-                });
-
-            } catch (Exception ex) {
-                throw new FileForEntityNotFound();
-            }
-            authorRepository.saveAll(authorsList);
-        }
-    }
-
-    @Override
-    public void backupToFile() throws BackUpFailedException {
-        StringBuilder builder = new StringBuilder();
-        authorRepository.findAll().forEach(author -> builder
-                .append(String.format("%d. %s", author.getId(), author.getName()))
-                .append("\n"));
-
-        try {
-            authorFileAccessor.writeLine(builder.toString().trim());
-        } catch (IOException e) {
-            throw new BackUpFailedException();
-        }
-    }
-
-    @Override
     public Author findAuthorByName(String authorName) throws InvalidAuthorNameException, AuthorNotFoundException {
         if (inputValidator.isNotValidFullName(authorName)) {
             throw new InvalidAuthorNameException();
         }
-        Author author = authorRepository.findByName(authorName);
-        if (author == null) {
+        try {
+            return authorRepository.findByName(authorName);
+        } catch (NoSuchElementException e) {
             throw new AuthorNotFoundException();
         }
-        return author;
     }
 
     @Override
     public Author findAuthorById(String authorId) throws InvalidIdException, AuthorNotFoundException {
-        Author author;
-        try {
-            Long id = Long.parseLong(authorId);
-            author = authorRepository.findById(id).orElse(null);
-            if (author == null) {
-                throw new AuthorNotFoundException();
-            }
-        } catch (NumberFormatException e) {
+        try{
+            Long.parseLong(authorId);
+        }catch (NumberFormatException e){
             throw new InvalidIdException();
         }
-        return author;
+        try {
+            return authorRepository.findById(Long.parseLong(authorId));
+        } catch (NoSuchElementException e) {
+            throw new AuthorNotFoundException();
+        }
+    }
+
+    @Override
+    public void loadAuthorData() throws SQLException, InvalidIdException {
+        authorRepository.loadAuthors();
     }
 
 }

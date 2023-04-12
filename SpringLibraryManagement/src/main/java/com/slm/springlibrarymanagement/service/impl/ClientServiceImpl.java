@@ -2,37 +2,40 @@ package com.slm.springlibrarymanagement.service.impl;
 
 import com.slm.springlibrarymanagement.accessor.ClientFileAccessor;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
-import com.slm.springlibrarymanagement.exceptions.FileForEntityNotFound;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
 import com.slm.springlibrarymanagement.exceptions.client.*;
 import com.slm.springlibrarymanagement.model.entities.Client;
 import com.slm.springlibrarymanagement.repository.ClientRepository;
 import com.slm.springlibrarymanagement.service.ClientService;
 import com.slm.springlibrarymanagement.util.InputValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 @Service
 public class ClientServiceImpl implements ClientService {
     private final static String CLIENT_VIEW_TEMPLATE = "%d. %s %s";
     private final ClientRepository clientRepository;
-    private final ClientFileAccessor clientFileAccessor;
     private final InputValidator inputValidator;
 
-    public ClientServiceImpl(ClientRepository clientRepository, ClientFileAccessor clientFileAccessor, InputValidator inputValidator) {
+    @Autowired
+    public ClientServiceImpl(ClientRepository clientRepository, InputValidator inputValidator) {
         this.clientRepository = clientRepository;
-        this.clientFileAccessor = clientFileAccessor;
         this.inputValidator = inputValidator;
     }
 
     @Override
     public String findAllClients() throws NoEntriesFoundException {
         StringBuilder builder = new StringBuilder();
-        clientRepository.findAll().forEach(client -> builder.append(String.format(CLIENT_VIEW_TEMPLATE, client.getId(), client.getFirstName(), client.getLastName())).append("\n"));
+        clientRepository.findAll().forEach(client -> builder.append(String.format(CLIENT_VIEW_TEMPLATE,
+                client.getId(),
+                client.getFirstName(),
+                client.getLastName())).append("\n"));
         if (builder.toString().isEmpty() || builder.toString().isBlank()) {
             throw new NoEntriesFoundException();
         }
@@ -40,49 +43,10 @@ public class ClientServiceImpl implements ClientService {
         return builder.toString();
     }
 
-    @Override
-    public void importClients() throws FileForEntityNotFound {
-        try {
-            findAllClients();
-        } catch (NoEntriesFoundException e) {
-            List<Client> clientList = new ArrayList<>();
-            try {
-                clientFileAccessor.readAllLines().forEach(line -> {
-                    Client client = new Client();
-                    if (line.contains(".")) {
-                        String[] splitData = line.split("\\.\\s", 2);
-                        String[] names = splitData[1].split("\\s");
-                        client.setFirstName(names[0]);
-                        client.setLastName(names[1]);
-                        // TODO add other fields for client
-
-                    } else {
-                        String[] names = line.split("\\s");
-                        client.setFirstName(names[0]);
-                        client.setLastName(names[1]);
-                    }
-                    clientList.add(client);
-                });
-
-            } catch (Exception ex) {
-                throw new FileForEntityNotFound();
-            }
-            clientRepository.saveAll(clientList);
-        }
-    }
 
     @Override
     public void backupToFile() throws BackUpFailedException {
-        StringBuilder builder = new StringBuilder();
-        clientRepository.findAll().forEach(client -> builder
-                .append(String.format("%d.%s %s", client.getId(), client.getFirstName(), client.getLastName()))
-                .append("\n"));
-
-        try {
-            clientFileAccessor.writeLine(builder.toString().trim());
-        } catch (IOException e) {
-            throw new BackUpFailedException();
-        }
+        clientRepository.backupToFile();
     }
 
     @Override
@@ -108,11 +72,11 @@ public class ClientServiceImpl implements ClientService {
         } catch (ClientNotFoundException e) {
             client.setPhoneNumber(phoneNumber);
 
-            clientRepository.save(client);
+            if(clientRepository.addClient(client)){
+                return String.format("Client %s added successfully!", client.fullName());
+            };
         }
-
-
-        return String.format("Client %s added successfully!", client.fullName());
+        return "Client was not added successfully! Please, try again!";
     }
 
     @Override
@@ -133,7 +97,7 @@ public class ClientServiceImpl implements ClientService {
         if (inputValidator.isNotValidFirstLastName(firstName)) {
             throw new InvalidClientFirstNameException();
         }
-        Set<Client> clients = clientRepository.findByFirstName(firstName);
+        List<Client> clients = clientRepository.findByFirstName(firstName);
         if (clients.isEmpty()) {
             throw new ClientNotFoundException();
         }
@@ -147,11 +111,34 @@ public class ClientServiceImpl implements ClientService {
         if (inputValidator.isNotValidFirstLastName(lastName)) {
             throw new InvalidClientLastNameException();
         }
-        Set<Client> clients = clientRepository.findByLastName(lastName);
+        List<Client> clients = clientRepository.findByLastName(lastName);
         if (clients.isEmpty()) {
             throw new ClientNotFoundException();
         }
         clients.forEach(client -> builder.append(client.toString()).append("\n"));
         return builder.toString();
+    }
+
+    @Override
+    public Client findClientByFullName(String fullName) throws ClientNotFoundException {
+        try {
+            return clientRepository.findClientByFirstNameAndLastName(fullName);
+        }catch (NoSuchElementException e){
+            throw new ClientNotFoundException();
+        }
+    }
+
+    @Override
+    public Client findClientById(Long clientId) throws ClientNotFoundException {
+        try {
+            return clientRepository.findById(clientId);
+        } catch (NoSuchElementException e) {
+            throw new ClientNotFoundException();
+        }
+    }
+
+    @Override
+    public void loadClientData() throws SQLException {
+        clientRepository.loadClients();
     }
 }

@@ -1,17 +1,32 @@
 package com.slm.springlibrarymanagement.repository;
 
+import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.model.entities.Book;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
+import java.sql.SQLException;
 import java.time.temporal.TemporalAccessor;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
-@Repository
-public interface BookRepository extends JpaRepository<Book, Long> {
-    Book findByName(String bookName);
 
-    Book findByIssueDate(TemporalAccessor issueDate);
+public interface BookRepository {
+
+    void loadBookData() throws SQLException;
+
+    void backupToFile() throws BackUpFailedException;
+
+    List<Book> findAll();
+
+    Book findByName(String bookName) throws NoSuchElementException;
+
+    Book findByIssueDate(TemporalAccessor issueDate) throws NoSuchElementException;
 
     Set<Book> findByNameStartingWith(String prefix);
+
+    void saveAll(List<Book> bookList);
+
+    Book findById(Long bookId) throws NoSuchElementException;
+
+    boolean addBook(Book book);
 }

@@ -1,7 +1,12 @@
 package com.slm.springlibrarymanagement.cviews;
 
+import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
+import com.slm.springlibrarymanagement.service.BookService;
+import com.slm.springlibrarymanagement.service.ClientService;
 import com.slm.springlibrarymanagement.service.OrderService;
 import com.slm.springlibrarymanagement.util.ConsoleRangeReader;
+import com.slm.springlibrarymanagement.util.ConsoleReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,10 +30,15 @@ public class OrderConsoleView implements ConsoleView {
     private static final String BOOK_COUNT_MESSAGE = "How many books would you like to order?";
     private final ExtendDueDateConsoleView extendDueDateConsoleView;
     private final OrderService orderService;
+    private final ClientService clientService;
+    private final BookService bookService;
 
-    public OrderConsoleView(ExtendDueDateConsoleView extendDueDateConsoleView, OrderService orderService) {
+    @Autowired
+    public OrderConsoleView(ExtendDueDateConsoleView extendDueDateConsoleView, OrderService orderService, ClientService clientService, BookService bookService) {
         this.extendDueDateConsoleView = extendDueDateConsoleView;
         this.orderService = orderService;
+        this.clientService = clientService;
+        this.bookService = bookService;
     }
 
     @Override
@@ -38,10 +48,10 @@ public class OrderConsoleView implements ConsoleView {
         int choice = ConsoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
         switch (choice) {
             case 0:
-                // mainConsoleView.showItemMenu();
+                invoker.showItemMenu(this);
                 return;
             case 1:
-                // printAllOrders();
+                printAllOrders();
                 break;
             case 2:
                 // printAllOrdersForClient();
@@ -59,58 +69,42 @@ public class OrderConsoleView implements ConsoleView {
                 //  extendOrderDueDate();
                 break;
             case 7:
-                // addOrder();
+                addOrder();
                 break;
         }
-        showItemMenu(this);
+        showItemMenu(invoker);
     }
 
-//    private void extendOrderDueDate() {
-//        extendDueDateConsoleView.showItemMenu();
-//    }
-//
-//
-//    public void printAllOrders() {
-//        System.out.println(orderService.getAllOrders());
-//    }
-//
-//
-//    public void addOrder() {
-//        System.out.println(BOOK_COUNT_MESSAGE);
-//        int count = ConsoleReader.readInt();
-//        while (count > 0) {
-//            System.out.println(CLIENT_NAME_INPUT_MESSAGE);
-//            String clientName = ConsoleReader.readString();
-//            System.out.println(BOOK_NAME_INPUT_MESSAGE);
-//            String bookName = ConsoleReader.readString();
-//            System.out.println(orderService.addOrder(clientName, bookName));
-//            count--;
-//        }
-//    }
-//
-//    void printAllOrdersForClient() {
-//        System.out.println(CLIENT_NAME_INPUT_MESSAGE);
-//        String clientName = ConsoleReader.readString();
-//        System.out.println(orderService.getAllOrdersByClient(clientName));
-//    }
-//
-//    void printAllOrdersAfter() {
-//        System.out.println(DATE_INPUT_MESSAGE);
-//        String date = ConsoleReader.readString();
-//        System.out.println(orderService.getAllOrdersIssuedAfter(date));
-//
-//    }
-//
-//    void printAllOrdersOn() {
-//        System.out.println(DATE_INPUT_MESSAGE);
-//        String date = ConsoleReader.readString();
-//        System.out.println(orderService.getAllOrdersIssuedOn(date));
-//    }
-//
-//    void printAllOrdersBefore() {
-//        System.out.println(DATE_INPUT_MESSAGE);
-//        String date = ConsoleReader.readString();
-//        System.out.println(orderService.getAllOrdersIssuedBefore(date));
-//    }
+    private void printAllOrders() {
+        try {
+            System.out.println(orderService.findAllOrders());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void addOrder() {
+        try {
+            System.out.println(clientService.findAllClients());
+        } catch (NoEntriesFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("Please, choose client ID from list above:");
+        Long clientId = ConsoleReader.readLong();
+        try {
+            System.out.println(bookService.findAllBooks());
+        } catch (NoEntriesFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("Please, choose book ID from list above:");
+        Long bookId = ConsoleReader.readLong();
+        System.out.println("Please, insert number of books:");
+        Integer bookCount = ConsoleReader.readInt();
+        try {
+            System.out.println(orderService.insertOrder(clientId, bookId, bookCount));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
 }

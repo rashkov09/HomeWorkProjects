@@ -5,6 +5,7 @@ import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
 import com.slm.springlibrarymanagement.service.AuthorService;
 import com.slm.springlibrarymanagement.util.ConsoleRangeReader;
 import com.slm.springlibrarymanagement.util.ConsoleReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,7 +15,7 @@ public class AuthorConsoleView implements ConsoleView {
     private static final int MAX_MENU_OPTION = 4;
     private static final String AUTHOR_OPTION_MESSAGE =
             """
-                    Choose what to do with orders:
+                    Choose what to do with authors:
                     1. Print all authors
                     2. Search for a author by id
                     3. Search for a author by name
@@ -26,6 +27,7 @@ public class AuthorConsoleView implements ConsoleView {
     private static final String AUTHOR_ID_INPUT_MESSAGE = "Please, insert author ID: ";
     private final AuthorService authorService;
 
+    @Autowired
     public AuthorConsoleView(AuthorService authorService) {
         this.authorService = authorService;
     }
@@ -61,6 +63,7 @@ public class AuthorConsoleView implements ConsoleView {
         try {
             System.out.println(authorService.findAuthorById(authorId));
         } catch (Exception e) {
+
             System.out.println(e.getMessage());
         }
     }
@@ -82,7 +85,6 @@ public class AuthorConsoleView implements ConsoleView {
             System.out.println(authorService.insertAuthor(authorName));
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            addAuthor();
         }
     }
 

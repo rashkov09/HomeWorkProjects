@@ -3,6 +3,7 @@ package com.slm.springlibrarymanagement.cviews;
 import com.slm.springlibrarymanagement.service.ClientService;
 import com.slm.springlibrarymanagement.util.ConsoleRangeReader;
 import com.slm.springlibrarymanagement.util.ConsoleReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
@@ -27,7 +28,7 @@ public class ClientConsoleView implements ConsoleView {
     private static final String CLIENT_PHONE_NUMBER_INPUT_MESSAGE = "Please, insert client phone number: ";
     private final ClientService clientService;
 
-
+    @Autowired
     public ClientConsoleView(ClientService clientService) {
         this.clientService = clientService;
     }

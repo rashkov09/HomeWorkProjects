@@ -3,11 +3,12 @@ package com.slm.springlibrarymanagement.cviews;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.FileForEntityNotFound;
 import com.slm.springlibrarymanagement.exceptions.InvalidDateException;
-import com.slm.springlibrarymanagement.repository.ClientRepository;
 import com.slm.springlibrarymanagement.service.AuthorService;
 import com.slm.springlibrarymanagement.service.BookService;
 import com.slm.springlibrarymanagement.service.ClientService;
+import com.slm.springlibrarymanagement.service.OrderService;
 import com.slm.springlibrarymanagement.util.ConsoleRangeReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static java.lang.System.exit;
@@ -26,7 +27,6 @@ public class MainMenuView implements ConsoleView {
                                         
                     0. Exit
                     """;
-    private static boolean IS_INITIALIZED;
     private final ConsoleView authorConsoleView;
     private final ConsoleView bookConsoleView;
     private final ConsoleView clientConsoleView;
@@ -34,11 +34,12 @@ public class MainMenuView implements ConsoleView {
     private final AuthorService authorService;
     private final BookService bookService;
     private final ClientService clientService;
-    private final ClientRepository clientRepository;
+    private final OrderService orderService;
+    private static boolean IS_LOADED;
 
+    @Autowired
     public MainMenuView(ConsoleView authorConsoleView, ConsoleView bookConsoleView,
-                        ConsoleView clientConsoleView, ConsoleView orderConsoleView, AuthorService authorService, BookService bookService, ClientService clientService,
-                        ClientRepository clientRepository) {
+                        ConsoleView clientConsoleView, ConsoleView orderConsoleView, AuthorService authorService, BookService bookService, ClientService clientService, OrderService orderService) {
         this.authorConsoleView = authorConsoleView;
         this.bookConsoleView = bookConsoleView;
         this.clientConsoleView = clientConsoleView;
@@ -46,16 +47,21 @@ public class MainMenuView implements ConsoleView {
         this.authorService = authorService;
         this.bookService = bookService;
         this.clientService = clientService;
-        IS_INITIALIZED = false;
-        this.clientRepository = clientRepository;
+        this.orderService = orderService;
+        IS_LOADED = false;
     }
 
     @Override
     public void showItemMenu(ConsoleView invoker) {
-        try {
-            initDataFromFile();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        if (!IS_LOADED) {
+            try {
+                authorService.loadAuthorData();
+                clientService.loadClientData();
+                bookService.loadBookData();
+                IS_LOADED = true;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
         System.out.println(OPTION_MESSAGE);
         System.out.print("Please choose an option: ");
@@ -95,30 +101,11 @@ public class MainMenuView implements ConsoleView {
         } catch (BackUpFailedException e) {
             System.out.println(e.getMessage());
         }
-
-    }
-
-    private void initDataFromFile() throws RuntimeException {
-        if (!IS_INITIALIZED) {
-            try {
-                authorService.importAuthors();
-            } catch (FileForEntityNotFound e) {
-                throw new RuntimeException(String.format(e.getMessage(), "authors"));
-            }
-            try {
-                bookService.importBooks();
-            } catch (FileForEntityNotFound e) {
-                throw new RuntimeException(String.format(e.getMessage(), "books"));
-            } catch (InvalidDateException a) {
-                throw new RuntimeException(a.getMessage());
-            }
-            try {
-                clientService.importClients();
-            } catch (FileForEntityNotFound e) {
-                throw new RuntimeException(String.format(e.getMessage(), "clients"));
-            }
-
-            IS_INITIALIZED = true;
+        try {
+            orderService.backupToFile();
+        } catch (BackUpFailedException e) {
+            System.out.println(e.getMessage());
         }
+
     }
 }
