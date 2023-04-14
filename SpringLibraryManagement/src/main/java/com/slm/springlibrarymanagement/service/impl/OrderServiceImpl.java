@@ -25,8 +25,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.slm.springlibrarymanagement.constants.messages.OrderMessages.ORDER_MODIFICATION_FAILED;
-import static com.slm.springlibrarymanagement.constants.messages.OrderMessages.ORDER_MODIFICATION_SUCCESS;
+import static com.slm.springlibrarymanagement.constants.messages.BookMessages.BOOK_UPDATE_FAILED_MESSAGE;
+import static com.slm.springlibrarymanagement.constants.messages.OrderMessages.*;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -102,12 +102,12 @@ public class OrderServiceImpl implements OrderService {
             try {
                 bookService.updateBook(book);
             } catch (SQLException e) {
-                throw new RuntimeException("Failed to update book!");
+                throw new RuntimeException(BOOK_UPDATE_FAILED_MESSAGE);
             }
 
-            return String.format("Order of client %s for %d copies of book %s placed,successfully!", client.fullName(), bookCount, book.getName());
+            return String.format(ORDER_ADDED_SUCCESSFULLY_MESSAGE, client.fullName(), bookCount, book.getName());
         }
-        return "Order addition failed!";
+        return ORDER_ADDITION_FAILED_MESSAGE;
     }
 
     @Override

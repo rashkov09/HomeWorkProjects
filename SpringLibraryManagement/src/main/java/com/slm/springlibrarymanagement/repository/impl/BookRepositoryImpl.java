@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 public class BookRepositoryImpl implements BookRepository {
     private static final String INSERT_BOOK_SQL = "INSERT INTO slm.books (name, author, issue_date, number_of_copies) VALUES(?,?,?,?)";
     private static final String UPDATE_BOOK_SQL = "UPDATE slm.books SET number_of_copies=? WHERE id=?";
+    private static final String SELECT_BOOKS_SQL = "SELECT * FROM slm.books";
     private static List<Book> bookList;
     public final DataLoaderService<Book> dataLoaderService;
     public final DataWriterService<Book> dataWriterService;
@@ -42,8 +43,7 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public void loadBookData() throws SQLException {
-        String sql = "SELECT * FROM slm.books";
-        bookList = dataLoaderService.loadDataFromDb(sql, ClassesEnum.Book);
+        bookList = dataLoaderService.loadDataFromDb(SELECT_BOOKS_SQL, ClassesEnum.Book);
         bookList.forEach(book -> {
             try {
                 book.setAuthor(authorService.findAuthorById(String.valueOf(book.getAuthor().getId())));

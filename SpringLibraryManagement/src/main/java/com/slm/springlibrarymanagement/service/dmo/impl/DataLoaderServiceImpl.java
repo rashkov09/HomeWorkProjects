@@ -42,6 +42,9 @@ public class DataLoaderServiceImpl<T> implements DataLoaderService<T> {
     private final ClientFileAccessor clientFileAccessor;
     private final OrderFileAccessor orderFileAccessor;
 
+    private final static Integer MIN_PHONE = 111111111;
+    private final static Integer MAX_PHONE = 999999999;
+
     @Autowired
     public DataLoaderServiceImpl(DataSource dataSource, CustomDateFormatter formatter, AuthorRowMapper authorRowMapper, BookRowMapper bookRowMapper, ClientRowMapper clientRowMapper, OrderRowMapper orderRowMapper, AuthorFileAccessor authorFileAccessor, BookFileAccessor bookFileAccessor, ClientFileAccessor clientFileAccessor, OrderFileAccessor orderFileAccessor) {
         this.dataSource = dataSource;
@@ -141,7 +144,7 @@ public class DataLoaderServiceImpl<T> implements DataLoaderService<T> {
                     String[] names = splitData[1].split("\\s");
                     client.setFirstName(names[0]);
                     client.setLastName(names[1]);
-                    client.setPhoneNumber("+" + randomPhone.nextInt(111111111, 999999999));
+                    client.setPhoneNumber("+" + randomPhone.nextInt(MIN_PHONE, MAX_PHONE));
                     clientList.add(client);
                 });
                 return clientList.stream().map(client -> (T) client).collect(Collectors.toList());

@@ -6,26 +6,13 @@ import com.slm.springlibrarymanagement.util.ConsoleReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static com.slm.springlibrarymanagement.constants.messages.ClientMessages.*;
+import static com.slm.springlibrarymanagement.constants.messages.GeneralMessages.CHOOSE_AN_OPTION_MESSAGE;
 
 @Component
 public class ClientConsoleView implements ConsoleView {
     private static final int MIN_MENU_OPTION = 0;
     private static final int MAX_MENU_OPTION = 5;
-    private static final String CLIENT_OPTION_MESSAGE =
-            """
-                    Choose what to do with orders:
-                    1. Print all clients
-                    2. Search for a client by first name
-                    3. Search for a client by last name
-                    4. Search for a client by phone number
-                    5. Add client
-                                        
-                    0. Back
-                    """;
-    private static final String CLIENT_FIRSTNAME_INPUT_MESSAGE = "Please, insert client first name: ";
-    private static final String CLIENT_LASTNAME_INPUT_MESSAGE = "Please, insert client last name: ";
-    private static final String CLIENT_ADDRESS_INPUT_MESSAGE = "Please, insert client address (not required): ";
-    private static final String CLIENT_PHONE_NUMBER_INPUT_MESSAGE = "Please, insert client phone number: ";
     private final ClientService clientService;
 
     @Autowired
@@ -36,7 +23,7 @@ public class ClientConsoleView implements ConsoleView {
     @Override
     public void showItemMenu(ConsoleView invoker) {
         System.out.println(CLIENT_OPTION_MESSAGE);
-        System.out.print("Please, choose an option: ");
+        System.out.print(CHOOSE_AN_OPTION_MESSAGE);
         int choice = ConsoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
         switch (choice) {
             case 0:

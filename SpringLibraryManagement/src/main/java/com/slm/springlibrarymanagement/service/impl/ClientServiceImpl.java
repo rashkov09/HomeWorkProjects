@@ -14,9 +14,10 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static com.slm.springlibrarymanagement.constants.messages.ClientMessages.*;
+
 @Service
 public class ClientServiceImpl implements ClientService {
-    private final static String CLIENT_VIEW_TEMPLATE = "%d. %s %s";
     private final ClientRepository clientRepository;
     private final InputValidator inputValidator;
 
@@ -70,11 +71,11 @@ public class ClientServiceImpl implements ClientService {
             client.setPhoneNumber(phoneNumber);
 
             if (clientRepository.addClient(client)) {
-                return String.format("Client %s added successfully!", client.fullName());
+                return String.format(CLIENT_ADDED_SUCCESSFULLY_MESSAGE, client.fullName());
             }
             ;
         }
-        return "Client was not added successfully! Please, try again!";
+        return CLIENT_ADDITION_FAILED_MESSAGE;
     }
 
     @Override
@@ -82,11 +83,13 @@ public class ClientServiceImpl implements ClientService {
         if (inputValidator.isNotValidPhoneNumber(phoneNumber)) {
             throw new InvalidClientPhoneException();
         }
-        Client client = clientRepository.findByPhoneNumber(phoneNumber);
-        if (client == null) {
+        try {
+            return clientRepository.findByPhoneNumber(phoneNumber);
+
+        } catch (NoSuchElementException e) {
             throw new ClientNotFoundException();
         }
-        return client;
+
     }
 
     @Override

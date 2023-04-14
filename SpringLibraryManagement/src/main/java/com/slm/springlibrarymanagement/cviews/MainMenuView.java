@@ -10,21 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static java.lang.System.exit;
+import static com.slm.springlibrarymanagement.constants.messages.GeneralMessages.*;
 
 @Component
 public class MainMenuView implements ConsoleView {
     private static final int MIN_MENU_OPTION = 0;
     private static final int MAX_MENU_OPTION = 4;
-    private static final String OPTION_MESSAGE =
-            """
-                    Choose what to manage:
-                    1. Books
-                    2. Authors
-                    3. Clients
-                    4. Orders
-                                        
-                    0. Exit
-                    """;
     private static boolean IS_LOADED;
     private final ConsoleView authorConsoleView;
     private final ConsoleView bookConsoleView;
@@ -62,8 +53,8 @@ public class MainMenuView implements ConsoleView {
                 System.out.println(e.getMessage());
             }
         }
-        System.out.println(OPTION_MESSAGE);
-        System.out.print("Please choose an option: ");
+        System.out.println(MAIN_OPTION_MESSAGE);
+        System.out.print(CHOOSE_AN_OPTION_MESSAGE);
         int choice = ConsoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
         switch (choice) {
             case 0:

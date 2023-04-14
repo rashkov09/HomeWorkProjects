@@ -30,6 +30,10 @@ public class DataWriterServiceImpl<T> implements DataWriterService<T> {
     public final OrderFileAccessor orderFileAccessor;
     private final CustomDateFormatter formatter;
 
+    private static final String ORDER_TO_FILE_TEMPLATE = "%d.%s_%s_%s_%s_%d";
+    private static final String CLIENT_TO_FILE_TEMPLATE = "%d. %s %s";
+    private static final String BOOK_TO_FILE_TEMPLATE = "%d.%s_%s_%s";
+
     @Autowired
     public DataWriterServiceImpl(DataSource dataSource, AuthorFileAccessor authorFileAccessor, BookFileAccessor bookFileAccessor, CustomDateFormatter formatter, ClientFileAccessor clientFileAccessor, OrderFileAccessor orderFileAccessor) {
         this.dataSource = dataSource;
@@ -189,7 +193,7 @@ public class DataWriterServiceImpl<T> implements DataWriterService<T> {
             case Book -> {
                 StringBuilder builder = new StringBuilder();
                 data.stream().map(o -> (Book) o).forEach(book -> builder
-                        .append(String.format("%d.%s_%s_%s",
+                        .append(String.format(BOOK_TO_FILE_TEMPLATE,
                                 book.getId(), book.getName(),
                                 book.getAuthor().getName(),
                                 book.getIssueDate().format(formatter.getFormatter())))
@@ -205,7 +209,7 @@ public class DataWriterServiceImpl<T> implements DataWriterService<T> {
             case Client -> {
                 StringBuilder builder = new StringBuilder();
                 data.stream().map(o -> (Client) o).forEach(client -> builder
-                        .append(String.format("%d. %s %s", client.getId(), client.getFirstName(), client.getLastName()))
+                        .append(String.format(CLIENT_TO_FILE_TEMPLATE, client.getId(), client.getFirstName(), client.getLastName()))
                         .append("\n"));
                 try {
                     clientFileAccessor.writeLine(builder.toString().trim());
@@ -217,7 +221,7 @@ public class DataWriterServiceImpl<T> implements DataWriterService<T> {
             case Order -> {
                 StringBuilder builder = new StringBuilder();
                 data.stream().map(o -> (Order) o).forEach(order -> builder
-                        .append(String.format("%d.%s_%s_%s_%s_%d", order.getId(), order.getClient().fullName(), order.getBook().getName(), order.getIssueDate().format(formatter.getFormatter()), order.getDueDate().format(formatter.getFormatter()), order.getBookCount()))
+                        .append(String.format(ORDER_TO_FILE_TEMPLATE, order.getId(), order.getClient().fullName(), order.getBook().getName(), order.getIssueDate().format(formatter.getFormatter()), order.getDueDate().format(formatter.getFormatter()), order.getBookCount()))
                         .append("\n"));
                 try {
                     orderFileAccessor.writeLine(builder.toString().trim());
@@ -253,9 +257,9 @@ public class DataWriterServiceImpl<T> implements DataWriterService<T> {
                 }
                 case Order -> {
                     Order order = (Order) param;
-                    preparedStatement.setDate(1,Date.valueOf(order.getDueDate()));
-                    preparedStatement.setDate(2,Date.valueOf(LocalDate.now()));
-                    preparedStatement.setLong(3,order.getId());
+                    preparedStatement.setDate(1, Date.valueOf(order.getDueDate()));
+                    preparedStatement.setDate(2, Date.valueOf(LocalDate.now()));
+                    preparedStatement.setLong(3, order.getId());
                     int result = preparedStatement.executeUpdate();
                     return result != 0;
                 }

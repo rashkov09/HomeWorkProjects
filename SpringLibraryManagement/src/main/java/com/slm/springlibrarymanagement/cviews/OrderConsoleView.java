@@ -17,20 +17,6 @@ public class OrderConsoleView implements ConsoleView {
     private static final int MIN_MENU_OPTION = 0;
     private static final int MAX_MENU_OPTION = 7;
     private static ConsoleView mainViewReference;
-    private static final String ORDERS_OPTION_MESSAGE =
-            """
-                    Choose what to do with orders:
-                    1. Print all orders
-                    2. Print orders for client
-                    3. Print orders issued on
-                    4. Print orders issued before
-                    5. Print orders issued after
-                    6. Extend order due date
-                    7. Add order
-                        
-                    0. Back
-                    """;
-
     private final ExtendDueDateConsoleView extendDueDateConsoleView;
     private final OrderService orderService;
     private final ClientService clientService;
