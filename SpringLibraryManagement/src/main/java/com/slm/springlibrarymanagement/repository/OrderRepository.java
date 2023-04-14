@@ -16,4 +16,16 @@ public interface OrderRepository {
     void loadOrderData() throws SQLException;
 
     void backupToFile() throws BackUpFailedException;
+
+    List<Order> findOrdersByClientId(Long id);
+
+    List<Order> findOrdersByIssueDate(String date);
+
+    List<Order> findOrdersWithIssueDateBefore(String date);
+
+    List<Order> findOrdersWithIssueDateAfter(String date);
+
+    Order findOrderById(Long id);
+
+    boolean updateOrder(Order order) throws SQLException;
 }

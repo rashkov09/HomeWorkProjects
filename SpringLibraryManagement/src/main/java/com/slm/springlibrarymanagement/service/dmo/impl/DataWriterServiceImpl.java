@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -216,7 +217,7 @@ public class DataWriterServiceImpl<T> implements DataWriterService<T> {
             case Order -> {
                 StringBuilder builder = new StringBuilder();
                 data.stream().map(o -> (Order) o).forEach(order -> builder
-                        .append(String.format("%d.%s_%s_%s_%s_%d", order.getId(), order.getClient().fullName(), order.getBook().getName(), order.getIssueDate(), order.getDueDate(), order.getBookCount()))
+                        .append(String.format("%d.%s_%s_%s_%s_%d", order.getId(), order.getClient().fullName(), order.getBook().getName(), order.getIssueDate().format(formatter.getFormatter()), order.getDueDate().format(formatter.getFormatter()), order.getBookCount()))
                         .append("\n"));
                 try {
                     orderFileAccessor.writeLine(builder.toString().trim());
@@ -232,27 +233,31 @@ public class DataWriterServiceImpl<T> implements DataWriterService<T> {
     }
 
     @Override
-    public boolean update(String sql,T param, ClassesEnum classType) throws SQLException {
-        try(PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(sql)){
-            switch (classType){
+    public boolean update(String sql, T param, ClassesEnum classType) throws SQLException {
+        try (PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(sql)) {
+            switch (classType) {
                 case Author -> {
                     // implement author update
                     return true;
                 }
                 case Book -> {
                     Book book = (Book) param;
-                    preparedStatement.setInt(1,book.getNumberOfCopies());
-                    preparedStatement.setLong(2,book.getId());
-                  int result =  preparedStatement.executeUpdate();
-                  return result != 0;
+                    preparedStatement.setInt(1, book.getNumberOfCopies());
+                    preparedStatement.setLong(2, book.getId());
+                    int result = preparedStatement.executeUpdate();
+                    return result != 0;
                 }
-                case Client ->{
-                    // implement client update
-                    return true;
+                case Client -> {
+                    int result = preparedStatement.executeUpdate();
+                    return result != 0;
                 }
                 case Order -> {
-                    // implement order update
-                    return false;
+                    Order order = (Order) param;
+                    preparedStatement.setDate(1,Date.valueOf(order.getDueDate()));
+                    preparedStatement.setDate(2,Date.valueOf(LocalDate.now()));
+                    preparedStatement.setLong(3,order.getId());
+                    int result = preparedStatement.executeUpdate();
+                    return result != 0;
                 }
             }
         }

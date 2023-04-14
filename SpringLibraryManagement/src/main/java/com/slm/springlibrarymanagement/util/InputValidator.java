@@ -26,7 +26,7 @@ public class InputValidator {
     }
 
     public boolean isNotValidDate(String date) {
-        String regex = "^(3[0-1]|[0-2][0-2])/(1[0-2]|0[1-9])/([1-9][0-9]{3})$";
+        String regex = "^(3[0-1]|[0-2][0-9])/(1[0-2]|0[1-9])/([1-9][0-9]{3})$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(date);
         return !matcher.matches();

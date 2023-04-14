@@ -10,33 +10,39 @@ import com.slm.springlibrarymanagement.service.BookService;
 import com.slm.springlibrarymanagement.service.ClientService;
 import com.slm.springlibrarymanagement.service.dmo.DataLoaderService;
 import com.slm.springlibrarymanagement.service.dmo.DataWriterService;
+import com.slm.springlibrarymanagement.util.CustomDateFormatter;
 import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class OrderRepositoryImpl implements OrderRepository {
     public final static String SELECT_ORDERS_SQL = "SELECT * FROM slm.orders";
     public final static String INERT_ORDER_SQL = "INSERT INTO slm.orders (client,book, issue_date,due_date,book_count) VALUES (?,?,?,?,?)";
+    public final static String UPDATE_ORDER_SQL = "UPDATE slm.orders SET due_date =?, stamp_modified=? WHERE id=?";
     private static List<Order> orderList;
     public final DataLoaderService<Order> dataLoaderService;
     public final DataWriterService<Order> dataWriterService;
     public final BookService bookService;
     public final ClientService clientService;
+    private final CustomDateFormatter formatter;
 
-    public OrderRepositoryImpl(DataLoaderService<Order> dataLoaderService, DataWriterService<Order> dataWriterService, BookService bookService, ClientService clientService) {
+    public OrderRepositoryImpl(DataLoaderService<Order> dataLoaderService, DataWriterService<Order> dataWriterService, BookService bookService, ClientService clientService, CustomDateFormatter formatter) {
         this.dataLoaderService = dataLoaderService;
         this.dataWriterService = dataWriterService;
         this.bookService = bookService;
         this.clientService = clientService;
+        this.formatter = formatter;
         orderList = new ArrayList<>();
     }
 
     @Override
     public List<Order> findAllOrders() {
-        return orderList;
+        return orderList.stream().sorted().collect(Collectors.toList());
     }
 
     @Override
@@ -80,7 +86,41 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     public void backupToFile() throws BackUpFailedException {
-        dataWriterService.writeDataToFile(orderList, ClassesEnum.Order);
+
+        dataWriterService.writeDataToFile(orderList.stream().sorted().collect(Collectors.toList()), ClassesEnum.Order);
+    }
+
+    @Override
+    public List<Order> findOrdersByClientId(Long id) {
+        return orderList.stream().filter(order -> order.getClient().getId().equals(id)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Order> findOrdersByIssueDate(String date) {
+        return orderList.stream().filter(order -> order.getIssueDate().isEqual(LocalDate.parse(date, formatter.getFormatter()))).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Order> findOrdersWithIssueDateBefore(String date) {
+        LocalDate fitterDate = LocalDate.parse(date, formatter.getFormatter());
+        return orderList.stream().filter(order -> order.getIssueDate().isBefore(fitterDate)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Order> findOrdersWithIssueDateAfter(String date) {
+        LocalDate fitterDate = LocalDate.parse(date, formatter.getFormatter());
+        return orderList.stream().filter(order -> order.getIssueDate().isAfter(fitterDate)).collect(Collectors.toList());
+    }
+
+    @Override
+    public Order findOrderById(Long id) {
+        return orderList.stream().filter(order -> order.getId().equals(id)).findFirst().orElseThrow();
+    }
+
+    @Override
+    public boolean updateOrder(Order order) throws SQLException {
+        orderList.stream().filter(orderSearch -> orderSearch.getId().equals(order.getId())).findFirst().ifPresent(foundOrder -> foundOrder.updateDueDate(order.getDueDate()));
+        return dataWriterService.update(UPDATE_ORDER_SQL,order,ClassesEnum.Order);
     }
 
     private void addAll() throws SQLException {

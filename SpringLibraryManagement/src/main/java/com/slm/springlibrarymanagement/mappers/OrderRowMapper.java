@@ -20,6 +20,7 @@ public class OrderRowMapper implements RowMapper<Order> {
         book.setId(rs.getLong("book"));
         order.setBook(book);
         order.setIssueDate(rs.getDate("issue_date").toLocalDate());
+        order.updateDueDate(rs.getDate("due_date").toLocalDate());
         order.setBookCount(rs.getInt("book_count"));
         return order;
     }
