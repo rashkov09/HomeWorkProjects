@@ -1,10 +1,10 @@
 package com.slm.springlibrarymanagement.service.impl;
 
-import com.slm.springlibrarymanagement.accessor.BookFileAccessor;
-import com.slm.springlibrarymanagement.exceptions.*;
-import com.slm.springlibrarymanagement.exceptions.author.AuthorAlreadyExistsException;
+import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
+import com.slm.springlibrarymanagement.exceptions.InvalidDateException;
+import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
+import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
 import com.slm.springlibrarymanagement.exceptions.author.AuthorNotFoundException;
-import com.slm.springlibrarymanagement.exceptions.author.InvalidAuthorNameException;
 import com.slm.springlibrarymanagement.exceptions.book.BookNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.book.InvalidNumberOfCopies;
 import com.slm.springlibrarymanagement.model.entities.Author;
@@ -17,25 +17,13 @@ import com.slm.springlibrarymanagement.util.InputValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
 @Service
 public class BookServiceImpl implements BookService {
-    private final static String BOOK_TEMPLATE = """
-            --------------------------------------------------
-            | Book ID: %d
-            | Book name: %s
-            | Written by: %s
-            | Issued on: %s
-            | Copies: %d
-            --------------------------------------------------
-            """;
     private final CustomDateFormatter formatter;
     private final BookRepository bookRepository;
     private final AuthorService authorService;
@@ -57,12 +45,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public String findAllBooks() throws NoEntriesFoundException {
         StringBuilder builder = new StringBuilder();
-        bookRepository.findAll().forEach(book -> builder.append(String.format(BOOK_TEMPLATE,
-                book.getId(),
-                book.getName(),
-                book.getAuthor().getName(),
-                book.getIssueDate(),
-                book.getNumberOfCopies())));
+        bookRepository.findAllBooks().forEach(book -> builder.append(book.toString()));
         if (builder.toString().isEmpty() || builder.toString().isBlank()) {
             throw new NoEntriesFoundException();
         }
@@ -116,25 +99,18 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public String findBookByName(String bookName) throws BookNotFoundException {
+    public Book findBookByName(String bookName) throws BookNotFoundException {
         try {
-            Book book = bookRepository.findByName(bookName);
-            return String.format(BOOK_TEMPLATE,
-                    book.getId(),
-                    book.getName(),
-                    book.getAuthor().getName(),
-                    formatter.getFormatter().format(book.getIssueDate()),
-                    book.getNumberOfCopies());
+            return bookRepository.findByName(bookName);
         } catch (NoSuchElementException e) {
             throw new BookNotFoundException();
         }
     }
 
     @Override
-    public String findBookByIssueDate(String issueDate) throws BookNotFoundException {
+    public Book findBookByIssueDate(String issueDate) throws BookNotFoundException {
         try {
-            Book book = bookRepository.findByIssueDate(LocalDate.parse(issueDate, formatter.getFormatter()));
-            return String.format(BOOK_TEMPLATE, book.getId(), book.getName(), book.getAuthor().getName(), book.getIssueDate(), book.getNumberOfCopies());
+            return bookRepository.findByIssueDate(LocalDate.parse(issueDate, formatter.getFormatter()));
         } catch (NoSuchElementException e) {
             throw new BookNotFoundException();
         }
@@ -143,10 +119,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public String findBooksByAuthorName(String authorName) {
         StringBuilder builder = new StringBuilder();
-        bookRepository.findAll().stream().filter(book -> book.getAuthor().getName().equals(authorName)).forEach(book -> {
-            builder.append(String.format(BOOK_TEMPLATE, book.getId(), book.getName(), book.getAuthor().getName(), book.getIssueDate(), book.getNumberOfCopies()));
-        });
-
+        bookRepository.findAllBooks().stream().filter(book -> book.getAuthor().getName().equals(authorName)).forEach(builder::append);
         return builder.toString();
     }
 
@@ -157,12 +130,7 @@ public class BookServiceImpl implements BookService {
         if (books.isEmpty()) {
             throw new BookNotFoundException();
         }
-        books.forEach(book -> builder.append(String.format(BOOK_TEMPLATE,
-                book.getId(),
-                book.getName(),
-                book.getAuthor().getName(),
-                book.getIssueDate(),
-                book.getNumberOfCopies())));
+        books.forEach(book -> builder.append(book.toString()));
         return builder.toString();
     }
 
@@ -177,8 +145,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void updateBook(Book book) {
-        bookRepository.addBook(book);
+    public void updateBook(Book book) throws SQLException {
+        bookRepository.updateBook(book);
     }
 
     @Override

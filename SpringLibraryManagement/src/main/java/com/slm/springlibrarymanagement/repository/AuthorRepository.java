@@ -15,7 +15,6 @@ public interface AuthorRepository {
 
     List<Author> findAll();
 
-
     Author findByName(String authorName) throws NoSuchElementException;
 
     Author findById(Long id) throws NoSuchElementException;

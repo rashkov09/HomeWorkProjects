@@ -102,9 +102,9 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Author findAuthorById(String authorId) throws InvalidIdException, AuthorNotFoundException {
-        try{
+        try {
             Long.parseLong(authorId);
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new InvalidIdException();
         }
         try {

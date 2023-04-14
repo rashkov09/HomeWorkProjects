@@ -18,7 +18,7 @@ public class OrderFileAccessor {
         try {
             reader = new BufferedReader(new FileReader(ORDERS_FILE_PATH));
         } catch (IOException e) {
-            throw new RuntimeException(String.format("File not with path %s found", CLIENT_FILE_PATH), e);
+            throw new RuntimeException(String.format("File not with path %s found", ORDERS_FILE_PATH), e);
         }
     }
 
