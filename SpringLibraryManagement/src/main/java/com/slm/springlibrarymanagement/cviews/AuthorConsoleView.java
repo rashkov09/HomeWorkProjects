@@ -8,35 +8,30 @@ import com.slm.springlibrarymanagement.util.ConsoleReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static com.slm.springlibrarymanagement.constants.messages.AuthorMessages.*;
+import static com.slm.springlibrarymanagement.constants.messages.GeneralMessages.CHOOSE_AN_OPTION_MESSAGE;
+
 @Component
 public class AuthorConsoleView implements ConsoleView {
 
     private static final int MIN_MENU_OPTION = 0;
     private static final int MAX_MENU_OPTION = 4;
-    private static final String AUTHOR_OPTION_MESSAGE =
-            """
-                    Choose what to do with authors:
-                    1. Print all authors
-                    2. Search for a author by id
-                    3. Search for a author by name
-                    4. Add author
-                                        
-                    0. Back
-                    """;
-    private static final String AUTHOR_NAME_INPUT_MESSAGE = "Please, insert author name: ";
-    private static final String AUTHOR_ID_INPUT_MESSAGE = "Please, insert author ID: ";
     private final AuthorService authorService;
+    private final ConsoleReader consoleReader;
+    private final ConsoleRangeReader consoleRangeReader;
 
     @Autowired
-    public AuthorConsoleView(AuthorService authorService) {
+    public AuthorConsoleView(AuthorService authorService, ConsoleReader consoleReader, ConsoleRangeReader consoleRangeReader) {
         this.authorService = authorService;
+        this.consoleReader = consoleReader;
+        this.consoleRangeReader = consoleRangeReader;
     }
 
     @Override
     public void showItemMenu(ConsoleView invoker) {
         System.out.println(AUTHOR_OPTION_MESSAGE);
-        System.out.print("Please, choose an option: ");
-        int choice = ConsoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
+        System.out.print(CHOOSE_AN_OPTION_MESSAGE);
+        int choice = consoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
         switch (choice) {
             case 0:
                 invoker.showItemMenu(invoker);
@@ -59,7 +54,7 @@ public class AuthorConsoleView implements ConsoleView {
 
     private void findByAuthorId() {
         System.out.println(AUTHOR_ID_INPUT_MESSAGE);
-        String authorId = ConsoleReader.readString();
+        String authorId = consoleReader.readString();
         try {
             System.out.println(authorService.findAuthorById(authorId));
         } catch (Exception e) {
@@ -70,7 +65,7 @@ public class AuthorConsoleView implements ConsoleView {
 
     private void findByAuthorName() {
         System.out.println(AUTHOR_NAME_INPUT_MESSAGE);
-        String authorName = ConsoleReader.readString();
+        String authorName = consoleReader.readString();
         try {
             System.out.println(authorService.findAuthorByName(authorName).toString());
         } catch (Exception e) {
@@ -80,7 +75,7 @@ public class AuthorConsoleView implements ConsoleView {
 
     private void addAuthor() {
         System.out.println(AUTHOR_NAME_INPUT_MESSAGE);
-        String authorName = ConsoleReader.readString();
+        String authorName = consoleReader.readString();
         try {
             System.out.println(authorService.insertAuthor(authorName));
         } catch (Exception e) {

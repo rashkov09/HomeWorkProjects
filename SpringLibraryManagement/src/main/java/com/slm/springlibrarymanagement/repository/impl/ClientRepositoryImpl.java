@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 @Repository
 public class ClientRepositoryImpl implements ClientRepository {
     private static final String INSERT_CLIENT_SQL = "INSERT INTO slm.clients (first_name,last_name,address,phone_number) VALUES (?,?,?,?)";
+    private static final String SELECT_CLIENTS_SQL = "SELECT * FROM slm.clients";
     private static List<Client> clientList;
     private final DataLoaderService<Client> dataLoaderService;
     private final DataWriterService<Client> dataWriterService;
@@ -32,8 +33,7 @@ public class ClientRepositoryImpl implements ClientRepository {
 
     @Override
     public void loadClients() throws SQLException {
-        String sql = "SELECT * FROM slm.clients";
-        clientList = dataLoaderService.loadDataFromDb(sql, ClassesEnum.Client);
+        clientList = dataLoaderService.loadDataFromDb(SELECT_CLIENTS_SQL, ClassesEnum.Client);
         if (clientList.isEmpty()) {
             clientList = dataLoaderService.loadDataFromFile(ClassesEnum.Client);
             addAll();
@@ -51,7 +51,7 @@ public class ClientRepositoryImpl implements ClientRepository {
 
     @Override
     public Client findByPhoneNumber(String phoneNumber) {
-        return null;
+        return clientList.stream().filter(client -> client.getPhoneNumber().equals(phoneNumber)).findFirst().orElseThrow();
     }
 
     @Override

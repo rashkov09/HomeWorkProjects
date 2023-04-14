@@ -22,6 +22,8 @@ import java.time.LocalDate;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import static com.slm.springlibrarymanagement.constants.messages.BookMessages.*;
+
 @Service
 public class BookServiceImpl implements BookService {
     private final CustomDateFormatter formatter;
@@ -62,15 +64,17 @@ public class BookServiceImpl implements BookService {
         } catch (NumberFormatException e) {
             throw new InvalidNumberOfCopies();
         }
-        if (inputValidator.isNotValidDate(issueDate)) {
-            throw new InvalidDateException();
-        }
+
         try {
             Book book = bookRepository.findByName(bookName);
             book.addCopies(Integer.parseInt(numberOfCopies));
-            bookRepository.addBook(book);
-            builder.append(String.format("%s copies of %s added successfully!", numberOfCopies, book.getName()));
+            builder.append(bookRepository.updateBook(book) ?
+                    String.format(BOOK_COPIES_ADDED_SUCCESSFULLY_MESSAGE, numberOfCopies, book.getName()) :
+                    BOOK_COPIES_ADDITION_FAILED_MESSAGE);
         } catch (NoSuchElementException e) {
+            if (inputValidator.isNotValidDate(issueDate)) {
+                throw new InvalidDateException();
+            }
             Book book = new Book();
             try {
                 Author author = authorService.findAuthorById(authorId);
@@ -79,15 +83,17 @@ public class BookServiceImpl implements BookService {
                 book.setIssueDate(LocalDate.parse(issueDate, formatter.getFormatter()));
                 book.setNumberOfCopies(Integer.parseInt(numberOfCopies));
                 if (bookRepository.addBook(book)) {
-                    builder.append(String.format("Book %s added successfully!", book.getName()));
+                    builder.append(String.format(BOOK_ADDED_SUCCESSFULLY_MESSAGE, book.getName()));
                 } else {
-                    builder.append(String.format("Book %s not added!", book.getName()));
+                    builder.append(String.format(BOOK_ADDITION_FAILED_MESSAGE, book.getName()));
                 }
             } catch (InvalidIdException i) {
                 throw new InvalidIdException();
             } catch (AuthorNotFoundException a) {
                 throw new AuthorNotFoundException();
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return builder.toString();
     }

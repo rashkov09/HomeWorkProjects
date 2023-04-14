@@ -4,6 +4,8 @@ import com.slm.springlibrarymanagement.mappers.AuthorRowMapper;
 import com.slm.springlibrarymanagement.mappers.BookRowMapper;
 import com.slm.springlibrarymanagement.mappers.ClientRowMapper;
 import com.slm.springlibrarymanagement.mappers.OrderRowMapper;
+import com.slm.springlibrarymanagement.util.ConsoleRangeReader;
+import com.slm.springlibrarymanagement.util.ConsoleReader;
 import com.slm.springlibrarymanagement.util.CustomDateFormatter;
 import com.slm.springlibrarymanagement.util.InputValidator;
 import com.zaxxer.hikari.HikariConfig;
@@ -12,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
+import java.util.Scanner;
 
 @Configuration
 public class ApplicationBeanConfiguration {
@@ -65,8 +68,23 @@ public class ApplicationBeanConfiguration {
     }
 
     @Bean
-    public StringBuilder builder(){
+    public StringBuilder builder() {
         return new StringBuilder();
+    }
+
+    @Bean
+    public Scanner scanner() {
+        return new Scanner(System.in);
+    }
+
+    @Bean
+    public ConsoleRangeReader consoleRangeReader() {
+        return new ConsoleRangeReader(consoleReader());
+    }
+
+    @Bean
+    public ConsoleReader consoleReader() {
+        return new ConsoleReader(scanner());
     }
 
 

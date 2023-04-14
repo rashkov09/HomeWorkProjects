@@ -31,6 +31,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class DataLoaderServiceImpl<T> implements DataLoaderService<T> {
+    private final static Integer MIN_PHONE = 111111111;
+    private final static Integer MAX_PHONE = 999999999;
     private final DataSource dataSource;
     private final CustomDateFormatter formatter;
     private final AuthorRowMapper authorRowMapper;
@@ -141,7 +143,7 @@ public class DataLoaderServiceImpl<T> implements DataLoaderService<T> {
                     String[] names = splitData[1].split("\\s");
                     client.setFirstName(names[0]);
                     client.setLastName(names[1]);
-                    client.setPhoneNumber("+" + randomPhone.nextInt(111111111, 999999999));
+                    client.setPhoneNumber("+" + randomPhone.nextInt(MIN_PHONE, MAX_PHONE));
                     clientList.add(client);
                 });
                 return clientList.stream().map(client -> (T) client).collect(Collectors.toList());
@@ -184,8 +186,7 @@ public class DataLoaderServiceImpl<T> implements DataLoaderService<T> {
         author.setName(splitBookData[1]);
         book.setAuthor(author);
         book.setIssueDate(LocalDate.parse(splitBookData[2], formatter.getFormatter()));
-
-        book.setNumberOfCopies(1);
+        book.setNumberOfCopies(Integer.parseInt(splitBookData[3]));
     }
 }
 

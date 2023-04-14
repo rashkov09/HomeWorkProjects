@@ -2,19 +2,19 @@ package com.slm.springlibrarymanagement.util;
 
 import java.util.Scanner;
 
-public final class ConsoleReader {
+public class ConsoleReader {
     private static final String INVALID_INT = "%s is not an int. Try again: ";
-    private static final Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner;
 
-    private ConsoleReader() {
-        throw new UnsupportedOperationException();
+    public ConsoleReader(Scanner scanner) {
+        this.scanner = scanner;
     }
 
-    public static String readString() {
+    public String readString() {
         return scanner.nextLine();
     }
 
-    public static int readInt() {
+    public int readInt() {
         while (!scanner.hasNextInt()) {
             String input = scanner.next();
             System.out.printf(INVALID_INT, input);
@@ -24,7 +24,7 @@ public final class ConsoleReader {
         return input;
     }
 
-    public static Long readLong() {
+    public Long readLong() {
         while (!scanner.hasNextLong()) {
             String input = scanner.next();
             System.out.printf(INVALID_INT, input);

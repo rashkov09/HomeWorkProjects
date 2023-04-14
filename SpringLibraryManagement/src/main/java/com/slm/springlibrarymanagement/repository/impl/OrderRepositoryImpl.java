@@ -47,14 +47,14 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     public boolean addOrder(Order order) {
-        Long id = dataWriterService.save(INERT_ORDER_SQL,order);
+        Long id = dataWriterService.save(INERT_ORDER_SQL, order);
 
-            if (id != 0L) {
-                order.setId(id);
-                orderList.add(order);
-                return true;
-            }
-            return false;
+        if (id != 0L) {
+            order.setId(id);
+            orderList.add(order);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class OrderRepositoryImpl implements OrderRepository {
                     throw new RuntimeException(e);
                 }
             });
-        }else {
+        } else {
             orderList = dataLoaderService.loadDataFromFile(ClassesEnum.Order);
             orderList.forEach(order -> {
                 try {
@@ -120,7 +120,7 @@ public class OrderRepositoryImpl implements OrderRepository {
     @Override
     public boolean updateOrder(Order order) throws SQLException {
         orderList.stream().filter(orderSearch -> orderSearch.getId().equals(order.getId())).findFirst().ifPresent(foundOrder -> foundOrder.updateDueDate(order.getDueDate()));
-        return dataWriterService.update(UPDATE_ORDER_SQL,order,ClassesEnum.Order);
+        return dataWriterService.update(UPDATE_ORDER_SQL, order, ClassesEnum.Order);
     }
 
     private void addAll() throws SQLException {

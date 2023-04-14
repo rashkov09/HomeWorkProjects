@@ -3,7 +3,6 @@ package com.slm.springlibrarymanagement.service.impl;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
-import com.slm.springlibrarymanagement.exceptions.author.AuthorAlreadyExistsException;
 import com.slm.springlibrarymanagement.exceptions.author.AuthorNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.author.InvalidAuthorNameException;
 import com.slm.springlibrarymanagement.model.entities.Author;
@@ -15,6 +14,9 @@ import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.NoSuchElementException;
+
+import static com.slm.springlibrarymanagement.constants.messages.AuthorMessages.AUTHOR_ADDED_SUCCESSFULLY_MESSAGE;
+import static com.slm.springlibrarymanagement.constants.messages.AuthorMessages.AUTHOR_ADDITION_FAILED_MESSAGE;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
@@ -35,7 +37,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public String findAllAuthors() throws NoEntriesFoundException {
         StringBuilder builder = new StringBuilder();
-        authorRepository.findAll().forEach(author -> builder.append(String.format(AUTHORS_VIEW_TEMPLATE, author.toString())));
+        authorRepository.findAllAuthors().forEach(author -> builder.append(String.format(AUTHORS_VIEW_TEMPLATE, author.toString())));
         if (builder.toString().isEmpty() || builder.toString().isBlank()) {
             throw new NoEntriesFoundException();
         }
@@ -44,7 +46,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public String insertAuthor(String authorName) throws InvalidAuthorNameException, AuthorAlreadyExistsException {
+    public String insertAuthor(String authorName) throws InvalidAuthorNameException {
         if (inputValidator.isNotValidFullName(authorName)) {
             throw new InvalidAuthorNameException();
         }
@@ -56,10 +58,10 @@ public class AuthorServiceImpl implements AuthorService {
             author = findAuthorByName(authorName);
         } catch (AuthorNotFoundException e) {
             if (authorRepository.addAuthor(author)) {
-                return String.format("Author %s added successfully!", author.getName());
+                return String.format(AUTHOR_ADDED_SUCCESSFULLY_MESSAGE, author.getName());
             }
         }
-        return "Something went wrong! Please, try again";
+        return AUTHOR_ADDITION_FAILED_MESSAGE;
     }
 
     @Override
