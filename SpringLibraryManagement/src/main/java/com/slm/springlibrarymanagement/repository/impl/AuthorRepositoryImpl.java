@@ -1,5 +1,6 @@
 package com.slm.springlibrarymanagement.repository.impl;
 
+import com.slm.springlibrarymanagement.constants.ClassesEnum;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.model.entities.Author;
 import com.slm.springlibrarymanagement.repository.AuthorRepository;
@@ -15,11 +16,10 @@ import java.util.NoSuchElementException;
 
 @Repository
 public class AuthorRepositoryImpl implements AuthorRepository {
+    private final static String INSERT_AUTHOR_SQL = "INSERT INTO slm.authors (name) VALUES(?)";
     private static List<Author> authorList;
     private final DataLoaderService<Author> dataLoaderService;
     private final DataWriterService<Author> dataWriterService;
-
-    private final static String INSERT_AUTHOR_SQL = "INSERT INTO slm.authors (name) VALUES(?)";
 
     public AuthorRepositoryImpl(DataLoaderServiceImpl<Author> dataLoaderService, DataWriterService<Author> dataWriterService) {
         this.dataLoaderService = dataLoaderService;
@@ -30,9 +30,9 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     @Override
     public void loadAuthors() throws SQLException {
         String sql = "SELECT * FROM slm.authors";
-        authorList = dataLoaderService.loadDataFromDb(sql, new Author());
+        authorList = dataLoaderService.loadDataFromDb(sql, ClassesEnum.Author);
         if (authorList.isEmpty()) {
-            authorList = dataLoaderService.loadDataFromFile(new Author());
+            authorList = dataLoaderService.loadDataFromFile(ClassesEnum.Author);
             addAll();
         }
     }
@@ -54,7 +54,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
 
     private void addAll() throws SQLException {
-        dataWriterService.saveAll(INSERT_AUTHOR_SQL, authorList, new Author());
+        dataWriterService.saveAll(INSERT_AUTHOR_SQL, authorList, ClassesEnum.Author);
     }
 
     @Override
@@ -70,6 +70,6 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
     @Override
     public boolean writeDataToFile() throws BackUpFailedException {
-        return dataWriterService.writeDataToFile(authorList, new Author());
+        return dataWriterService.writeDataToFile(authorList, ClassesEnum.Author);
     }
 }

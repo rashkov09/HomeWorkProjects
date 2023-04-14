@@ -15,8 +15,6 @@ public class Book extends BaseEntity {
     private Integer numberOfCopies;
 
 
-
-
     public Book() {
     }
 
@@ -53,14 +51,12 @@ public class Book extends BaseEntity {
     }
 
     public void setNumberOfCopies(Integer numberOfCopies) {
-        if (numberOfCopies == null || numberOfCopies < DEFAULT_NUMBER_OF_COPIES) {
-            this.numberOfCopies = DEFAULT_NUMBER_OF_COPIES;
-        } else {
             this.numberOfCopies = numberOfCopies;
-        }
     }
 
-
+    public void removeBooks(Integer bookCount){
+        setNumberOfCopies(this.numberOfCopies-bookCount);
+    }
 
     public void addCopies(Integer numberOfCopies) {
         setNumberOfCopies(getNumberOfCopies() + numberOfCopies);
@@ -68,11 +64,14 @@ public class Book extends BaseEntity {
 
     @Override
     public String toString() {
-        return "Book{" +
-                "name='" + name + '\'' +
-                ", author=" + author +
-                ", issueDate=" + issueDate +
-                ", numberOfCopies=" + numberOfCopies +
-                '}';
+        return String.format("""
+                --------------------------------------------------
+                | Book ID: %d
+                | Book name: %s
+                | Written by: %s
+                | Issued on: %s
+                | Copies: %d
+                --------------------------------------------------
+                """, this.getId(), this.getName(), this.author.getName(), this.issueDate, this.getNumberOfCopies());
     }
 }

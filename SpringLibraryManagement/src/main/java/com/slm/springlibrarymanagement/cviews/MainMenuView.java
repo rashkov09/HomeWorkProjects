@@ -1,8 +1,6 @@
 package com.slm.springlibrarymanagement.cviews;
 
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
-import com.slm.springlibrarymanagement.exceptions.FileForEntityNotFound;
-import com.slm.springlibrarymanagement.exceptions.InvalidDateException;
 import com.slm.springlibrarymanagement.service.AuthorService;
 import com.slm.springlibrarymanagement.service.BookService;
 import com.slm.springlibrarymanagement.service.ClientService;
@@ -27,6 +25,7 @@ public class MainMenuView implements ConsoleView {
                                         
                     0. Exit
                     """;
+    private static boolean IS_LOADED;
     private final ConsoleView authorConsoleView;
     private final ConsoleView bookConsoleView;
     private final ConsoleView clientConsoleView;
@@ -35,7 +34,6 @@ public class MainMenuView implements ConsoleView {
     private final BookService bookService;
     private final ClientService clientService;
     private final OrderService orderService;
-    private static boolean IS_LOADED;
 
     @Autowired
     public MainMenuView(ConsoleView authorConsoleView, ConsoleView bookConsoleView,
@@ -58,6 +56,7 @@ public class MainMenuView implements ConsoleView {
                 authorService.loadAuthorData();
                 clientService.loadClientData();
                 bookService.loadBookData();
+                orderService.loadBookData();
                 IS_LOADED = true;
             } catch (Exception e) {
                 System.out.println(e.getMessage());

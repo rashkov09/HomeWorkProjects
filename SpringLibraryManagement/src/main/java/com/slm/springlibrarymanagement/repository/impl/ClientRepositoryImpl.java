@@ -1,5 +1,6 @@
 package com.slm.springlibrarymanagement.repository.impl;
 
+import com.slm.springlibrarymanagement.constants.ClassesEnum;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.model.entities.Client;
 import com.slm.springlibrarymanagement.repository.ClientRepository;
@@ -17,34 +18,35 @@ import java.util.stream.Collectors;
 
 @Repository
 public class ClientRepositoryImpl implements ClientRepository {
+    private static final String INSERT_CLIENT_SQL = "INSERT INTO slm.clients (first_name,last_name,address,phone_number) VALUES (?,?,?,?)";
     private static List<Client> clientList;
     private final DataLoaderService<Client> dataLoaderService;
     private final DataWriterService<Client> dataWriterService;
-    private static final String INSERT_CLIENT_SQL = "INSERT INTO slm.clients (first_name,last_name,address,phone_number) VALUES (?,?,?,?)";
-@Autowired
+
+    @Autowired
     public ClientRepositoryImpl(DataLoaderServiceImpl<Client> dataLoaderService, DataWriterService<Client> dataWriterService) {
         this.dataLoaderService = dataLoaderService;
-    this.dataWriterService = dataWriterService;
-    clientList = new ArrayList<>();
+        this.dataWriterService = dataWriterService;
+        clientList = new ArrayList<>();
     }
 
     @Override
     public void loadClients() throws SQLException {
         String sql = "SELECT * FROM slm.clients";
-        clientList = dataLoaderService.loadDataFromDb(sql, new Client());
-        if (clientList.isEmpty()){
-            clientList = dataLoaderService.loadDataFromFile(new Client());
+        clientList = dataLoaderService.loadDataFromDb(sql, ClassesEnum.Client);
+        if (clientList.isEmpty()) {
+            clientList = dataLoaderService.loadDataFromFile(ClassesEnum.Client);
             addAll();
         }
     }
 
     @Override
     public void backupToFile() throws BackUpFailedException {
-        dataWriterService.writeDataToFile(clientList,new Client());
+        dataWriterService.writeDataToFile(clientList, ClassesEnum.Client);
     }
 
     private void addAll() throws SQLException {
-        dataWriterService.saveAll(INSERT_CLIENT_SQL,clientList,new Client());
+        dataWriterService.saveAll(INSERT_CLIENT_SQL, clientList, ClassesEnum.Client);
     }
 
     @Override
@@ -73,13 +75,8 @@ public class ClientRepositoryImpl implements ClientRepository {
     }
 
     @Override
-    public void saveAll(List<Client> clientList) {
-
-    }
-
-    @Override
     public boolean addClient(Client client) {
-       Long id = dataWriterService.save(INSERT_CLIENT_SQL,client);
+        Long id = dataWriterService.save(INSERT_CLIENT_SQL, client);
         if (id != 0L) {
             client.setId(id);
             clientList.add(client);

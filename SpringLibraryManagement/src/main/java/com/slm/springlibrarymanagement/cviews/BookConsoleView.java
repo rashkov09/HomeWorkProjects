@@ -100,7 +100,7 @@ public class BookConsoleView implements ConsoleView {
         System.out.println(BOOK_ISSUE_DATE_SEARCH_MESSAGE);
         String issueDate = ConsoleReader.readString();
         try {
-            System.out.println(bookService.findBookByIssueDate(issueDate));
+            System.out.println(bookService.findBookByIssueDate(issueDate).toString());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -110,7 +110,7 @@ public class BookConsoleView implements ConsoleView {
         System.out.println(BOOK_NAME_INPUT_MESSAGE);
         String bookName = ConsoleReader.readString();
         try {
-            System.out.println(bookService.findBookByName(bookName));
+            System.out.println(bookService.findBookByName(bookName).toString());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

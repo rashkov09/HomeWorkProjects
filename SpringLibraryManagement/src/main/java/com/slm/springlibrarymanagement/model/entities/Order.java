@@ -1,9 +1,13 @@
 package com.slm.springlibrarymanagement.model.entities;
 
+import com.slm.springlibrarymanagement.constants.IncreasePeriod;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
 import java.time.LocalDate;
 
 
-public class Order extends BaseEntity {
+public class Order extends BaseEntity implements Comparable<Order> {
     private static final Integer DEFAULT_DUE_DATE_PERIOD = 1;
     private Client client;
     private Book book;
@@ -15,7 +19,8 @@ public class Order extends BaseEntity {
     public Order() {
     }
 
-
+    @ManyToOne
+    @JoinColumn(name = "client")
     public Client getClient() {
         return client;
     }
@@ -24,7 +29,8 @@ public class Order extends BaseEntity {
         this.client = client;
     }
 
-
+    @ManyToOne
+    @JoinColumn(name = "book")
     public Book getBook() {
         return book;
     }
@@ -70,13 +76,24 @@ public class Order extends BaseEntity {
 
     @Override
     public String toString() {
-        return "Order{" +
-                "client=" + client +
-                ", book=" + book +
-                ", issueDate=" + issueDate +
-                ", dueDate=" + dueDate +
-                ", bookCount=" + bookCount +
-                ", stampModified=" + stampModified +
-                '}';
+        return String.format("Order ID: %d\nClient: %s\nBook: %s\nIssue date: %s\nDue date: %s\nBook count: %d\n",
+                getId(),getClient().fullName(),getBook().getName(),getIssueDate(),getDueDate(),getBookCount());
+    }
+
+    public void extendDueDate(Integer count, IncreasePeriod period){
+        switch (period){
+            case DAY ->  this.dueDate = dueDate.plusDays(count);
+            case WEEK -> this.dueDate = dueDate.plusWeeks(count);
+            case MONTH -> this.dueDate = dueDate.plusMonths(count);
+        }
+    }
+
+    public void updateDueDate(LocalDate date){
+        this.dueDate = date;
+    }
+
+    @Override
+    public int compareTo(Order o) {
+        return this.getId().compareTo(o.getId());
     }
 }

@@ -2,8 +2,6 @@ package com.slm.springlibrarymanagement.mappers;
 
 import com.slm.springlibrarymanagement.model.entities.Author;
 import com.slm.springlibrarymanagement.model.entities.Book;
-import com.slm.springlibrarymanagement.service.AuthorService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
