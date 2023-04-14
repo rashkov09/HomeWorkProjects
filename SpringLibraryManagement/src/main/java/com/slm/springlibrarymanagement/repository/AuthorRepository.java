@@ -13,7 +13,7 @@ public interface AuthorRepository {
 
     void loadAuthors() throws SQLException, InvalidIdException;
 
-    List<Author> findAll();
+    List<Author> findAllAuthors();
 
     Author findByName(String authorName) throws NoSuchElementException;
 

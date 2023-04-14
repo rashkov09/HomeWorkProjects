@@ -17,6 +17,7 @@ import java.util.NoSuchElementException;
 @Repository
 public class AuthorRepositoryImpl implements AuthorRepository {
     private final static String INSERT_AUTHOR_SQL = "INSERT INTO slm.authors (name) VALUES(?)";
+    private final static String SELECT_AUTHORS_SQL = "SELECT * FROM slm.authors";
     private static List<Author> authorList;
     private final DataLoaderService<Author> dataLoaderService;
     private final DataWriterService<Author> dataWriterService;
@@ -29,8 +30,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
     @Override
     public void loadAuthors() throws SQLException {
-        String sql = "SELECT * FROM slm.authors";
-        authorList = dataLoaderService.loadDataFromDb(sql, ClassesEnum.Author);
+        authorList = dataLoaderService.loadDataFromDb(SELECT_AUTHORS_SQL, ClassesEnum.Author);
         if (authorList.isEmpty()) {
             authorList = dataLoaderService.loadDataFromFile(ClassesEnum.Author);
             addAll();
@@ -38,7 +38,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     }
 
     @Override
-    public List<Author> findAll() {
+    public List<Author> findAllAuthors() {
         return authorList;
     }
 
