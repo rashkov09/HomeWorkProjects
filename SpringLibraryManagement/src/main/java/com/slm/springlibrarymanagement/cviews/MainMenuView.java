@@ -9,8 +9,9 @@ import com.slm.springlibrarymanagement.util.ConsoleRangeReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static com.slm.springlibrarymanagement.constants.messages.GeneralMessages.CHOOSE_AN_OPTION_MESSAGE;
+import static com.slm.springlibrarymanagement.constants.messages.GeneralMessages.MAIN_OPTION_MESSAGE;
 import static java.lang.System.exit;
-import static com.slm.springlibrarymanagement.constants.messages.GeneralMessages.*;
 
 @Component
 public class MainMenuView implements ConsoleView {
@@ -25,10 +26,11 @@ public class MainMenuView implements ConsoleView {
     private final BookService bookService;
     private final ClientService clientService;
     private final OrderService orderService;
+    private final ConsoleRangeReader consoleRangeReader;
 
     @Autowired
     public MainMenuView(ConsoleView authorConsoleView, ConsoleView bookConsoleView,
-                        ConsoleView clientConsoleView, ConsoleView orderConsoleView, AuthorService authorService, BookService bookService, ClientService clientService, OrderService orderService) {
+                        ConsoleView clientConsoleView, ConsoleView orderConsoleView, AuthorService authorService, BookService bookService, ClientService clientService, OrderService orderService, ConsoleRangeReader consoleRangeReader) {
         this.authorConsoleView = authorConsoleView;
         this.bookConsoleView = bookConsoleView;
         this.clientConsoleView = clientConsoleView;
@@ -37,6 +39,7 @@ public class MainMenuView implements ConsoleView {
         this.bookService = bookService;
         this.clientService = clientService;
         this.orderService = orderService;
+        this.consoleRangeReader = consoleRangeReader;
         IS_LOADED = false;
     }
 
@@ -55,7 +58,7 @@ public class MainMenuView implements ConsoleView {
         }
         System.out.println(MAIN_OPTION_MESSAGE);
         System.out.print(CHOOSE_AN_OPTION_MESSAGE);
-        int choice = ConsoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
+        int choice = consoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
         switch (choice) {
             case 0:
                 backup();

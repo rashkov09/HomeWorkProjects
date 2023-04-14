@@ -23,16 +23,15 @@ import java.util.List;
 
 @Service
 public class DataWriterServiceImpl<T> implements DataWriterService<T> {
+    private static final String ORDER_TO_FILE_TEMPLATE = "%d.%s_%s_%s_%s_%d";
+    private static final String CLIENT_TO_FILE_TEMPLATE = "%d. %s %s";
+    private static final String BOOK_TO_FILE_TEMPLATE = "%d.%s_%s_%s";
     public final DataSource dataSource;
     public final AuthorFileAccessor authorFileAccessor;
     public final BookFileAccessor bookFileAccessor;
     public final ClientFileAccessor clientFileAccessor;
     public final OrderFileAccessor orderFileAccessor;
     private final CustomDateFormatter formatter;
-
-    private static final String ORDER_TO_FILE_TEMPLATE = "%d.%s_%s_%s_%s_%d";
-    private static final String CLIENT_TO_FILE_TEMPLATE = "%d. %s %s";
-    private static final String BOOK_TO_FILE_TEMPLATE = "%d.%s_%s_%s";
 
     @Autowired
     public DataWriterServiceImpl(DataSource dataSource, AuthorFileAccessor authorFileAccessor, BookFileAccessor bookFileAccessor, CustomDateFormatter formatter, ClientFileAccessor clientFileAccessor, OrderFileAccessor orderFileAccessor) {

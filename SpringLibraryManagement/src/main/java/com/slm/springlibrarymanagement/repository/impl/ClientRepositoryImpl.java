@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Repository
 public class ClientRepositoryImpl implements ClientRepository {
     private static final String INSERT_CLIENT_SQL = "INSERT INTO slm.clients (first_name,last_name,address,phone_number) VALUES (?,?,?,?)";
-    private static final String SELECT_CLIENTS_SQL =  "SELECT * FROM slm.clients";
+    private static final String SELECT_CLIENTS_SQL = "SELECT * FROM slm.clients";
     private static List<Client> clientList;
     private final DataLoaderService<Client> dataLoaderService;
     private final DataWriterService<Client> dataWriterService;

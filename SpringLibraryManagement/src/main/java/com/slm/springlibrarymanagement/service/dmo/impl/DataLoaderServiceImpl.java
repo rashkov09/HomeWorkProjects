@@ -31,6 +31,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class DataLoaderServiceImpl<T> implements DataLoaderService<T> {
+    private final static Integer MIN_PHONE = 111111111;
+    private final static Integer MAX_PHONE = 999999999;
     private final DataSource dataSource;
     private final CustomDateFormatter formatter;
     private final AuthorRowMapper authorRowMapper;
@@ -41,9 +43,6 @@ public class DataLoaderServiceImpl<T> implements DataLoaderService<T> {
     private final BookFileAccessor bookFileAccessor;
     private final ClientFileAccessor clientFileAccessor;
     private final OrderFileAccessor orderFileAccessor;
-
-    private final static Integer MIN_PHONE = 111111111;
-    private final static Integer MAX_PHONE = 999999999;
 
     @Autowired
     public DataLoaderServiceImpl(DataSource dataSource, CustomDateFormatter formatter, AuthorRowMapper authorRowMapper, BookRowMapper bookRowMapper, ClientRowMapper clientRowMapper, OrderRowMapper orderRowMapper, AuthorFileAccessor authorFileAccessor, BookFileAccessor bookFileAccessor, ClientFileAccessor clientFileAccessor, OrderFileAccessor orderFileAccessor) {

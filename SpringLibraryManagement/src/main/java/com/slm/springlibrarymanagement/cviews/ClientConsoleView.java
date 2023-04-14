@@ -14,17 +14,21 @@ public class ClientConsoleView implements ConsoleView {
     private static final int MIN_MENU_OPTION = 0;
     private static final int MAX_MENU_OPTION = 5;
     private final ClientService clientService;
+    private final ConsoleReader consoleReader;
+    private final ConsoleRangeReader consoleRangeReader;
 
     @Autowired
-    public ClientConsoleView(ClientService clientService) {
+    public ClientConsoleView(ClientService clientService, ConsoleReader consoleReader, ConsoleRangeReader consoleRangeReader) {
         this.clientService = clientService;
+        this.consoleReader = consoleReader;
+        this.consoleRangeReader = consoleRangeReader;
     }
 
     @Override
     public void showItemMenu(ConsoleView invoker) {
         System.out.println(CLIENT_OPTION_MESSAGE);
         System.out.print(CHOOSE_AN_OPTION_MESSAGE);
-        int choice = ConsoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
+        int choice = consoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
         switch (choice) {
             case 0:
                 invoker.showItemMenu(this);
@@ -50,7 +54,7 @@ public class ClientConsoleView implements ConsoleView {
 
     private void printClientByPhoneNumber() {
         System.out.println(CLIENT_PHONE_NUMBER_INPUT_MESSAGE);
-        String phoneNumber = ConsoleReader.readString();
+        String phoneNumber = consoleReader.readString();
         try {
             System.out.println(clientService.findClientByPhoneNumber(phoneNumber).toString());
         } catch (Exception e) {
@@ -60,7 +64,7 @@ public class ClientConsoleView implements ConsoleView {
 
     private void printClientByLastName() {
         System.out.println(CLIENT_LASTNAME_INPUT_MESSAGE);
-        String lastName = ConsoleReader.readString();
+        String lastName = consoleReader.readString();
         try {
             System.out.println(clientService.findClientsByLastName(lastName));
         } catch (Exception e) {
@@ -70,7 +74,7 @@ public class ClientConsoleView implements ConsoleView {
 
     private void printClientByFirstName() {
         System.out.println(CLIENT_FIRSTNAME_INPUT_MESSAGE);
-        String firstName = ConsoleReader.readString();
+        String firstName = consoleReader.readString();
         try {
             System.out.println(clientService.findClientsByFirstName(firstName));
         } catch (Exception e) {
@@ -79,15 +83,14 @@ public class ClientConsoleView implements ConsoleView {
     }
 
     private void addClient() {
-        // TODO refactor this and addBook methods
         System.out.println(CLIENT_FIRSTNAME_INPUT_MESSAGE);
-        String firstName = ConsoleReader.readString();
+        String firstName = consoleReader.readString();
         System.out.println(CLIENT_LASTNAME_INPUT_MESSAGE);
-        String lastName = ConsoleReader.readString();
+        String lastName = consoleReader.readString();
         System.out.println(CLIENT_ADDRESS_INPUT_MESSAGE);
-        String address = ConsoleReader.readString();
+        String address = consoleReader.readString();
         System.out.println(CLIENT_PHONE_NUMBER_INPUT_MESSAGE);
-        String phoneNumber = ConsoleReader.readString();
+        String phoneNumber = consoleReader.readString();
 
         try {
             clientService.insertClient(firstName, lastName, address, phoneNumber);

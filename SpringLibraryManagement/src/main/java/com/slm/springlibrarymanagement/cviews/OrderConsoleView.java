@@ -21,20 +21,24 @@ public class OrderConsoleView implements ConsoleView {
     private final OrderService orderService;
     private final ClientService clientService;
     private final BookService bookService;
+    private final ConsoleReader consoleReader;
+    private final ConsoleRangeReader consoleRangeReader;
 
     @Autowired
-    public OrderConsoleView(ExtendDueDateConsoleView extendDueDateConsoleView, OrderService orderService, ClientService clientService, BookService bookService) {
+    public OrderConsoleView(ExtendDueDateConsoleView extendDueDateConsoleView, OrderService orderService, ClientService clientService, BookService bookService, ConsoleReader consoleReader, ConsoleRangeReader consoleRangeReader) {
         this.extendDueDateConsoleView = extendDueDateConsoleView;
         this.orderService = orderService;
         this.clientService = clientService;
         this.bookService = bookService;
+        this.consoleReader = consoleReader;
+        this.consoleRangeReader = consoleRangeReader;
     }
 
     @Override
     public void showItemMenu(ConsoleView invoker) {
         System.out.println(ORDERS_OPTION_MESSAGE);
         System.out.print(CHOOSE_AN_OPTION_MESSAGE);
-        int choice = ConsoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
+        int choice = consoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
         if (mainViewReference == null) {
             mainViewReference = invoker;
         }
@@ -46,7 +50,7 @@ public class OrderConsoleView implements ConsoleView {
                 printAllOrders();
                 break;
             case 2:
-                 printAllOrdersForClient();
+                printAllOrdersForClient();
                 break;
             case 3:
                 printAllOrdersIssuedOn();
@@ -70,42 +74,42 @@ public class OrderConsoleView implements ConsoleView {
 
     private void printAllOrdersWithIssueDateAfter() {
         System.out.println(INSERT_DATE_MESSAGE);
-        String date = ConsoleReader.readString();
+        String date = consoleReader.readString();
         try {
             System.out.println(orderService.findOrdersWithIssueDateAfter(date));
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
     private void printAllOrdersWithIssueDateBefore() {
         System.out.println(INSERT_DATE_MESSAGE);
-        String date = ConsoleReader.readString();
+        String date = consoleReader.readString();
         try {
             System.out.println(orderService.findOrdersWithIssueDateBefore(date));
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
     private void printAllOrdersIssuedOn() {
         System.out.println(INSERT_DATE_MESSAGE);
-        String date = ConsoleReader.readString();
+        String date = consoleReader.readString();
         try {
             System.out.println(orderService.findOrdersByIssueDate(date));
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
     private void printAllOrdersForClient() {
-        try{
+        try {
             System.out.println(clientService.findAllClients());
             System.out.println(CHOOSE_CLIENT_ID_MESSAGE);
-            Long id = ConsoleReader.readLong();
+            Long id = consoleReader.readLong();
             System.out.println(orderService.findAllOrdersByClient(clientService.findClientById(id)));
         } catch (Exception e) {
-           System.out.println(e.getMessage());
+            System.out.println(e.getMessage());
         }
 
     }
@@ -125,16 +129,16 @@ public class OrderConsoleView implements ConsoleView {
             System.out.println(e.getMessage());
         }
         System.out.println(CHOOSE_CLIENT_ID_MESSAGE);
-        Long clientId = ConsoleReader.readLong();
+        Long clientId = consoleReader.readLong();
         try {
             System.out.println(bookService.findAllBooks());
         } catch (NoEntriesFoundException e) {
             System.out.println(e.getMessage());
         }
         System.out.println(CHOOSE_BOOK_ID_MESSAGE);
-        Long bookId = ConsoleReader.readLong();
+        Long bookId = consoleReader.readLong();
         System.out.println(BOOK_COUNT_MESSAGE);
-        Integer bookCount = ConsoleReader.readInt();
+        Integer bookCount = consoleReader.readInt();
         try {
             System.out.println(orderService.insertOrder(clientId, bookId, bookCount));
         } catch (Exception e) {

@@ -66,7 +66,7 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public void backupToFile() throws BackUpFailedException {
-        dataWriterService.writeDataToFile(bookList, ClassesEnum.Book);
+        dataWriterService.writeDataToFile(bookList.stream().sorted().collect(Collectors.toList()), ClassesEnum.Book);
     }
 
     private void addAll() throws SQLException {
@@ -75,7 +75,7 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public List<Book> findAllBooks() {
-        return bookList;
+        return bookList.stream().sorted().collect(Collectors.toList());
     }
 
     @Override
@@ -112,6 +112,6 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public boolean updateBook(Book book) throws SQLException {
-        return dataWriterService.update(UPDATE_BOOK_SQL,book,ClassesEnum.Book);
+        return dataWriterService.update(UPDATE_BOOK_SQL, book, ClassesEnum.Book);
     }
 }

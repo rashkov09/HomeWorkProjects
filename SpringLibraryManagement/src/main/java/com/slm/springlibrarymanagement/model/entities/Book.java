@@ -6,8 +6,7 @@ import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
 
 
-public class Book extends BaseEntity {
-    private static final Integer DEFAULT_NUMBER_OF_COPIES = 1;
+public class Book extends BaseEntity implements Comparable<Book>{
     private String name;
 
     private Author author;
@@ -51,11 +50,11 @@ public class Book extends BaseEntity {
     }
 
     public void setNumberOfCopies(Integer numberOfCopies) {
-            this.numberOfCopies = numberOfCopies;
+        this.numberOfCopies = numberOfCopies;
     }
 
-    public void removeBooks(Integer bookCount){
-        setNumberOfCopies(this.numberOfCopies-bookCount);
+    public void removeBooks(Integer bookCount) {
+        setNumberOfCopies(this.numberOfCopies - bookCount);
     }
 
     public void addCopies(Integer numberOfCopies) {
@@ -73,5 +72,10 @@ public class Book extends BaseEntity {
                 | Copies: %d
                 --------------------------------------------------
                 """, this.getId(), this.getName(), this.author.getName(), this.issueDate, this.getNumberOfCopies());
+    }
+
+    @Override
+    public int compareTo(Book o) {
+        return this.getId().compareTo(o.getId());
     }
 }

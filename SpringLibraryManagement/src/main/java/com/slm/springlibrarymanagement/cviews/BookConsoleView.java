@@ -20,17 +20,22 @@ public class BookConsoleView implements ConsoleView {
     public final BookService bookService;
     public final AuthorService authorService;
 
+    private final ConsoleReader consoleReader;
+    private final ConsoleRangeReader consoleRangeReader;
+
     @Autowired
-    public BookConsoleView(BookService bookService, AuthorService authorService) {
+    public BookConsoleView(BookService bookService, AuthorService authorService, ConsoleReader consoleReader, ConsoleRangeReader consoleRangeReader) {
         this.bookService = bookService;
         this.authorService = authorService;
+        this.consoleReader = consoleReader;
+        this.consoleRangeReader = consoleRangeReader;
     }
 
     @Override
     public void showItemMenu(ConsoleView invoker) {
         System.out.println(BOOKS_OPTION_MESSAGE);
         System.out.println(CHOOSE_AN_OPTION_MESSAGE);
-        int choice = ConsoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
+        int choice = consoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
         switch (choice) {
             case 0:
                 invoker.showItemMenu(this);
@@ -59,7 +64,7 @@ public class BookConsoleView implements ConsoleView {
 
     private void printBookStartingWith() {
         System.out.println(QUERY_NAME_PREFIX);
-        String prefix = ConsoleReader.readString();
+        String prefix = consoleReader.readString();
         try {
             System.out.println(bookService.findBooksByNameStartingWith(prefix));
         } catch (Exception e) {
@@ -69,7 +74,7 @@ public class BookConsoleView implements ConsoleView {
 
     private void printBookByAuthorName() {
         System.out.println(AUTHOR_NAME_INPUT_MESSAGE);
-        String authorName = ConsoleReader.readString();
+        String authorName = consoleReader.readString();
         try {
             System.out.println(bookService.findBooksByAuthorName(authorName));
         } catch (Exception e) {
@@ -79,7 +84,7 @@ public class BookConsoleView implements ConsoleView {
 
     private void printBookByIssueDate() {
         System.out.println(BOOK_ISSUE_DATE_SEARCH_MESSAGE);
-        String issueDate = ConsoleReader.readString();
+        String issueDate = consoleReader.readString();
         try {
             System.out.println(bookService.findBookByIssueDate(issueDate).toString());
         } catch (Exception e) {
@@ -89,7 +94,7 @@ public class BookConsoleView implements ConsoleView {
 
     private void printBookByName() {
         System.out.println(BOOK_NAME_INPUT_MESSAGE);
-        String bookName = ConsoleReader.readString();
+        String bookName = consoleReader.readString();
         try {
             System.out.println(bookService.findBookByName(bookName).toString());
         } catch (Exception e) {
@@ -104,17 +109,16 @@ public class BookConsoleView implements ConsoleView {
             System.out.println(e.getMessage());
         }
         System.out.println(AUTHOR_ID_SELECT_MESSAGE);
-        String authorId = ConsoleReader.readString();
+        String authorId = consoleReader.readString();
         System.out.println(BOOK_NAME_INPUT_MESSAGE);
-        String bookName = ConsoleReader.readString();
+        String bookName = consoleReader.readString();
         System.out.println(BOOK_ISSUE_DATE_MESSAGE);
-        String issueDate = ConsoleReader.readString();
+        String issueDate = consoleReader.readString();
         System.out.println(BOOK_NUMBER_OF_COPIES_MESSAGE);
-        String numberOfCopies = ConsoleReader.readString();
+        String numberOfCopies = consoleReader.readString();
         try {
             System.out.println(bookService.insertBook(authorId, bookName, issueDate, numberOfCopies));
         } catch (Exception e) {
-            System.out.println(Arrays.toString(e.getStackTrace()));
             System.out.println(e.getMessage());
         }
     }

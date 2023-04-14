@@ -6,6 +6,7 @@ import com.slm.springlibrarymanagement.exceptions.order.OrderNotFoundException;
 import com.slm.springlibrarymanagement.service.OrderService;
 import com.slm.springlibrarymanagement.util.ConsoleRangeReader;
 import com.slm.springlibrarymanagement.util.ConsoleReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static com.slm.springlibrarymanagement.constants.messages.GeneralMessages.CHOOSE_AN_OPTION_MESSAGE;
@@ -25,17 +26,22 @@ public class ExtendDueDateConsoleView implements ConsoleView {
                 0. Back
             """;
     private final OrderService orderService;
+    private final ConsoleReader consoleReader;
+    private final ConsoleRangeReader consoleRangeReader;
 
-
-    public ExtendDueDateConsoleView(OrderService orderService) {
+    @Autowired
+    public ExtendDueDateConsoleView(OrderService orderService, ConsoleReader consoleReader, ConsoleRangeReader consoleRangeReader) {
         this.orderService = orderService;
+        this.consoleReader = consoleReader;
+        this.consoleRangeReader = consoleRangeReader;
     }
+
 
     @Override
     public void showItemMenu(ConsoleView invoker) {
         System.out.println(EXTEND_DUE_DATE_MESSAGE);
         System.out.print(CHOOSE_AN_OPTION_MESSAGE);
-        int choice = ConsoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
+        int choice = consoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
         switch (choice) {
             case 0 -> {
                 invoker.showItemMenu(this);
@@ -64,8 +70,7 @@ public class ExtendDueDateConsoleView implements ConsoleView {
             System.out.println(e.getMessage());
         }
         System.out.println(CHOOSE_ORDER_ID_MESSAGE);
-        Long id = ConsoleReader.readLong();
-        return id;
+        return consoleReader.readLong();
     }
 
     private void extendDueDate(Long id, IncreasePeriod period) {
@@ -74,7 +79,7 @@ public class ExtendDueDateConsoleView implements ConsoleView {
             case WEEK -> System.out.println(INSERT_WEEK_COUNT);
             case MONTH -> System.out.println(INSERT_MONTH_COUNT);
         }
-        int count = ConsoleReader.readInt();
+        int count = consoleReader.readInt();
         try {
             System.out.println(orderService.extendOrderDueDate(id, count, period));
         } catch (OrderNotFoundException e) {

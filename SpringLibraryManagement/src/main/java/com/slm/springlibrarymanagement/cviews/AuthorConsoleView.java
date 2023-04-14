@@ -16,19 +16,22 @@ public class AuthorConsoleView implements ConsoleView {
 
     private static final int MIN_MENU_OPTION = 0;
     private static final int MAX_MENU_OPTION = 4;
-
     private final AuthorService authorService;
+    private final ConsoleReader consoleReader;
+    private final ConsoleRangeReader consoleRangeReader;
 
     @Autowired
-    public AuthorConsoleView(AuthorService authorService) {
+    public AuthorConsoleView(AuthorService authorService, ConsoleReader consoleReader, ConsoleRangeReader consoleRangeReader) {
         this.authorService = authorService;
+        this.consoleReader = consoleReader;
+        this.consoleRangeReader = consoleRangeReader;
     }
 
     @Override
     public void showItemMenu(ConsoleView invoker) {
         System.out.println(AUTHOR_OPTION_MESSAGE);
         System.out.print(CHOOSE_AN_OPTION_MESSAGE);
-        int choice = ConsoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
+        int choice = consoleRangeReader.readInt(MIN_MENU_OPTION, MAX_MENU_OPTION);
         switch (choice) {
             case 0:
                 invoker.showItemMenu(invoker);
@@ -51,7 +54,7 @@ public class AuthorConsoleView implements ConsoleView {
 
     private void findByAuthorId() {
         System.out.println(AUTHOR_ID_INPUT_MESSAGE);
-        String authorId = ConsoleReader.readString();
+        String authorId = consoleReader.readString();
         try {
             System.out.println(authorService.findAuthorById(authorId));
         } catch (Exception e) {
@@ -62,7 +65,7 @@ public class AuthorConsoleView implements ConsoleView {
 
     private void findByAuthorName() {
         System.out.println(AUTHOR_NAME_INPUT_MESSAGE);
-        String authorName = ConsoleReader.readString();
+        String authorName = consoleReader.readString();
         try {
             System.out.println(authorService.findAuthorByName(authorName).toString());
         } catch (Exception e) {
@@ -72,7 +75,7 @@ public class AuthorConsoleView implements ConsoleView {
 
     private void addAuthor() {
         System.out.println(AUTHOR_NAME_INPUT_MESSAGE);
-        String authorName = ConsoleReader.readString();
+        String authorName = consoleReader.readString();
         try {
             System.out.println(authorService.insertAuthor(authorName));
         } catch (Exception e) {

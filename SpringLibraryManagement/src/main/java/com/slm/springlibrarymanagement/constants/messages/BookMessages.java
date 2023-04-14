@@ -23,8 +23,9 @@ public final class BookMessages {
             Please, insert book issue date (dd/MM/yyyy): """;
     public static final String BOOK_NUMBER_OF_COPIES_MESSAGE = "Please, insert number of copies: ";
     public static final String QUERY_NAME_PREFIX = "Please, insert value for search: ";
-    public static final String BOOK_ADDED_SUCCESSFULLY_MESSAGE ="Book %s added successfully!";
-    public static final String BOOK_ADDITION_FAILED_MESSAGE ="Book %s added successfully!";
-    public static final String BOOK_COPIES_ADDED_SUCCESSFULLY_MESSAGE ="%s copies of %s added successfully!";
-    public static final String BOOK_UPDATE_FAILED_MESSAGE ="Failed to update book!";
+    public static final String BOOK_ADDED_SUCCESSFULLY_MESSAGE = "Book %s added successfully!";
+    public static final String BOOK_ADDITION_FAILED_MESSAGE = "Book %s added successfully!";
+    public static final String BOOK_COPIES_ADDED_SUCCESSFULLY_MESSAGE = "%s copies of %s added successfully!";
+    public static final String BOOK_COPIES_ADDITION_FAILED_MESSAGE = "Failed to add copies! Please,try again!";
+    public static final String BOOK_UPDATE_FAILED_MESSAGE = "Failed to update book!";
 }

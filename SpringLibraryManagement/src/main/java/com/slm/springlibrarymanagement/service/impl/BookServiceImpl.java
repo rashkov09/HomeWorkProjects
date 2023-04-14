@@ -64,15 +64,17 @@ public class BookServiceImpl implements BookService {
         } catch (NumberFormatException e) {
             throw new InvalidNumberOfCopies();
         }
-        if (inputValidator.isNotValidDate(issueDate)) {
-            throw new InvalidDateException();
-        }
+
         try {
             Book book = bookRepository.findByName(bookName);
             book.addCopies(Integer.parseInt(numberOfCopies));
-            bookRepository.addBook(book);
-            builder.append(String.format(BOOK_COPIES_ADDED_SUCCESSFULLY_MESSAGE, numberOfCopies, book.getName()));
+            builder.append(bookRepository.updateBook(book) ?
+                    String.format(BOOK_COPIES_ADDED_SUCCESSFULLY_MESSAGE, numberOfCopies, book.getName()) :
+                    BOOK_COPIES_ADDITION_FAILED_MESSAGE);
         } catch (NoSuchElementException e) {
+            if (inputValidator.isNotValidDate(issueDate)) {
+                throw new InvalidDateException();
+            }
             Book book = new Book();
             try {
                 Author author = authorService.findAuthorById(authorId);
@@ -90,6 +92,8 @@ public class BookServiceImpl implements BookService {
             } catch (AuthorNotFoundException a) {
                 throw new AuthorNotFoundException();
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return builder.toString();
     }

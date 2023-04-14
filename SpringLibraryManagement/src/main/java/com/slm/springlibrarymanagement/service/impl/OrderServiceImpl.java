@@ -172,7 +172,7 @@ public class OrderServiceImpl implements OrderService {
         try {
             Order order = orderRepository.findOrderById(id);
             order.extendDueDate(count, period);
-            return orderRepository.updateOrder(order) ? String.format(ORDER_MODIFICATION_SUCCESS,id) : String.format(ORDER_MODIFICATION_FAILED,id);
+            return orderRepository.updateOrder(order) ? String.format(ORDER_MODIFICATION_SUCCESS, id) : String.format(ORDER_MODIFICATION_FAILED, id);
         } catch (NoSuchElementException e) {
             throw new OrderNotFoundException();
         } catch (SQLException e) {
