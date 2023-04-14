@@ -25,7 +25,7 @@ import java.util.List;
 public class DataWriterServiceImpl<T> implements DataWriterService<T> {
     private static final String ORDER_TO_FILE_TEMPLATE = "%d.%s_%s_%s_%s_%d";
     private static final String CLIENT_TO_FILE_TEMPLATE = "%d. %s %s";
-    private static final String BOOK_TO_FILE_TEMPLATE = "%d.%s_%s_%s";
+    private static final String BOOK_TO_FILE_TEMPLATE = "%d.%s_%s_%s_%d";
     public final DataSource dataSource;
     public final AuthorFileAccessor authorFileAccessor;
     public final BookFileAccessor bookFileAccessor;
@@ -195,7 +195,8 @@ public class DataWriterServiceImpl<T> implements DataWriterService<T> {
                         .append(String.format(BOOK_TO_FILE_TEMPLATE,
                                 book.getId(), book.getName(),
                                 book.getAuthor().getName(),
-                                book.getIssueDate().format(formatter.getFormatter())))
+                                book.getIssueDate().format(formatter.getFormatter()),
+                                book.getNumberOfCopies()))
                         .append("\n"));
 
                 try {

@@ -186,8 +186,7 @@ public class DataLoaderServiceImpl<T> implements DataLoaderService<T> {
         author.setName(splitBookData[1]);
         book.setAuthor(author);
         book.setIssueDate(LocalDate.parse(splitBookData[2], formatter.getFormatter()));
-
-        book.setNumberOfCopies(1);
+        book.setNumberOfCopies(Integer.parseInt(splitBookData[3]));
     }
 }
 

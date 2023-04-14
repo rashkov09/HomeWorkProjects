@@ -8,7 +8,6 @@ import java.time.LocalDate;
 
 public class Book extends BaseEntity implements Comparable<Book>{
     private String name;
-
     private Author author;
     private LocalDate issueDate;
     private Integer numberOfCopies;

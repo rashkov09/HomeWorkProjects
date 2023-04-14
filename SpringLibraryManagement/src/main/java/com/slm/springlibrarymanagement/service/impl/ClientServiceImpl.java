@@ -73,7 +73,7 @@ public class ClientServiceImpl implements ClientService {
             if (clientRepository.addClient(client)) {
                 return String.format(CLIENT_ADDED_SUCCESSFULLY_MESSAGE, client.fullName());
             }
-            ;
+
         }
         return CLIENT_ADDITION_FAILED_MESSAGE;
     }
