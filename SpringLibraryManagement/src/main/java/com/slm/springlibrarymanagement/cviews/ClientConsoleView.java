@@ -93,7 +93,7 @@ public class ClientConsoleView implements ConsoleView {
         String phoneNumber = consoleReader.readString();
 
         try {
-           System.out.println(clientService.insertClient(firstName, lastName, address, phoneNumber));
+            System.out.println(clientService.insertClient(firstName, lastName, address, phoneNumber));
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

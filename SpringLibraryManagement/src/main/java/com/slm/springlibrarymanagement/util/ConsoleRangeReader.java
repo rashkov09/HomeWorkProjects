@@ -5,7 +5,7 @@ public class ConsoleRangeReader {
     private static final String INVALID_RANGE_MESSAGE = "Min value cannot exceed max value";
     private static final String NOT_WITHIN_RANGE_MESSAGE = "Input must be between %d and %d\n";
 
-    private ConsoleReader consoleReader;
+    private final ConsoleReader consoleReader;
 
     public ConsoleRangeReader(ConsoleReader consoleReader) {
         this.consoleReader = consoleReader;

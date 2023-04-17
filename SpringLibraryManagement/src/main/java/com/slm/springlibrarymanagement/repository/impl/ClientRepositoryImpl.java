@@ -70,7 +70,7 @@ public class ClientRepositoryImpl implements ClientRepository {
     }
 
     @Override
-    public List<Client> findAll() {
+    public List<Client> findAllClients() {
         return clientList;
     }
 

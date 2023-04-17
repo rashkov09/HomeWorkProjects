@@ -19,8 +19,8 @@ import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 import static com.slm.springlibrarymanagement.constants.messages.BookMessages.*;
 
@@ -132,7 +132,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public String findBooksByNameStartingWith(String prefix) throws BookNotFoundException {
         StringBuilder builder = new StringBuilder();
-        Set<Book> books = bookRepository.findByNameStartingWith(prefix);
+        List<Book> books = bookRepository.findByNameStartingWith(prefix);
         if (books.isEmpty()) {
             throw new BookNotFoundException();
         }

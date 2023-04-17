@@ -14,5 +14,5 @@ public final class GeneralMessages {
                     0. Exit
                     """;
 
-    public static final String FILE_NOT_FOUND_MESSAGE ="File not with path %s found";
+    public static final String FILE_NOT_FOUND_MESSAGE = "File not with path %s found";
 }

@@ -30,7 +30,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public String findAllClients() throws NoEntriesFoundException {
         StringBuilder builder = new StringBuilder();
-        clientRepository.findAll().forEach(client -> builder.append(String.format(CLIENT_VIEW_TEMPLATE,
+        clientRepository.findAllClients().forEach(client -> builder.append(String.format(CLIENT_VIEW_TEMPLATE,
                 client.getId(),
                 client.getFirstName(),
                 client.getLastName())).append("\n"));
