@@ -22,7 +22,7 @@ public interface ClientRepository {
 
     Client findClientByFirstNameAndLastName(String fullName);
 
-    List<Client> findAll();
+    List<Client> findAllClients();
 
     boolean addClient(Client client);
 
