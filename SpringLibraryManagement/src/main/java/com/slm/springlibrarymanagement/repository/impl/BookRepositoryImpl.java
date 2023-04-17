@@ -19,7 +19,6 @@ import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Repository
@@ -89,8 +88,8 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public Set<Book> findByNameStartingWith(String prefix) {
-        return bookList.stream().filter(book -> book.getName().toLowerCase().startsWith(prefix.toLowerCase())).collect(Collectors.toSet());
+    public List<Book> findByNameStartingWith(String prefix) {
+        return bookList.stream().filter(book -> book.getName().toLowerCase().startsWith(prefix.toLowerCase())).collect(Collectors.toList());
     }
 
 

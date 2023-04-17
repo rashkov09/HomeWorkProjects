@@ -1,26 +1,18 @@
 package com.slm.springlibrarymanagement.repository.impl;
 
-import com.slm.springlibrarymanagement.accessor.AuthorFileAccessor;
-import com.slm.springlibrarymanagement.accessor.BookFileAccessor;
-import com.slm.springlibrarymanagement.accessor.ClientFileAccessor;
-import com.slm.springlibrarymanagement.accessor.OrderFileAccessor;
 import com.slm.springlibrarymanagement.constants.ClassesEnum;
-import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.model.entities.Author;
 import com.slm.springlibrarymanagement.service.dmo.impl.DataLoaderServiceImpl;
 import com.slm.springlibrarymanagement.service.dmo.impl.DataWriterServiceImpl;
-import com.slm.springlibrarymanagement.util.CustomDateFormatter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -29,18 +21,13 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuthorRepositoryImplTest {
+    private final List<Author> authorList = new ArrayList<>();
     @Mock
     private DataLoaderServiceImpl<Author> authorDataLoaderService;
     @Mock
     private DataWriterServiceImpl<Author> authorDataWriterService;
-
-
     @InjectMocks
     private AuthorRepositoryImpl authorRepository;
-
-
-    private final List<Author> authorList = new ArrayList<>();
-
 
     @Before
     public void setUp() throws SQLException {

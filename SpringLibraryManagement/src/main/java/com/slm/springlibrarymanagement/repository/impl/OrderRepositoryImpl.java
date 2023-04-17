@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Repository
@@ -113,7 +114,7 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public Order findOrderById(Long id) {
+    public Order findOrderById(Long id) throws NoSuchElementException {
         return orderList.stream().filter(order -> order.getId().equals(id)).findFirst().orElseThrow();
     }
 

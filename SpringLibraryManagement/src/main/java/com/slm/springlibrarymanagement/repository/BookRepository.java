@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 
 public interface BookRepository {
@@ -22,7 +21,7 @@ public interface BookRepository {
 
     Book findByIssueDate(TemporalAccessor issueDate) throws NoSuchElementException;
 
-    Set<Book> findByNameStartingWith(String prefix);
+    List<Book> findByNameStartingWith(String prefix);
 
     Book findById(Long bookId) throws NoSuchElementException;
 
