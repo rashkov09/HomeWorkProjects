@@ -1,7 +1,5 @@
 package com.slm.springlibrarymanagement.model.entities;
 
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 import java.time.LocalDate;
 
@@ -24,8 +22,6 @@ public class Book extends BaseEntity implements Comparable<Book> {
         this.name = name;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "id")
     public Author getAuthor() {
         return author;
     }
