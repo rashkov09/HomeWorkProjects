@@ -1,6 +1,6 @@
 package com.slm.springlibrarymanagement.exceptions.author;
 
-public class InvalidAuthorNameException extends Exception {
+public class InvalidAuthorNameException extends RuntimeException {
     private static final String INVALID_AUTHOR_NAME_MESSAGE = """
             Invalid author name!
                         

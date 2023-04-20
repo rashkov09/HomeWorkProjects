@@ -23,8 +23,6 @@ import static com.slm.springlibrarymanagement.constants.messages.AuthorMessages.
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
-
-    private static final String AUTHORS_VIEW_TEMPLATE = "| %s |\n";
     private final AuthorRepository authorRepository;
     private final InputValidator inputValidator;
 
@@ -38,9 +36,8 @@ public class AuthorServiceImpl implements AuthorService {
         this.mapper = mapper;
     }
 
-
     @Override
-    public List<AuthorDto> findAllAuthors() throws NoEntriesFoundException {
+    public List<AuthorDto> findAllAuthors() {
         List<AuthorDto> authorDtos = mapper.mapToDtoList(authorRepository.findAllAuthors());
 
         if (authorDtos.isEmpty()) {
@@ -51,7 +48,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public String insertAuthor(String authorName) throws InvalidAuthorNameException {
+    public String insertAuthor(String authorName) {
         if (inputValidator.isNotValidFullName(authorName)) {
             throw new InvalidAuthorNameException();
         }
@@ -96,7 +93,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Author findAuthorByName(String authorName) throws InvalidAuthorNameException, AuthorNotFoundException {
+    public Author findAuthorByName(String authorName) {
         if (inputValidator.isNotValidFullName(authorName)) {
             throw new InvalidAuthorNameException();
         }
@@ -108,7 +105,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public AuthorDto findAuthorById(String authorId) throws InvalidIdException, AuthorNotFoundException {
+    public AuthorDto findAuthorById(String authorId) {
         try {
             Long.parseLong(authorId);
         } catch (NumberFormatException e) {

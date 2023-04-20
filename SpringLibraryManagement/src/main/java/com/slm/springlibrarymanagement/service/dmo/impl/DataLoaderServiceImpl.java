@@ -6,8 +6,8 @@ import com.slm.springlibrarymanagement.accessor.ClientFileAccessor;
 import com.slm.springlibrarymanagement.accessor.OrderFileAccessor;
 import com.slm.springlibrarymanagement.constants.ClassesEnum;
 import com.slm.springlibrarymanagement.mappers.AuthorMapper;
-import com.slm.springlibrarymanagement.mappers.BookRowMapper;
-import com.slm.springlibrarymanagement.mappers.ClientRowMapper;
+import com.slm.springlibrarymanagement.mappers.BookMapper;
+import com.slm.springlibrarymanagement.mappers.ClientMapper;
 import com.slm.springlibrarymanagement.mappers.OrderRowMapper;
 import com.slm.springlibrarymanagement.model.entities.Author;
 import com.slm.springlibrarymanagement.model.entities.Book;
@@ -36,8 +36,8 @@ public class DataLoaderServiceImpl<T> implements DataLoaderService<T> {
     private final DataSource dataSource;
     private final CustomDateFormatter formatter;
     private final AuthorMapper authorMapper;
-    private final BookRowMapper bookRowMapper;
-    private final ClientRowMapper clientRowMapper;
+    private final BookMapper bookMapper;
+    private final ClientMapper clientMapper;
     private final OrderRowMapper orderRowMapper;
     private final AuthorFileAccessor authorFileAccessor;
     private final BookFileAccessor bookFileAccessor;
@@ -45,12 +45,12 @@ public class DataLoaderServiceImpl<T> implements DataLoaderService<T> {
     private final OrderFileAccessor orderFileAccessor;
 
     @Autowired
-    public DataLoaderServiceImpl(DataSource dataSource, CustomDateFormatter formatter, AuthorMapper authorMapper, BookRowMapper bookRowMapper, ClientRowMapper clientRowMapper, OrderRowMapper orderRowMapper, AuthorFileAccessor authorFileAccessor, BookFileAccessor bookFileAccessor, ClientFileAccessor clientFileAccessor, OrderFileAccessor orderFileAccessor) {
+    public DataLoaderServiceImpl(DataSource dataSource, CustomDateFormatter formatter, AuthorMapper authorMapper, BookMapper bookMapper, ClientMapper clientMapper, OrderRowMapper orderRowMapper, AuthorFileAccessor authorFileAccessor, BookFileAccessor bookFileAccessor, ClientFileAccessor clientFileAccessor, OrderFileAccessor orderFileAccessor) {
         this.dataSource = dataSource;
         this.formatter = formatter;
         this.authorMapper = authorMapper;
-        this.bookRowMapper = bookRowMapper;
-        this.clientRowMapper = clientRowMapper;
+        this.bookMapper = bookMapper;
+        this.clientMapper = clientMapper;
         this.orderRowMapper = orderRowMapper;
         this.authorFileAccessor = authorFileAccessor;
         this.bookFileAccessor = bookFileAccessor;
@@ -76,7 +76,7 @@ public class DataLoaderServiceImpl<T> implements DataLoaderService<T> {
                 case Book -> {
                     List<Book> bookList = new ArrayList<>();
                     while (resultSet.next()) {
-                        Book book = bookRowMapper.mapRow(resultSet, resultSet.getRow());
+                        Book book = bookMapper.mapRow(resultSet, resultSet.getRow());
                         bookList.add(book);
                     }
 
@@ -85,7 +85,7 @@ public class DataLoaderServiceImpl<T> implements DataLoaderService<T> {
                 case Client -> {
                     List<Client> clientList = new ArrayList<>();
                     while (resultSet.next()) {
-                        Client client = clientRowMapper.mapRow(resultSet, resultSet.getRow());
+                        Client client = clientMapper.mapRow(resultSet, resultSet.getRow());
                         clientList.add(client);
                     }
                     return clientList.stream().map(client -> (T) client).collect(Collectors.toList());

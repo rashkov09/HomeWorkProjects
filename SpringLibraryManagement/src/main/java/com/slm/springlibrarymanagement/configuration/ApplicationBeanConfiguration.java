@@ -1,8 +1,8 @@
 package com.slm.springlibrarymanagement.configuration;
 
 import com.slm.springlibrarymanagement.mappers.AuthorMapper;
-import com.slm.springlibrarymanagement.mappers.BookRowMapper;
-import com.slm.springlibrarymanagement.mappers.ClientRowMapper;
+import com.slm.springlibrarymanagement.mappers.BookMapper;
+import com.slm.springlibrarymanagement.mappers.ClientMapper;
 import com.slm.springlibrarymanagement.mappers.OrderRowMapper;
 import com.slm.springlibrarymanagement.util.CustomDateFormatter;
 import com.slm.springlibrarymanagement.util.InputValidator;
@@ -51,13 +51,13 @@ public class ApplicationBeanConfiguration {
     }
 
     @Bean
-    public BookRowMapper bookRowMapper() {
-        return new BookRowMapper();
+    public BookMapper bookRowMapper() {
+        return new BookMapper();
     }
 
     @Bean
-    public ClientRowMapper clientRowMapper() {
-        return new ClientRowMapper();
+    public ClientMapper clientRowMapper() {
+        return new ClientMapper();
     }
 
     @Bean

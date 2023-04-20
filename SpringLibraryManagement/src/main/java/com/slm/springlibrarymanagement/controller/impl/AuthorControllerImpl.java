@@ -24,26 +24,15 @@ public class AuthorControllerImpl implements AuthorController {
         this.authorService = authorService;
     }
 
-    @GetMapping("/authors")
-    public ResponseEntity<List<AuthorDto>> getAllAuthors() {
-        try {
-            authorService.loadAuthorData();
-            return ResponseEntity.ok(authorService.findAllAuthors());
-        } catch (NoEntriesFoundException | InvalidIdException | SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
-    @GetMapping("/authors/{id}")
+    @Override
     public ResponseEntity<AuthorDto> getAuthorById(@PathVariable
-                                                   String id) {
-
-        try {
+                                                       String id) {
             AuthorDto authorDto = authorService.findAuthorById(id);
             return ResponseEntity.ok(authorDto);
-        } catch (InvalidIdException | AuthorNotFoundException e) {
-            throw new RuntimeException(e);
-        }
     }
+
+    @Override
+    public ResponseEntity<List<AuthorDto>> getAllAuthor() {
+            return ResponseEntity.ok(authorService.findAllAuthors());
+        }
 }

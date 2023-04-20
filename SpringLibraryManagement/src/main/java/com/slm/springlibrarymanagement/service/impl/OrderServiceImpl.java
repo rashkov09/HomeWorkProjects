@@ -4,11 +4,12 @@ import com.slm.springlibrarymanagement.constants.IncreasePeriod;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.InvalidDateException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
-import com.slm.springlibrarymanagement.exceptions.book.BookNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.book.InsufficientBookQuantityException;
 import com.slm.springlibrarymanagement.exceptions.book.InvalidNumberOfCopies;
 import com.slm.springlibrarymanagement.exceptions.client.ClientNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.order.OrderNotFoundException;
+import com.slm.springlibrarymanagement.mappers.BookMapper;
+import com.slm.springlibrarymanagement.mappers.ClientMapper;
 import com.slm.springlibrarymanagement.model.entities.Book;
 import com.slm.springlibrarymanagement.model.entities.Client;
 import com.slm.springlibrarymanagement.model.entities.Order;
@@ -33,6 +34,8 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final ClientService clientService;
     private final BookService bookService;
+    private final BookMapper bookMapper;
+    private final ClientMapper clientMapper;
     private final InputValidator inputValidator;
     private final StringBuilder builder;
 
@@ -40,11 +43,13 @@ public class OrderServiceImpl implements OrderService {
     public OrderServiceImpl(OrderRepository orderRepository,
                             ClientService clientService,
                             BookService bookService,
-                            InputValidator inputValidator,
+                            BookMapper bookMapper, ClientMapper clientMapper, InputValidator inputValidator,
                             StringBuilder builder) {
         this.orderRepository = orderRepository;
         this.clientService = clientService;
         this.bookService = bookService;
+        this.bookMapper = bookMapper;
+        this.clientMapper = clientMapper;
         this.inputValidator = inputValidator;
         this.builder = builder;
 
@@ -78,15 +83,13 @@ public class OrderServiceImpl implements OrderService {
         Book book;
         Order order = new Order();
         try {
-            client = clientService.findClientById(clientId);
+            client = clientMapper.mapFromDto(clientService.findClientById(String.valueOf(clientId)));
         } catch (ClientNotFoundException clientNotFoundException) {
             throw new RuntimeException(clientNotFoundException.getMessage());
         }
-        try {
-            book = bookService.findBookById(bookId);
-        } catch (BookNotFoundException bookNotFoundException) {
-            throw new RuntimeException(bookNotFoundException.getMessage());
-        }
+
+        book = bookMapper.mapFromDto(bookService.findBookById(bookId));
+
         if (book.getNumberOfCopies() < bookCount) {
             throw new InsufficientBookQuantityException();
         }

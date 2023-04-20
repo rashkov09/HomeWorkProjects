@@ -41,6 +41,15 @@ public class BookRepositoryImpl implements BookRepository {
         this.authorMapper = authorMapper;
         this.authorService = authorService;
         bookList = new ArrayList<>();
+        init();
+    }
+
+    private void init() {
+        try {
+            loadBookData();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

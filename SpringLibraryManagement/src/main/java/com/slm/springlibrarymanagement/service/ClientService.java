@@ -5,12 +5,14 @@ import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
 import com.slm.springlibrarymanagement.exceptions.author.AuthorNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.client.*;
+import com.slm.springlibrarymanagement.model.dto.ClientDto;
 import com.slm.springlibrarymanagement.model.entities.Client;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public interface ClientService {
-    String findAllClients() throws NoEntriesFoundException;
+    List<ClientDto> findAllClients();
 
     void backupToFile() throws BackUpFailedException;
 
@@ -24,7 +26,7 @@ public interface ClientService {
 
     Client findClientByFullName(String fullName) throws ClientNotFoundException;
 
-    Client findClientById(Long clientId) throws ClientNotFoundException;
+    ClientDto findClientById(String clientId);
 
     void loadClientData() throws AuthorNotFoundException, SQLException, InvalidIdException;
 }

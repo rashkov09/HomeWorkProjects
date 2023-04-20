@@ -20,7 +20,7 @@ public class AuthorMapper implements RowMapper<Author> {
     }
 
     public List<AuthorDto> mapToDtoList(List<Author> inboundList) {
-        return inboundList.stream().map(author -> new AuthorDto(author.getId(), author.getName())).collect(Collectors.toList());
+        return inboundList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     public AuthorDto mapToDto(Author inboundAuthor) {

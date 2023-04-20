@@ -72,7 +72,7 @@ public class OrderRepositoryImplTest {
         orderList.add(order);
         when(orderDataLoaderService.loadDataFromFile(ClassesEnum.Order)).thenReturn(orderList);
         when(clientService.findClientByFullName(client.fullName())).thenReturn(client);
-        when(bookService.findBookByName(book.getName())).thenReturn(book);
+       // when(bookService.findBookByName(book.getName())).thenReturn(book);
         orderRepository.loadOrderData();
     }
 

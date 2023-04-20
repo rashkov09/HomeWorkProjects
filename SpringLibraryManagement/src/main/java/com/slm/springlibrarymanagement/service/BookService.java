@@ -3,24 +3,25 @@ package com.slm.springlibrarymanagement.service;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.InvalidDateException;
 import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
-import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
 import com.slm.springlibrarymanagement.exceptions.author.AuthorNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.author.InvalidAuthorNameException;
 import com.slm.springlibrarymanagement.exceptions.book.BookNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.book.InvalidNumberOfCopies;
+import com.slm.springlibrarymanagement.model.dto.BookDto;
 import com.slm.springlibrarymanagement.model.entities.Book;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public interface BookService {
 
-    String findAllBooks() throws NoEntriesFoundException;
+    List<BookDto> findAllBooks();
 
     String insertBook(String authorId, String bookName, String issueDate, String numberOfCopies) throws InvalidIdException, AuthorNotFoundException, InvalidNumberOfCopies, InvalidDateException;
 
     void backupToFile() throws BackUpFailedException;
 
-    Book findBookByName(String bookName) throws BookNotFoundException;
+    BookDto findBookByName(String bookName) throws BookNotFoundException;
 
     Book findBookByIssueDate(String issueDate) throws BookNotFoundException;
 
@@ -28,7 +29,7 @@ public interface BookService {
 
     String findBooksByNameStartingWith(String prefix) throws BookNotFoundException;
 
-    Book findBookById(Long bookId) throws BookNotFoundException;
+    BookDto findBookById(Long bookId) throws BookNotFoundException;
 
     void updateBook(Book book) throws SQLException;
 

@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface AuthorService {
 
-    List<AuthorDto> findAllAuthors() throws NoEntriesFoundException;
+    List<AuthorDto> findAllAuthors() ;
 
     String insertAuthor(String author) throws InvalidAuthorNameException, AuthorAlreadyExistsException;
 
@@ -22,7 +22,7 @@ public interface AuthorService {
 
     Author findAuthorByName(String authorName) throws InvalidAuthorNameException, AuthorNotFoundException;
 
-    AuthorDto findAuthorById(String authorId) throws InvalidIdException, AuthorNotFoundException;
+    AuthorDto findAuthorById(String authorId);
 
 
     void loadAuthorData() throws SQLException, InvalidIdException;

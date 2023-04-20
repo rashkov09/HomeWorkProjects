@@ -1,8 +1,11 @@
 package com.slm.springlibrarymanagement.service.impl;
 
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
+import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
 import com.slm.springlibrarymanagement.exceptions.client.*;
+import com.slm.springlibrarymanagement.mappers.ClientMapper;
+import com.slm.springlibrarymanagement.model.dto.ClientDto;
 import com.slm.springlibrarymanagement.model.entities.Client;
 import com.slm.springlibrarymanagement.repository.ClientRepository;
 import com.slm.springlibrarymanagement.service.ClientService;
@@ -21,24 +24,22 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
     private final InputValidator inputValidator;
 
+    private final ClientMapper clientMapper;
+
     @Autowired
-    public ClientServiceImpl(ClientRepository clientRepository, InputValidator inputValidator) {
+    public ClientServiceImpl(ClientRepository clientRepository, InputValidator inputValidator, ClientMapper clientMapper) {
         this.clientRepository = clientRepository;
         this.inputValidator = inputValidator;
+        this.clientMapper = clientMapper;
     }
 
     @Override
-    public String findAllClients() throws NoEntriesFoundException {
-        StringBuilder builder = new StringBuilder();
-        clientRepository.findAllClients().forEach(client -> builder.append(String.format(CLIENT_VIEW_TEMPLATE,
-                client.getId(),
-                client.getFirstName(),
-                client.getLastName())).append("\n"));
-        if (builder.toString().isEmpty() || builder.toString().isBlank()) {
+    public List<ClientDto> findAllClients() {
+        List<ClientDto> clientDtos = clientMapper.mapToDtoList(clientRepository.findAllClients());
+        if (clientDtos.isEmpty()) {
             throw new NoEntriesFoundException();
         }
-
-        return builder.toString();
+        return clientDtos;
     }
 
 
@@ -130,9 +131,15 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client findClientById(Long clientId) throws ClientNotFoundException {
+    public ClientDto findClientById(String clientId) throws ClientNotFoundException {
+        long id;
+        try{
+          id=  Long.parseLong(clientId);
+        }catch (NumberFormatException e){
+            throw new InvalidIdException();
+        }
         try {
-            return clientRepository.findById(clientId);
+            return clientMapper.mapToDto(clientRepository.findById(id));
         } catch (NoSuchElementException e) {
             throw new ClientNotFoundException();
         }
