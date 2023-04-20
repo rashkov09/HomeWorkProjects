@@ -5,6 +5,7 @@ import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
 import com.slm.springlibrarymanagement.exceptions.author.AuthorNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.author.InvalidAuthorNameException;
+import com.slm.springlibrarymanagement.mappers.AuthorMapper;
 import com.slm.springlibrarymanagement.model.entities.Book;
 import com.slm.springlibrarymanagement.repository.BookRepository;
 import com.slm.springlibrarymanagement.service.AuthorService;
@@ -29,13 +30,15 @@ public class BookRepositoryImpl implements BookRepository {
     private static List<Book> bookList;
     public final DataLoaderService<Book> dataLoaderService;
     public final DataWriterService<Book> dataWriterService;
+    public final AuthorMapper authorMapper;
     public final AuthorService authorService;
 
 
     @Autowired
-    public BookRepositoryImpl(DataLoaderServiceImpl<Book> dataLoaderService, DataWriterService<Book> dataWriterService, AuthorService authorService) {
+    public BookRepositoryImpl(DataLoaderServiceImpl<Book> dataLoaderService, DataWriterService<Book> dataWriterService, AuthorMapper authorMapper, AuthorService authorService) {
         this.dataLoaderService = dataLoaderService;
         this.dataWriterService = dataWriterService;
+        this.authorMapper = authorMapper;
         this.authorService = authorService;
         bookList = new ArrayList<>();
     }
@@ -45,7 +48,7 @@ public class BookRepositoryImpl implements BookRepository {
         bookList = dataLoaderService.loadDataFromDb(SELECT_BOOKS_SQL, ClassesEnum.Book);
         bookList.forEach(book -> {
             try {
-                book.setAuthor(authorService.findAuthorById(String.valueOf(book.getAuthor().getId())));
+                book.setAuthor(authorMapper.mapFromDto(authorService.findAuthorById(String.valueOf(book.getAuthor().getId()))));
             } catch (InvalidIdException | AuthorNotFoundException e) {
                 throw new RuntimeException(e);
             }

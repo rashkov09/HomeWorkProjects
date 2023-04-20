@@ -5,7 +5,7 @@ import com.slm.springlibrarymanagement.accessor.BookFileAccessor;
 import com.slm.springlibrarymanagement.accessor.ClientFileAccessor;
 import com.slm.springlibrarymanagement.accessor.OrderFileAccessor;
 import com.slm.springlibrarymanagement.constants.ClassesEnum;
-import com.slm.springlibrarymanagement.mappers.AuthorRowMapper;
+import com.slm.springlibrarymanagement.mappers.AuthorMapper;
 import com.slm.springlibrarymanagement.mappers.BookRowMapper;
 import com.slm.springlibrarymanagement.mappers.ClientRowMapper;
 import com.slm.springlibrarymanagement.mappers.OrderRowMapper;
@@ -35,7 +35,7 @@ public class DataLoaderServiceImpl<T> implements DataLoaderService<T> {
     private final static Integer MAX_PHONE = 999999999;
     private final DataSource dataSource;
     private final CustomDateFormatter formatter;
-    private final AuthorRowMapper authorRowMapper;
+    private final AuthorMapper authorMapper;
     private final BookRowMapper bookRowMapper;
     private final ClientRowMapper clientRowMapper;
     private final OrderRowMapper orderRowMapper;
@@ -45,10 +45,10 @@ public class DataLoaderServiceImpl<T> implements DataLoaderService<T> {
     private final OrderFileAccessor orderFileAccessor;
 
     @Autowired
-    public DataLoaderServiceImpl(DataSource dataSource, CustomDateFormatter formatter, AuthorRowMapper authorRowMapper, BookRowMapper bookRowMapper, ClientRowMapper clientRowMapper, OrderRowMapper orderRowMapper, AuthorFileAccessor authorFileAccessor, BookFileAccessor bookFileAccessor, ClientFileAccessor clientFileAccessor, OrderFileAccessor orderFileAccessor) {
+    public DataLoaderServiceImpl(DataSource dataSource, CustomDateFormatter formatter, AuthorMapper authorMapper, BookRowMapper bookRowMapper, ClientRowMapper clientRowMapper, OrderRowMapper orderRowMapper, AuthorFileAccessor authorFileAccessor, BookFileAccessor bookFileAccessor, ClientFileAccessor clientFileAccessor, OrderFileAccessor orderFileAccessor) {
         this.dataSource = dataSource;
         this.formatter = formatter;
-        this.authorRowMapper = authorRowMapper;
+        this.authorMapper = authorMapper;
         this.bookRowMapper = bookRowMapper;
         this.clientRowMapper = clientRowMapper;
         this.orderRowMapper = orderRowMapper;
@@ -67,7 +67,7 @@ public class DataLoaderServiceImpl<T> implements DataLoaderService<T> {
                 case Author -> {
                     List<Author> authorList = new ArrayList<>();
                     while (resultSet.next()) {
-                        Author author = authorRowMapper.mapRow(resultSet, resultSet.getRow());
+                        Author author = authorMapper.mapRow(resultSet, resultSet.getRow());
                         authorList.add(author);
 
                     }

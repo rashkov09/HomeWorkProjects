@@ -7,6 +7,7 @@ import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
 import com.slm.springlibrarymanagement.exceptions.author.AuthorNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.book.BookNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.book.InvalidNumberOfCopies;
+import com.slm.springlibrarymanagement.mappers.AuthorMapper;
 import com.slm.springlibrarymanagement.model.entities.Author;
 import com.slm.springlibrarymanagement.model.entities.Book;
 import com.slm.springlibrarymanagement.repository.BookRepository;
@@ -29,6 +30,7 @@ public class BookServiceImpl implements BookService {
     private final CustomDateFormatter formatter;
     private final BookRepository bookRepository;
     private final AuthorService authorService;
+    private final AuthorMapper authorMapper;
 
     private final InputValidator inputValidator;
 
@@ -36,10 +38,11 @@ public class BookServiceImpl implements BookService {
     public BookServiceImpl(CustomDateFormatter formatter,
                            BookRepository bookRepository,
                            AuthorService authorService,
-                           InputValidator inputValidator) {
+                           AuthorMapper authorMapper, InputValidator inputValidator) {
         this.formatter = formatter;
         this.bookRepository = bookRepository;
         this.authorService = authorService;
+        this.authorMapper = authorMapper;
         this.inputValidator = inputValidator;
     }
 
@@ -77,7 +80,7 @@ public class BookServiceImpl implements BookService {
             }
             Book book = new Book();
             try {
-                Author author = authorService.findAuthorById(authorId);
+                Author author = authorMapper.mapFromDto(authorService.findAuthorById(authorId));
                 book.setAuthor(author);
                 book.setName(bookName);
                 book.setIssueDate(LocalDate.parse(issueDate, formatter.getFormatter()));

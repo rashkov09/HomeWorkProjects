@@ -5,6 +5,8 @@ import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
 import com.slm.springlibrarymanagement.exceptions.author.AuthorNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.author.InvalidAuthorNameException;
+import com.slm.springlibrarymanagement.mappers.AuthorMapper;
+import com.slm.springlibrarymanagement.model.dto.AuthorDto;
 import com.slm.springlibrarymanagement.model.entities.Author;
 import com.slm.springlibrarymanagement.repository.AuthorRepository;
 import com.slm.springlibrarymanagement.service.AuthorService;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.slm.springlibrarymanagement.constants.messages.AuthorMessages.AUTHOR_ADDED_SUCCESSFULLY_MESSAGE;
@@ -25,24 +28,26 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
     private final InputValidator inputValidator;
 
+    private final AuthorMapper mapper;
+
 
     @Autowired
-    public AuthorServiceImpl(AuthorRepository authorRepository, InputValidator inputValidator) {
+    public AuthorServiceImpl(AuthorRepository authorRepository, InputValidator inputValidator, AuthorMapper mapper) {
         this.authorRepository = authorRepository;
         this.inputValidator = inputValidator;
-
+        this.mapper = mapper;
     }
 
 
     @Override
-    public String findAllAuthors() throws NoEntriesFoundException {
-        StringBuilder builder = new StringBuilder();
-        authorRepository.findAllAuthors().forEach(author -> builder.append(String.format(AUTHORS_VIEW_TEMPLATE, author.toString())));
-        if (builder.toString().isEmpty() || builder.toString().isBlank()) {
+    public List<AuthorDto> findAllAuthors() throws NoEntriesFoundException {
+        List<AuthorDto> authorDtos = mapper.mapToDtoList(authorRepository.findAllAuthors());
+
+        if (authorDtos.isEmpty()) {
             throw new NoEntriesFoundException();
         }
 
-        return builder.toString();
+        return authorDtos;
     }
 
     @Override
@@ -103,14 +108,14 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Author findAuthorById(String authorId) throws InvalidIdException, AuthorNotFoundException {
+    public AuthorDto findAuthorById(String authorId) throws InvalidIdException, AuthorNotFoundException {
         try {
             Long.parseLong(authorId);
         } catch (NumberFormatException e) {
             throw new InvalidIdException();
         }
         try {
-            return authorRepository.findById(Long.parseLong(authorId));
+            return mapper.mapToDto(authorRepository.findById(Long.parseLong(authorId)));
         } catch (NoSuchElementException e) {
             throw new AuthorNotFoundException();
         }

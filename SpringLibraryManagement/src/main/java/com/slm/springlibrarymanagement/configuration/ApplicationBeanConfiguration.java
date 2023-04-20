@@ -1,6 +1,6 @@
 package com.slm.springlibrarymanagement.configuration;
 
-import com.slm.springlibrarymanagement.mappers.AuthorRowMapper;
+import com.slm.springlibrarymanagement.mappers.AuthorMapper;
 import com.slm.springlibrarymanagement.mappers.BookRowMapper;
 import com.slm.springlibrarymanagement.mappers.ClientRowMapper;
 import com.slm.springlibrarymanagement.mappers.OrderRowMapper;
@@ -46,8 +46,8 @@ public class ApplicationBeanConfiguration {
     }
 
     @Bean
-    public AuthorRowMapper authorRowMapper() {
-        return new AuthorRowMapper();
+    public AuthorMapper authorRowMapper() {
+        return new AuthorMapper();
     }
 
     @Bean
