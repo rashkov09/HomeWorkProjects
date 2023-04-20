@@ -10,6 +10,8 @@ import com.slm.springlibrarymanagement.exceptions.client.ClientNotFoundException
 import com.slm.springlibrarymanagement.exceptions.order.OrderNotFoundException;
 import com.slm.springlibrarymanagement.mappers.BookMapper;
 import com.slm.springlibrarymanagement.mappers.ClientMapper;
+import com.slm.springlibrarymanagement.mappers.OrderMapper;
+import com.slm.springlibrarymanagement.model.dto.OrderDto;
 import com.slm.springlibrarymanagement.model.entities.Book;
 import com.slm.springlibrarymanagement.model.entities.Client;
 import com.slm.springlibrarymanagement.model.entities.Order;
@@ -36,6 +38,7 @@ public class OrderServiceImpl implements OrderService {
     private final BookService bookService;
     private final BookMapper bookMapper;
     private final ClientMapper clientMapper;
+    private final OrderMapper orderMapper;
     private final InputValidator inputValidator;
     private final StringBuilder builder;
 
@@ -43,31 +46,39 @@ public class OrderServiceImpl implements OrderService {
     public OrderServiceImpl(OrderRepository orderRepository,
                             ClientService clientService,
                             BookService bookService,
-                            BookMapper bookMapper, ClientMapper clientMapper, InputValidator inputValidator,
+                            BookMapper bookMapper, ClientMapper clientMapper, OrderMapper orderMapper, InputValidator inputValidator,
                             StringBuilder builder) {
         this.orderRepository = orderRepository;
         this.clientService = clientService;
         this.bookService = bookService;
         this.bookMapper = bookMapper;
         this.clientMapper = clientMapper;
+        this.orderMapper = orderMapper;
         this.inputValidator = inputValidator;
         this.builder = builder;
-
+        init();
 
     }
 
+    private void init() {
+        try {
+            loadOrderData();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
-    public String findAllOrders() throws NoEntriesFoundException {
-        builder.setLength(0);
-        orderRepository.findAllOrders().forEach(order -> builder.append(order.toString()).append("\n"));
-        if (builder.isEmpty()) {
+    public List<OrderDto> findAllOrders() throws NoEntriesFoundException {
+        List<OrderDto> orderDtos = orderMapper.mapToDtoList(orderRepository.findAllOrders());
+        if (orderDtos.isEmpty()) {
             throw new NoEntriesFoundException();
         }
-        return builder.toString();
+        return orderDtos;
     }
 
     @Override
-    public void loadBookData() throws SQLException {
+    public void loadOrderData() throws SQLException {
         orderRepository.loadOrderData();
     }
 
@@ -114,14 +125,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String findAllOrdersByClient(Client clientById) throws NoEntriesFoundException {
-        builder.setLength(0);
-        List<Order> ordersByClientId = orderRepository.findOrdersByClientId(clientById.getId());
-        if (ordersByClientId.isEmpty()) {
+    public List<OrderDto> findAllOrdersByClient(Client clientById)  {
+        List<OrderDto> orderDtos = orderMapper.mapToDtoList(orderRepository.findOrdersByClientId(clientById.getId()));
+        if (orderDtos.isEmpty()) {
             throw new NoEntriesFoundException();
         }
-        ordersByClientId.forEach(order -> builder.append(order.toString()));
-        return builder.toString();
+        return orderDtos;
     }
 
     @Override

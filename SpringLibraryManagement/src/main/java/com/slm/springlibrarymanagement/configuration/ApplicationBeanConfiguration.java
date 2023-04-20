@@ -3,7 +3,7 @@ package com.slm.springlibrarymanagement.configuration;
 import com.slm.springlibrarymanagement.mappers.AuthorMapper;
 import com.slm.springlibrarymanagement.mappers.BookMapper;
 import com.slm.springlibrarymanagement.mappers.ClientMapper;
-import com.slm.springlibrarymanagement.mappers.OrderRowMapper;
+import com.slm.springlibrarymanagement.mappers.OrderMapper;
 import com.slm.springlibrarymanagement.util.CustomDateFormatter;
 import com.slm.springlibrarymanagement.util.InputValidator;
 import com.zaxxer.hikari.HikariConfig;
@@ -61,8 +61,8 @@ public class ApplicationBeanConfiguration {
     }
 
     @Bean
-    public OrderRowMapper orderRowMapper() {
-        return new OrderRowMapper();
+    public OrderMapper orderRowMapper() {
+        return new OrderMapper();
     }
 
     @Bean

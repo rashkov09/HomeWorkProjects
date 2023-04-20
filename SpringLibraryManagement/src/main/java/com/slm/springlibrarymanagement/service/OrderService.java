@@ -7,20 +7,22 @@ import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
 import com.slm.springlibrarymanagement.exceptions.book.InsufficientBookQuantityException;
 import com.slm.springlibrarymanagement.exceptions.book.InvalidNumberOfCopies;
 import com.slm.springlibrarymanagement.exceptions.order.OrderNotFoundException;
+import com.slm.springlibrarymanagement.model.dto.OrderDto;
 import com.slm.springlibrarymanagement.model.entities.Client;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public interface OrderService {
-    String findAllOrders() throws NoEntriesFoundException;
+    List<OrderDto> findAllOrders();
 
-    void loadBookData() throws SQLException;
+    void loadOrderData() throws SQLException;
 
     void backupToFile() throws BackUpFailedException;
 
     String insertOrder(Long clientId, Long bookId, Integer bookCount) throws InsufficientBookQuantityException, InvalidNumberOfCopies;
 
-    String findAllOrdersByClient(Client clientById) throws NoEntriesFoundException;
+    List<OrderDto> findAllOrdersByClient(Client clientById);
 
     String findOrdersByIssueDate(String date) throws InvalidDateException, NoEntriesFoundException;
 
