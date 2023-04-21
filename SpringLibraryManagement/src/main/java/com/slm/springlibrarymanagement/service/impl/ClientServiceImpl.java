@@ -1,5 +1,6 @@
 package com.slm.springlibrarymanagement.service.impl;
 
+import com.slm.springlibrarymanagement.controller.request.ClientRequest;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
@@ -49,34 +50,34 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public String insertClient(String firstName, String lastName, String address, String phoneNumber) throws InvalidClientFirstNameException, InvalidClientLastNameException, InvalidClientPhoneException, ClientAlreadyExistsException {
+    public Client insertClient(ClientRequest clientRequest) {
         Client client = new Client();
-        if (inputValidator.isNotValidFirstLastName(firstName)) {
+        if (inputValidator.isNotValidFirstLastName(clientRequest.getFirstName())) {
             throw new InvalidClientFirstNameException();
         }
-        if (inputValidator.isNotValidFirstLastName(lastName)) {
+        if (inputValidator.isNotValidFirstLastName(clientRequest.getLastName())) {
             throw new InvalidClientLastNameException();
         }
-        client.setFirstName(firstName);
-        client.setLastName(lastName);
-        if (!address.isBlank() && !address.isEmpty()) {
-            client.setAddress(address);
+        client.setFirstName(clientRequest.getFirstName());
+        client.setLastName(clientRequest.getLastName());
+        if (!clientRequest.getAddress().isBlank() && !clientRequest.getAddress().isEmpty()) {
+            client.setAddress(clientRequest.getAddress());
         }
-        if (inputValidator.isNotValidPhoneNumber(phoneNumber)) {
+        if (inputValidator.isNotValidPhoneNumber(clientRequest.getPhoneNumber())) {
             throw new InvalidClientPhoneException();
         }
         try {
-            findClientByPhoneNumber(phoneNumber);
+            findClientByPhoneNumber(clientRequest.getPhoneNumber());
             throw new ClientAlreadyExistsException();
         } catch (ClientNotFoundException e) {
-            client.setPhoneNumber(phoneNumber);
+            client.setPhoneNumber(clientRequest.getPhoneNumber());
 
             if (clientRepository.addClient(client)) {
-                return String.format(CLIENT_ADDED_SUCCESSFULLY_MESSAGE, client.fullName());
+                return client;
             }
 
         }
-        return CLIENT_ADDITION_FAILED_MESSAGE;
+        return null;
     }
 
     @Override
@@ -133,9 +134,9 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ClientDto findClientById(String clientId) throws ClientNotFoundException {
         long id;
-        try{
-          id=  Long.parseLong(clientId);
-        }catch (NumberFormatException e){
+        try {
+            id = Long.parseLong(clientId);
+        } catch (NumberFormatException e) {
             throw new InvalidIdException();
         }
         try {

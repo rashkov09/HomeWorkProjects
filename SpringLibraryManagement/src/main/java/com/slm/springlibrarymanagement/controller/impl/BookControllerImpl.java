@@ -38,7 +38,7 @@ public class BookControllerImpl implements BookController {
         Book book = bookService.insertBook(bookRequest);
 
         URI location = UriComponentsBuilder.fromUriString("/books/{id}")
-                .buildAndExpand(book.getAuthor().getId())
+                .buildAndExpand(book.getId())
                 .toUri();
 
         return ResponseEntity.created(location).build();

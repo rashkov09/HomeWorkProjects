@@ -9,8 +9,7 @@ import com.slm.springlibrarymanagement.exceptions.author.InvalidAuthorNameExcept
 import com.slm.springlibrarymanagement.exceptions.book.BookNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.book.InvalidBookNameException;
 import com.slm.springlibrarymanagement.exceptions.book.InvalidNumberOfCopies;
-import com.slm.springlibrarymanagement.exceptions.client.ClientAlreadyExistsException;
-import com.slm.springlibrarymanagement.exceptions.client.ClientNotFoundException;
+import com.slm.springlibrarymanagement.exceptions.client.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -112,7 +111,8 @@ public class GlobalExceptionHandler {
         Map<String, List<String>> errorsMap = formatErrorsResponse(error);
         return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
     }
- @ExceptionHandler(HttpMessageNotReadableException.class)
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Map<String, List<String>>> handleHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
         log.error("Caught exception: ", exception);
 
@@ -132,6 +132,33 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidDateException.class)
     public ResponseEntity<Map<String, List<String>>> handleInvalidDateException(InvalidDateException exception) {
+        log.error("Caught exception: ", exception);
+
+        String error = exception.getMessage();
+        Map<String, List<String>> errorsMap = formatErrorsResponse(error);
+        return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidClientFirstNameException.class)
+    public ResponseEntity<Map<String, List<String>>> handleInvalidClientFirstNameException(InvalidClientFirstNameException exception) {
+        log.error("Caught exception: ", exception);
+
+        String error = exception.getMessage();
+        Map<String, List<String>> errorsMap = formatErrorsResponse(error);
+        return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidClientLastNameException.class)
+    public ResponseEntity<Map<String, List<String>>> handleInvalidClientLastNameException(InvalidClientLastNameException exception) {
+        log.error("Caught exception: ", exception);
+
+        String error = exception.getMessage();
+        Map<String, List<String>> errorsMap = formatErrorsResponse(error);
+        return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidClientPhoneException.class)
+    public ResponseEntity<Map<String, List<String>>> handleInvalidClientPhoneException(InvalidClientPhoneException exception) {
         log.error("Caught exception: ", exception);
 
         String error = exception.getMessage();

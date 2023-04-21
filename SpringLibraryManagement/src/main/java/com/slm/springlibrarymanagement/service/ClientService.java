@@ -1,5 +1,6 @@
 package com.slm.springlibrarymanagement.service;
 
+import com.slm.springlibrarymanagement.controller.request.ClientRequest;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
@@ -16,7 +17,7 @@ public interface ClientService {
 
     void backupToFile() throws BackUpFailedException;
 
-    String insertClient(String firstName, String lastName, String address, String phoneNumber) throws InvalidClientFirstNameException, InvalidClientLastNameException, InvalidClientPhoneException, ClientAlreadyExistsException;
+    Client insertClient(ClientRequest clientRequest);
 
     Client findClientByPhoneNumber(String phoneNumber) throws ClientNotFoundException, InvalidClientPhoneException;
 

@@ -1,6 +1,6 @@
 package com.slm.springlibrarymanagement.exceptions.client;
 
-public class InvalidClientPhoneException extends Exception {
+public class InvalidClientPhoneException extends RuntimeException {
     private static final String INVALID_CLIENT_PHONE_NUMBER_MESSAGE = """
             Invalid client phone number!
                
