@@ -1,6 +1,6 @@
 package com.slm.springlibrarymanagement.exceptions.book;
 
-public class InvalidBookNameException extends RuntimeException{
+public class InvalidBookNameException extends RuntimeException {
 
     @Override
     public String getMessage() {

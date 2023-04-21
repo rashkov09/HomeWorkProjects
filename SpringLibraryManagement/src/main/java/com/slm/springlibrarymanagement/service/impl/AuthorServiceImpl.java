@@ -19,9 +19,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.slm.springlibrarymanagement.constants.messages.AuthorMessages.AUTHOR_ADDED_SUCCESSFULLY_MESSAGE;
-import static com.slm.springlibrarymanagement.constants.messages.AuthorMessages.AUTHOR_ADDITION_FAILED_MESSAGE;
-
 @Service
 public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;

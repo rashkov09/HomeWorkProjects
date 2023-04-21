@@ -1,6 +1,5 @@
 package com.slm.springlibrarymanagement.controller;
 
-import com.slm.springlibrarymanagement.controller.request.ClientRequest;
 import com.slm.springlibrarymanagement.controller.request.OrderRequest;
 import com.slm.springlibrarymanagement.model.dto.OrderDto;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +15,7 @@ public interface OrderController {
 
     @GetMapping("/orders/{id}")
     ResponseEntity<List<OrderDto>> getOrderByClientId(@PathVariable
-                                            String id);
+                                                      String id);
 
     @GetMapping("/orders")
     ResponseEntity<List<OrderDto>> getAllOrders();

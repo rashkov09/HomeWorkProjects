@@ -2,12 +2,9 @@ package com.slm.springlibrarymanagement.service;
 
 import com.slm.springlibrarymanagement.controller.request.BookRequest;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
-import com.slm.springlibrarymanagement.exceptions.InvalidDateException;
-import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
 import com.slm.springlibrarymanagement.exceptions.author.AuthorNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.author.InvalidAuthorNameException;
 import com.slm.springlibrarymanagement.exceptions.book.BookNotFoundException;
-import com.slm.springlibrarymanagement.exceptions.book.InvalidNumberOfCopies;
 import com.slm.springlibrarymanagement.model.dto.BookDto;
 import com.slm.springlibrarymanagement.model.entities.Book;
 

@@ -17,6 +17,7 @@ public interface AuthorController {
     @GetMapping("/authors/{id}")
     ResponseEntity<AuthorDto> getAuthorById(@PathVariable
                                             String id);
+
     @GetMapping("/authors")
     ResponseEntity<List<AuthorDto>> getAllAuthor();
 

@@ -1,7 +1,5 @@
 package com.slm.springlibrarymanagement.controller.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.validation.constraints.Pattern;
 
 public class AuthorRequest {

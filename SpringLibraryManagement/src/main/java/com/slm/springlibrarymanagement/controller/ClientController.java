@@ -15,6 +15,7 @@ public interface ClientController {
     @GetMapping("/clients/{id}")
     ResponseEntity<ClientDto> getClientById(@PathVariable
                                             String id);
+
     @GetMapping("/clients")
     ResponseEntity<List<ClientDto>> getAllClients();
 

@@ -31,7 +31,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
     private void init() {
         try {
-           loadAuthors();
+            loadAuthors();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

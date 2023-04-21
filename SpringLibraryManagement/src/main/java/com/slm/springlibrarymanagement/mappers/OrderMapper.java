@@ -1,11 +1,9 @@
 package com.slm.springlibrarymanagement.mappers;
 
-import com.slm.springlibrarymanagement.model.dto.ClientDto;
 import com.slm.springlibrarymanagement.model.dto.OrderDto;
 import com.slm.springlibrarymanagement.model.entities.Book;
 import com.slm.springlibrarymanagement.model.entities.Client;
 import com.slm.springlibrarymanagement.model.entities.Order;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -35,16 +33,16 @@ public class OrderMapper implements RowMapper<Order> {
     }
 
     public OrderDto mapToDto(Order inboundOrder) {
-        return new OrderDto(inboundOrder.getId(),inboundOrder.getClient(),inboundOrder.getBook(),inboundOrder.getIssueDate(),inboundOrder.getBookCount());
+        return new OrderDto(inboundOrder.getId(), inboundOrder.getClient(), inboundOrder.getBook(), inboundOrder.getIssueDate(), inboundOrder.getBookCount());
     }
 
     public Order mapFromDto(OrderDto inboundOrderDto) {
-       Order order = new Order();
-       order.setId(inboundOrderDto.getId());
-       order.setClient(inboundOrderDto.getClient());
-       order.setBook(inboundOrderDto.getBook());
-       order.setIssueDate(inboundOrderDto.getIssueDate());
-       order.setBookCount(inboundOrderDto.getBookCount());
+        Order order = new Order();
+        order.setId(inboundOrderDto.getId());
+        order.setClient(inboundOrderDto.getClient());
+        order.setBook(inboundOrderDto.getBook());
+        order.setIssueDate(inboundOrderDto.getIssueDate());
+        order.setBookCount(inboundOrderDto.getBookCount());
         return order;
     }
 }

@@ -6,7 +6,6 @@ import com.slm.springlibrarymanagement.exceptions.InvalidDateException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
 import com.slm.springlibrarymanagement.exceptions.book.BookNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.book.InvalidBookNameException;
-import com.slm.springlibrarymanagement.exceptions.book.InvalidNumberOfCopies;
 import com.slm.springlibrarymanagement.mappers.AuthorMapper;
 import com.slm.springlibrarymanagement.mappers.BookMapper;
 import com.slm.springlibrarymanagement.model.dto.BookDto;
@@ -24,8 +23,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
-
-import static com.slm.springlibrarymanagement.constants.messages.BookMessages.*;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -62,7 +59,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book insertBook(BookRequest bookRequest) {
 
-        if (bookRequest.getName().isEmpty()){
+        if (bookRequest.getName().isEmpty()) {
             throw new InvalidBookNameException();
         }
 
@@ -78,7 +75,7 @@ public class BookServiceImpl implements BookService {
         if (bookRepository.addBook(book)) {
             return book;
         }
-        return  null    ;
+        return null;
     }
 
     @Override

@@ -26,13 +26,12 @@ public class BookMapper implements RowMapper<Book> {
     }
 
 
-
     public List<BookDto> mapToDtoList(List<Book> inboundList) {
         return inboundList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
-    public  BookDto mapToDto(Book inboundBook) {
-        return new BookDto(inboundBook.getId(),inboundBook.getName(),inboundBook.getAuthor(),inboundBook.getIssueDate(), inboundBook.getNumberOfCopies());
+    public BookDto mapToDto(Book inboundBook) {
+        return new BookDto(inboundBook.getId(), inboundBook.getName(), inboundBook.getAuthor(), inboundBook.getIssueDate(), inboundBook.getNumberOfCopies());
     }
 
     public Book mapFromDto(BookDto inboundBookDto) {

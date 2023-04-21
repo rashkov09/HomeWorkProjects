@@ -2,9 +2,7 @@ package com.slm.springlibrarymanagement.controller.impl;
 
 import com.slm.springlibrarymanagement.controller.ClientController;
 import com.slm.springlibrarymanagement.controller.request.ClientRequest;
-import com.slm.springlibrarymanagement.mappers.ClientMapper;
 import com.slm.springlibrarymanagement.model.dto.ClientDto;
-import com.slm.springlibrarymanagement.model.entities.Book;
 import com.slm.springlibrarymanagement.model.entities.Client;
 import com.slm.springlibrarymanagement.service.ClientService;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+
 @RestController
 public class ClientControllerImpl implements ClientController {
     public final ClientService clientService;

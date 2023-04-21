@@ -3,7 +3,6 @@ package com.slm.springlibrarymanagement.controller.impl;
 import com.slm.springlibrarymanagement.controller.BookController;
 import com.slm.springlibrarymanagement.controller.request.BookRequest;
 import com.slm.springlibrarymanagement.model.dto.BookDto;
-import com.slm.springlibrarymanagement.model.entities.Author;
 import com.slm.springlibrarymanagement.model.entities.Book;
 import com.slm.springlibrarymanagement.service.BookService;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +23,8 @@ public class BookControllerImpl implements BookController {
 
     @Override
     public ResponseEntity<BookDto> getBookById(String id) {
-            BookDto bookDto = bookService.findBookById(Long.parseLong(id));
-            return ResponseEntity.ok(bookDto);
+        BookDto bookDto = bookService.findBookById(Long.parseLong(id));
+        return ResponseEntity.ok(bookDto);
     }
 
     @Override

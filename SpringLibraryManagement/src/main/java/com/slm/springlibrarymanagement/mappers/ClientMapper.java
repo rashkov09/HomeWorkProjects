@@ -1,8 +1,6 @@
 package com.slm.springlibrarymanagement.mappers;
 
-import com.slm.springlibrarymanagement.model.dto.BookDto;
 import com.slm.springlibrarymanagement.model.dto.ClientDto;
-import com.slm.springlibrarymanagement.model.entities.Book;
 import com.slm.springlibrarymanagement.model.entities.Client;
 import org.springframework.jdbc.core.RowMapper;
 

@@ -7,7 +7,6 @@ import com.slm.springlibrarymanagement.exceptions.InvalidDateException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
 import com.slm.springlibrarymanagement.exceptions.book.InsufficientBookQuantityException;
 import com.slm.springlibrarymanagement.exceptions.book.InvalidNumberOfCopies;
-import com.slm.springlibrarymanagement.exceptions.client.ClientNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.order.OrderNotFoundException;
 import com.slm.springlibrarymanagement.mappers.BookMapper;
 import com.slm.springlibrarymanagement.mappers.ClientMapper;
@@ -30,7 +29,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.slm.springlibrarymanagement.constants.messages.BookMessages.BOOK_UPDATE_FAILED_MESSAGE;
-import static com.slm.springlibrarymanagement.constants.messages.OrderMessages.*;
+import static com.slm.springlibrarymanagement.constants.messages.OrderMessages.ORDER_MODIFICATION_FAILED;
+import static com.slm.springlibrarymanagement.constants.messages.OrderMessages.ORDER_MODIFICATION_SUCCESS;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -60,7 +60,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-
     @Override
     public List<OrderDto> findAllOrders() throws NoEntriesFoundException {
         List<OrderDto> orderDtos = orderMapper.mapToDtoList(orderRepository.findAllOrders());
@@ -77,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order insertOrder(OrderRequest orderRequest){
+    public Order insertOrder(OrderRequest orderRequest) {
         Client client;
         Book book;
         Order order = new Order();
@@ -108,7 +107,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDto> findAllOrdersByClient(Client clientById)  {
+    public List<OrderDto> findAllOrdersByClient(Client clientById) {
         List<OrderDto> orderDtos = orderMapper.mapToDtoList(orderRepository.findOrdersByClientId(clientById.getId()));
         if (orderDtos.isEmpty()) {
             throw new NoEntriesFoundException();

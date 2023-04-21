@@ -6,7 +6,7 @@ import com.slm.springlibrarymanagement.model.entities.Client;
 
 import java.time.LocalDate;
 
-public class OrderDto extends BaseDto{
+public class OrderDto extends BaseDto {
     private static final Integer DEFAULT_DUE_DATE_PERIOD = 1;
     private Client client;
     private Book book;
