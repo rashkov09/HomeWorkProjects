@@ -28,5 +28,4 @@ public interface ClientService {
 
     ClientDto findClientById(String clientId);
 
-    void loadClientData() throws AuthorNotFoundException, SQLException, InvalidIdException;
 }

@@ -56,17 +56,9 @@ public class OrderServiceImpl implements OrderService {
         this.orderMapper = orderMapper;
         this.inputValidator = inputValidator;
         this.builder = builder;
-        init();
-
     }
 
-    private void init() {
-        try {
-            loadOrderData();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 
     @Override
     public List<OrderDto> findAllOrders() throws NoEntriesFoundException {
@@ -75,11 +67,6 @@ public class OrderServiceImpl implements OrderService {
             throw new NoEntriesFoundException();
         }
         return orderDtos;
-    }
-
-    @Override
-    public void loadOrderData() throws SQLException {
-        orderRepository.loadOrderData();
     }
 
 

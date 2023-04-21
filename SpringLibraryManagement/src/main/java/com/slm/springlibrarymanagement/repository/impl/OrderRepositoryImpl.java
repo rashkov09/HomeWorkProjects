@@ -45,6 +45,15 @@ public class OrderRepositoryImpl implements OrderRepository {
         this.clientMapper = clientMapper;
         this.formatter = formatter;
         orderList = new ArrayList<>();
+        init();
+    }
+
+    private void init() {
+        try {
+            loadOrderData();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

@@ -20,6 +20,9 @@ public class BookDto extends BaseDto {
         this.numberOfCopies = numberOfCopies;
     }
 
+    public BookDto(Long id) {
+        super(id);
+    }
 
     public String getName() {
         return name;

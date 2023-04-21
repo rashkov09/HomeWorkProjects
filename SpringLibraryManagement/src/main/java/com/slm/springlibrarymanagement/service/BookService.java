@@ -1,5 +1,6 @@
 package com.slm.springlibrarymanagement.service;
 
+import com.slm.springlibrarymanagement.controller.request.BookRequest;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.InvalidDateException;
 import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
@@ -17,7 +18,7 @@ public interface BookService {
 
     List<BookDto> findAllBooks();
 
-    String insertBook(String authorId, String bookName, String issueDate, String numberOfCopies) throws InvalidIdException, AuthorNotFoundException, InvalidNumberOfCopies, InvalidDateException;
+    Book insertBook(BookRequest bookRequest);
 
     void backupToFile() throws BackUpFailedException;
 
@@ -33,5 +34,4 @@ public interface BookService {
 
     void updateBook(Book book) throws SQLException;
 
-    void loadBookData() throws SQLException;
 }

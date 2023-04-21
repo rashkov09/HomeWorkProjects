@@ -145,8 +145,4 @@ public class ClientServiceImpl implements ClientService {
         }
     }
 
-    @Override
-    public void loadClientData() throws SQLException {
-        clientRepository.loadClients();
-    }
 }

@@ -1,5 +1,6 @@
 package com.slm.springlibrarymanagement.service;
 
+import com.slm.springlibrarymanagement.controller.request.AuthorRequest;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
@@ -16,7 +17,7 @@ public interface AuthorService {
 
     List<AuthorDto> findAllAuthors() ;
 
-    String insertAuthor(String author) throws InvalidAuthorNameException, AuthorAlreadyExistsException;
+    Author insertAuthor(AuthorRequest authorRequest) throws InvalidAuthorNameException, AuthorAlreadyExistsException;
 
     void backupToFile() throws BackUpFailedException;
 
@@ -25,5 +26,4 @@ public interface AuthorService {
     AuthorDto findAuthorById(String authorId);
 
 
-    void loadAuthorData() throws SQLException, InvalidIdException;
 }

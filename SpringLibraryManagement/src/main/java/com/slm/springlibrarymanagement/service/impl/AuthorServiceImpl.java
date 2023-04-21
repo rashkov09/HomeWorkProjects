@@ -1,8 +1,10 @@
 package com.slm.springlibrarymanagement.service.impl;
 
+import com.slm.springlibrarymanagement.controller.request.AuthorRequest;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
+import com.slm.springlibrarymanagement.exceptions.author.AuthorAlreadyExistsException;
 import com.slm.springlibrarymanagement.exceptions.author.AuthorNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.author.InvalidAuthorNameException;
 import com.slm.springlibrarymanagement.mappers.AuthorMapper;
@@ -14,7 +16,6 @@ import com.slm.springlibrarymanagement.util.InputValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -48,23 +49,24 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public String insertAuthor(String authorName) {
-        if (inputValidator.isNotValidFullName(authorName)) {
+    public Author insertAuthor(AuthorRequest authorRequest) {
+        if (inputValidator.isNotValidFullName(authorRequest.getName())) {
             throw new InvalidAuthorNameException();
         }
         Author author = new Author();
 
-        author.setName(formatAuthorName(authorName.toLowerCase()));
+        author.setName(formatAuthorName(authorRequest.getName().toLowerCase()));
 
         try {
-            author = findAuthorByName(authorName);
+            author = findAuthorByName(authorRequest.getName());
         } catch (AuthorNotFoundException e) {
             if (authorRepository.addAuthor(author)) {
-                return String.format(AUTHOR_ADDED_SUCCESSFULLY_MESSAGE, author.getName());
+                return author;
             }
         }
-        return AUTHOR_ADDITION_FAILED_MESSAGE;
+        throw new AuthorAlreadyExistsException();
     }
+
 
     @Override
     public void backupToFile() throws BackUpFailedException {
@@ -118,9 +120,5 @@ public class AuthorServiceImpl implements AuthorService {
         }
     }
 
-    @Override
-    public void loadAuthorData() throws SQLException, InvalidIdException {
-        authorRepository.loadAuthors();
-    }
 
 }

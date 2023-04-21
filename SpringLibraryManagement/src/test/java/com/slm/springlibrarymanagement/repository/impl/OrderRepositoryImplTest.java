@@ -3,6 +3,9 @@ package com.slm.springlibrarymanagement.repository.impl;
 import com.slm.springlibrarymanagement.constants.ClassesEnum;
 import com.slm.springlibrarymanagement.exceptions.book.BookNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.client.ClientNotFoundException;
+import com.slm.springlibrarymanagement.mappers.BookMapper;
+import com.slm.springlibrarymanagement.mappers.ClientMapper;
+import com.slm.springlibrarymanagement.model.dto.BookDto;
 import com.slm.springlibrarymanagement.model.entities.Author;
 import com.slm.springlibrarymanagement.model.entities.Book;
 import com.slm.springlibrarymanagement.model.entities.Client;
@@ -18,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.sql.SQLException;
@@ -41,6 +45,10 @@ public class OrderRepositoryImplTest {
     private ClientServiceImpl clientService;
     @Mock
     private BookServiceImpl bookService;
+    @Spy
+    private BookMapper bookMapper;
+    @Spy
+    private ClientMapper clientMapper;
     @Mock
     private CustomDateFormatter formatter;
     @InjectMocks
@@ -57,22 +65,17 @@ public class OrderRepositoryImplTest {
         Author author = new Author();
         author.setName("Dali Rim");
         author.setId(1L);
-        Book book = new Book();
-        book.setAuthor(author);
-        book.setIssueDate(LocalDate.now());
-        book.setNumberOfCopies(4);
-        book.setName("The Book");
-        book.setId(1L);
+        BookDto book = new BookDto(1L, "The Book",author,LocalDate.now(),4);
         Order order = new Order();
         order.setClient(client);
-        order.setBook(book);
+        order.setBook(bookMapper.mapFromDto(book));
         order.setIssueDate(LocalDate.of(1800, 1, 1));
         order.setBookCount(2);
         order.setId(1L);
         orderList.add(order);
         when(orderDataLoaderService.loadDataFromFile(ClassesEnum.Order)).thenReturn(orderList);
         when(clientService.findClientByFullName(client.fullName())).thenReturn(client);
-       // when(bookService.findBookByName(book.getName())).thenReturn(book);
+        when( bookService.findBookByName(book.getName())).thenReturn(book);
         orderRepository.loadOrderData();
     }
 

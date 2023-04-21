@@ -69,11 +69,6 @@ public class Order extends BaseEntity implements Comparable<Order> {
         this.bookCount = bookCount;
     }
 
-    @Override
-    public String toString() {
-        return String.format("Order ID: %d\nClient: %s\nBook: %s\nIssue date: %s\nDue date: %s\nBook count: %d\n",
-                getId(), getClient().fullName(), getBook().getName(), getIssueDate(), getDueDate(), getBookCount());
-    }
 
     public void extendDueDate(Integer count, IncreasePeriod period) {
         switch (period) {

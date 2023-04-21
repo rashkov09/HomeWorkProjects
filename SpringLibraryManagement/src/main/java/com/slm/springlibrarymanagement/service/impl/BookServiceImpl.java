@@ -1,9 +1,11 @@
 package com.slm.springlibrarymanagement.service.impl;
 
+import com.slm.springlibrarymanagement.controller.request.BookRequest;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.InvalidDateException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
 import com.slm.springlibrarymanagement.exceptions.book.BookNotFoundException;
+import com.slm.springlibrarymanagement.exceptions.book.InvalidBookNameException;
 import com.slm.springlibrarymanagement.exceptions.book.InvalidNumberOfCopies;
 import com.slm.springlibrarymanagement.mappers.AuthorMapper;
 import com.slm.springlibrarymanagement.mappers.BookMapper;
@@ -58,40 +60,25 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public String insertBook(String authorId, String bookName, String issueDate, String numberOfCopies){
-        StringBuilder builder = new StringBuilder();
+    public Book insertBook(BookRequest bookRequest) {
 
-        try {
-            Integer.parseInt(numberOfCopies);
-        } catch (NumberFormatException e) {
-            throw new InvalidNumberOfCopies();
+        if (bookRequest.getName().isEmpty()){
+            throw new InvalidBookNameException();
         }
 
-        try {
-            Book book = bookRepository.findByName(bookName);
-            book.addCopies(Integer.parseInt(numberOfCopies));
-            builder.append(bookRepository.updateBook(book) ?
-                    String.format(BOOK_COPIES_ADDED_SUCCESSFULLY_MESSAGE, numberOfCopies, book.getName()) :
-                    BOOK_COPIES_ADDITION_FAILED_MESSAGE);
-        } catch (NoSuchElementException e) {
-            if (inputValidator.isNotValidDate(issueDate)) {
-                throw new InvalidDateException();
-            }
-            Book book = new Book();
-                Author author = authorMapper.mapFromDto(authorService.findAuthorById(authorId));
-                book.setAuthor(author);
-                book.setName(bookName);
-                book.setIssueDate(LocalDate.parse(issueDate, formatter.getFormatter()));
-                book.setNumberOfCopies(Integer.parseInt(numberOfCopies));
-                if (bookRepository.addBook(book)) {
-                    builder.append(String.format(BOOK_ADDED_SUCCESSFULLY_MESSAGE, book.getName()));
-                } else {
-                    builder.append(String.format(BOOK_ADDITION_FAILED_MESSAGE, book.getName()));
-                }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        if (inputValidator.isNotValidDate(bookRequest.getIssueDate().toString())) {
+            throw new InvalidDateException();
         }
-        return builder.toString();
+        Book book = new Book();
+        Author author = authorMapper.mapFromDto(authorService.findAuthorById(bookRequest.getAuthor().getId().toString()));
+        book.setAuthor(author);
+        book.setName(bookRequest.getName());
+        book.setIssueDate(bookRequest.getIssueDate());
+        book.setNumberOfCopies(bookRequest.getNumberOfCopies());
+        if (bookRepository.addBook(book)) {
+            return book;
+        }
+        return  null    ;
     }
 
     @Override
@@ -101,7 +88,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto findBookByName(String bookName){
+    public BookDto findBookByName(String bookName) {
         try {
             return bookMapper.mapToDto(bookRepository.findByName(bookName));
         } catch (NoSuchElementException e) {
@@ -137,7 +124,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto findBookById(Long bookId){
+    public BookDto findBookById(Long bookId) {
         try {
             return bookMapper.mapToDto(bookRepository.findById(bookId));
         } catch (NoSuchElementException e) {
@@ -151,8 +138,4 @@ public class BookServiceImpl implements BookService {
         bookRepository.updateBook(book);
     }
 
-    @Override
-    public void loadBookData() throws SQLException {
-        bookRepository.loadBookData();
-    }
 }

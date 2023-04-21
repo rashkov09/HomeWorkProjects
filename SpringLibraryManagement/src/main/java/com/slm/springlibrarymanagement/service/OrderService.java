@@ -16,8 +16,6 @@ import java.util.List;
 public interface OrderService {
     List<OrderDto> findAllOrders();
 
-    void loadOrderData() throws SQLException;
-
     void backupToFile() throws BackUpFailedException;
 
     String insertOrder(Long clientId, Long bookId, Integer bookCount) throws InsufficientBookQuantityException, InvalidNumberOfCopies;

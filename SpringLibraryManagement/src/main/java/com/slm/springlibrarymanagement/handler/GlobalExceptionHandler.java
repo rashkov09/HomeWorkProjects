@@ -3,8 +3,11 @@ package com.slm.springlibrarymanagement.handler;
 import com.slm.springlibrarymanagement.exceptions.InvalidDateException;
 import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
+import com.slm.springlibrarymanagement.exceptions.author.AuthorAlreadyExistsException;
 import com.slm.springlibrarymanagement.exceptions.author.AuthorNotFoundException;
+import com.slm.springlibrarymanagement.exceptions.author.InvalidAuthorNameException;
 import com.slm.springlibrarymanagement.exceptions.book.BookNotFoundException;
+import com.slm.springlibrarymanagement.exceptions.book.InvalidBookNameException;
 import com.slm.springlibrarymanagement.exceptions.book.InvalidNumberOfCopies;
 import com.slm.springlibrarymanagement.exceptions.client.ClientAlreadyExistsException;
 import com.slm.springlibrarymanagement.exceptions.client.ClientNotFoundException;
@@ -12,9 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -72,8 +77,52 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(AuthorAlreadyExistsException.class)
+    public ResponseEntity<Map<String, List<String>>> handleAuthorAlreadyExistsException(AuthorAlreadyExistsException exception) {
+        log.error("Caught exception: ", exception);
+
+        String error = exception.getMessage();
+        Map<String, List<String>> errorsMap = formatErrorsResponse(error);
+        return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidAuthorNameException.class)
+    public ResponseEntity<Map<String, List<String>>> handleInvalidAuthorNameException(InvalidAuthorNameException exception) {
+        log.error("Caught exception: ", exception);
+
+        String error = exception.getMessage();
+        Map<String, List<String>> errorsMap = formatErrorsResponse(error);
+        return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(ClientAlreadyExistsException.class)
     public ResponseEntity<Map<String, List<String>>> handleClientAlreadyExistsException(ClientAlreadyExistsException exception) {
+        log.error("Caught exception: ", exception);
+
+        String error = exception.getMessage();
+        Map<String, List<String>> errorsMap = formatErrorsResponse(error);
+        return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<Map<String, List<String>>> handleDateTimeParseException(DateTimeParseException exception) {
+        log.error("Caught exception: ", exception);
+
+        String error = "Invalid date format!";
+        Map<String, List<String>> errorsMap = formatErrorsResponse(error);
+        return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
+    }
+ @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, List<String>>> handleHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
+        log.error("Caught exception: ", exception);
+
+        String error = exception.getMessage();
+        Map<String, List<String>> errorsMap = formatErrorsResponse(error);
+        return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidBookNameException.class)
+    public ResponseEntity<Map<String, List<String>>> handleInvalidBookNameException(InvalidBookNameException exception) {
         log.error("Caught exception: ", exception);
 
         String error = exception.getMessage();
