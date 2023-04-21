@@ -1,14 +1,20 @@
 package com.slm.springlibrarymanagement.controller.impl;
 
 import com.slm.springlibrarymanagement.controller.OrderController;
+import com.slm.springlibrarymanagement.controller.request.OrderRequest;
 import com.slm.springlibrarymanagement.mappers.ClientMapper;
 import com.slm.springlibrarymanagement.model.dto.OrderDto;
+import com.slm.springlibrarymanagement.model.entities.Client;
+import com.slm.springlibrarymanagement.model.entities.Order;
 import com.slm.springlibrarymanagement.service.ClientService;
 import com.slm.springlibrarymanagement.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -33,5 +39,16 @@ public class OrderControllerImpl implements OrderController {
     @Override
     public ResponseEntity<List<OrderDto>> getAllOrders() {
         return ResponseEntity.ok(orderService.findAllOrders());
+    }
+
+    @Override
+    public ResponseEntity<Void> createOrder(OrderRequest orderRequest) {
+        Order order = orderService.insertOrder(orderRequest);
+
+        URI location = UriComponentsBuilder.fromUriString("/order/{id}")
+                .buildAndExpand(order.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).build();
     }
 }

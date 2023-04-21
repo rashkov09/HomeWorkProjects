@@ -1,6 +1,7 @@
 package com.slm.springlibrarymanagement.service;
 
 import com.slm.springlibrarymanagement.constants.IncreasePeriod;
+import com.slm.springlibrarymanagement.controller.request.OrderRequest;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.InvalidDateException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
@@ -9,6 +10,7 @@ import com.slm.springlibrarymanagement.exceptions.book.InvalidNumberOfCopies;
 import com.slm.springlibrarymanagement.exceptions.order.OrderNotFoundException;
 import com.slm.springlibrarymanagement.model.dto.OrderDto;
 import com.slm.springlibrarymanagement.model.entities.Client;
+import com.slm.springlibrarymanagement.model.entities.Order;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -18,7 +20,7 @@ public interface OrderService {
 
     void backupToFile() throws BackUpFailedException;
 
-    String insertOrder(Long clientId, Long bookId, Integer bookCount) throws InsufficientBookQuantityException, InvalidNumberOfCopies;
+    Order insertOrder(OrderRequest orderRequest);
 
     List<OrderDto> findAllOrdersByClient(Client clientById);
 

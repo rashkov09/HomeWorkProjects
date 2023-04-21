@@ -123,6 +123,10 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public boolean updateBook(Book book) throws SQLException {
-        return dataWriterService.update(UPDATE_BOOK_SQL, book, ClassesEnum.Book);
+        if (dataWriterService.update(UPDATE_BOOK_SQL, book, ClassesEnum.Book)) {
+            bookList.stream().filter(bookEdit -> bookEdit.getId().equals(book.getId())).findFirst().get().setNumberOfCopies(book.getNumberOfCopies());
+            return true;
+        }
+        return false;
     }
 }

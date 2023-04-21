@@ -1,6 +1,7 @@
 package com.slm.springlibrarymanagement.service.impl;
 
 import com.slm.springlibrarymanagement.constants.IncreasePeriod;
+import com.slm.springlibrarymanagement.controller.request.OrderRequest;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.InvalidDateException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
@@ -76,39 +77,34 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String insertOrder(Long clientId, Long bookId, Integer bookCount) throws InsufficientBookQuantityException, InvalidNumberOfCopies {
+    public Order insertOrder(OrderRequest orderRequest){
         Client client;
         Book book;
         Order order = new Order();
-        try {
-            client = clientMapper.mapFromDto(clientService.findClientById(String.valueOf(clientId)));
-        } catch (ClientNotFoundException clientNotFoundException) {
-            throw new RuntimeException(clientNotFoundException.getMessage());
-        }
+        client = clientMapper.mapFromDto(clientService.findClientById(String.valueOf(orderRequest.getClient().getId())));
+        book = bookMapper.mapFromDto(bookService.findBookById(orderRequest.getBook().getId()));
 
-        book = bookMapper.mapFromDto(bookService.findBookById(bookId));
-
-        if (book.getNumberOfCopies() < bookCount) {
+        if (book.getNumberOfCopies() < orderRequest.getBookCount()) {
             throw new InsufficientBookQuantityException();
         }
-        if (bookCount <= 0) {
+        if (orderRequest.getBookCount() <= 0) {
             throw new InvalidNumberOfCopies();
         }
         order.setClient(client);
         order.setBook(book);
         order.setIssueDate(LocalDate.now());
-        order.setBookCount(bookCount);
+        order.setBookCount(orderRequest.getBookCount());
         if (orderRepository.addOrder(order)) {
-            book.removeBooks(bookCount);
+            book.removeBooks(orderRequest.getBookCount());
             try {
                 bookService.updateBook(book);
             } catch (SQLException e) {
                 throw new RuntimeException(BOOK_UPDATE_FAILED_MESSAGE);
             }
 
-            return String.format(ORDER_ADDED_SUCCESSFULLY_MESSAGE, client.fullName(), bookCount, book.getName());
+            return order;
         }
-        return ORDER_ADDITION_FAILED_MESSAGE;
+        return null;
     }
 
     @Override

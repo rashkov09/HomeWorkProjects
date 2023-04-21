@@ -20,7 +20,7 @@ public class OrderDto extends BaseDto{
         super(id);
         this.client = client;
         this.book = book;
-        this.issueDate = issueDate;
+        setIssueDate(issueDate);
         this.bookCount = bookCount;
     }
 
