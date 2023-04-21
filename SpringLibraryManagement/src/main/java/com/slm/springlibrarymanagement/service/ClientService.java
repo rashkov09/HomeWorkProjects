@@ -1,20 +1,22 @@
 package com.slm.springlibrarymanagement.service;
 
+import com.slm.springlibrarymanagement.controller.request.ClientRequest;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
-import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
-import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
-import com.slm.springlibrarymanagement.exceptions.author.AuthorNotFoundException;
-import com.slm.springlibrarymanagement.exceptions.client.*;
+import com.slm.springlibrarymanagement.exceptions.client.ClientNotFoundException;
+import com.slm.springlibrarymanagement.exceptions.client.InvalidClientFirstNameException;
+import com.slm.springlibrarymanagement.exceptions.client.InvalidClientLastNameException;
+import com.slm.springlibrarymanagement.exceptions.client.InvalidClientPhoneException;
+import com.slm.springlibrarymanagement.model.dto.ClientDto;
 import com.slm.springlibrarymanagement.model.entities.Client;
 
-import java.sql.SQLException;
+import java.util.List;
 
 public interface ClientService {
-    String findAllClients() throws NoEntriesFoundException;
+    List<ClientDto> findAllClients();
 
     void backupToFile() throws BackUpFailedException;
 
-    String insertClient(String firstName, String lastName, String address, String phoneNumber) throws InvalidClientFirstNameException, InvalidClientLastNameException, InvalidClientPhoneException, ClientAlreadyExistsException;
+    Client insertClient(ClientRequest clientRequest);
 
     Client findClientByPhoneNumber(String phoneNumber) throws ClientNotFoundException, InvalidClientPhoneException;
 
@@ -24,7 +26,6 @@ public interface ClientService {
 
     Client findClientByFullName(String fullName) throws ClientNotFoundException;
 
-    Client findClientById(Long clientId) throws ClientNotFoundException;
+    ClientDto findClientById(String clientId);
 
-    void loadClientData() throws AuthorNotFoundException, SQLException, InvalidIdException;
 }

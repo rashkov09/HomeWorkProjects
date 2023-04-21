@@ -4,6 +4,8 @@ import com.slm.springlibrarymanagement.constants.ClassesEnum;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.book.BookNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.client.ClientNotFoundException;
+import com.slm.springlibrarymanagement.mappers.BookMapper;
+import com.slm.springlibrarymanagement.mappers.ClientMapper;
 import com.slm.springlibrarymanagement.model.entities.Order;
 import com.slm.springlibrarymanagement.repository.OrderRepository;
 import com.slm.springlibrarymanagement.service.BookService;
@@ -29,16 +31,29 @@ public class OrderRepositoryImpl implements OrderRepository {
     public final DataLoaderService<Order> dataLoaderService;
     public final DataWriterService<Order> dataWriterService;
     public final BookService bookService;
+    public final BookMapper bookMapper;
     public final ClientService clientService;
+    public final ClientMapper clientMapper;
     private final CustomDateFormatter formatter;
 
-    public OrderRepositoryImpl(DataLoaderService<Order> dataLoaderService, DataWriterService<Order> dataWriterService, BookService bookService, ClientService clientService, CustomDateFormatter formatter) {
+    public OrderRepositoryImpl(DataLoaderService<Order> dataLoaderService, DataWriterService<Order> dataWriterService, BookService bookService, BookMapper bookMapper, ClientService clientService, ClientMapper clientMapper, CustomDateFormatter formatter) {
         this.dataLoaderService = dataLoaderService;
         this.dataWriterService = dataWriterService;
         this.bookService = bookService;
+        this.bookMapper = bookMapper;
         this.clientService = clientService;
+        this.clientMapper = clientMapper;
         this.formatter = formatter;
         orderList = new ArrayList<>();
+        init();
+    }
+
+    private void init() {
+        try {
+            loadOrderData();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -63,20 +78,16 @@ public class OrderRepositoryImpl implements OrderRepository {
         orderList = dataLoaderService.loadDataFromDb(SELECT_ORDERS_SQL, ClassesEnum.Order);
         if (!orderList.isEmpty()) {
             orderList.forEach(order -> {
-                try {
-                    order.setBook(bookService.findBookById(order.getBook().getId()));
-                    order.setClient(clientService.findClientById(order.getClient().getId()));
+                order.setBook(bookMapper.mapFromDto(bookService.findBookById(order.getBook().getId())));
+                order.setClient(clientMapper.mapFromDto(clientService.findClientById(String.valueOf(order.getClient().getId()))));
 
-                } catch (ClientNotFoundException | BookNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
             });
         } else {
             orderList = dataLoaderService.loadDataFromFile(ClassesEnum.Order);
             orderList.forEach(order -> {
                 try {
                     order.setClient(clientService.findClientByFullName(order.getClient().fullName()));
-                    order.setBook(bookService.findBookByName(order.getBook().getName()));
+                    order.setBook(bookMapper.mapFromDto(bookService.findBookByName(order.getBook().getName())));
                 } catch (ClientNotFoundException | BookNotFoundException e) {
                     throw new RuntimeException(e);
                 }

@@ -1,14 +1,17 @@
 package com.slm.springlibrarymanagement.service.impl;
 
 import com.slm.springlibrarymanagement.constants.IncreasePeriod;
+import com.slm.springlibrarymanagement.controller.request.OrderRequest;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.InvalidDateException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
-import com.slm.springlibrarymanagement.exceptions.book.BookNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.book.InsufficientBookQuantityException;
 import com.slm.springlibrarymanagement.exceptions.book.InvalidNumberOfCopies;
-import com.slm.springlibrarymanagement.exceptions.client.ClientNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.order.OrderNotFoundException;
+import com.slm.springlibrarymanagement.mappers.BookMapper;
+import com.slm.springlibrarymanagement.mappers.ClientMapper;
+import com.slm.springlibrarymanagement.mappers.OrderMapper;
+import com.slm.springlibrarymanagement.model.dto.OrderDto;
 import com.slm.springlibrarymanagement.model.entities.Book;
 import com.slm.springlibrarymanagement.model.entities.Client;
 import com.slm.springlibrarymanagement.model.entities.Order;
@@ -26,13 +29,17 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.slm.springlibrarymanagement.constants.messages.BookMessages.BOOK_UPDATE_FAILED_MESSAGE;
-import static com.slm.springlibrarymanagement.constants.messages.OrderMessages.*;
+import static com.slm.springlibrarymanagement.constants.messages.OrderMessages.ORDER_MODIFICATION_FAILED;
+import static com.slm.springlibrarymanagement.constants.messages.OrderMessages.ORDER_MODIFICATION_SUCCESS;
 
 @Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final ClientService clientService;
     private final BookService bookService;
+    private final BookMapper bookMapper;
+    private final ClientMapper clientMapper;
+    private final OrderMapper orderMapper;
     private final InputValidator inputValidator;
     private final StringBuilder builder;
 
@@ -40,30 +47,26 @@ public class OrderServiceImpl implements OrderService {
     public OrderServiceImpl(OrderRepository orderRepository,
                             ClientService clientService,
                             BookService bookService,
-                            InputValidator inputValidator,
+                            BookMapper bookMapper, ClientMapper clientMapper, OrderMapper orderMapper, InputValidator inputValidator,
                             StringBuilder builder) {
         this.orderRepository = orderRepository;
         this.clientService = clientService;
         this.bookService = bookService;
+        this.bookMapper = bookMapper;
+        this.clientMapper = clientMapper;
+        this.orderMapper = orderMapper;
         this.inputValidator = inputValidator;
         this.builder = builder;
-
-
     }
 
+
     @Override
-    public String findAllOrders() throws NoEntriesFoundException {
-        builder.setLength(0);
-        orderRepository.findAllOrders().forEach(order -> builder.append(order.toString()).append("\n"));
-        if (builder.isEmpty()) {
+    public List<OrderDto> findAllOrders() throws NoEntriesFoundException {
+        List<OrderDto> orderDtos = orderMapper.mapToDtoList(orderRepository.findAllOrders());
+        if (orderDtos.isEmpty()) {
             throw new NoEntriesFoundException();
         }
-        return builder.toString();
-    }
-
-    @Override
-    public void loadBookData() throws SQLException {
-        orderRepository.loadOrderData();
+        return orderDtos;
     }
 
 
@@ -73,52 +76,43 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String insertOrder(Long clientId, Long bookId, Integer bookCount) throws InsufficientBookQuantityException, InvalidNumberOfCopies {
+    public Order insertOrder(OrderRequest orderRequest) {
         Client client;
         Book book;
         Order order = new Order();
-        try {
-            client = clientService.findClientById(clientId);
-        } catch (ClientNotFoundException clientNotFoundException) {
-            throw new RuntimeException(clientNotFoundException.getMessage());
-        }
-        try {
-            book = bookService.findBookById(bookId);
-        } catch (BookNotFoundException bookNotFoundException) {
-            throw new RuntimeException(bookNotFoundException.getMessage());
-        }
-        if (book.getNumberOfCopies() < bookCount) {
+        client = clientMapper.mapFromDto(clientService.findClientById(String.valueOf(orderRequest.getClient().getId())));
+        book = bookMapper.mapFromDto(bookService.findBookById(orderRequest.getBook().getId()));
+
+        if (book.getNumberOfCopies() < orderRequest.getBookCount()) {
             throw new InsufficientBookQuantityException();
         }
-        if (bookCount <= 0) {
+        if (orderRequest.getBookCount() <= 0) {
             throw new InvalidNumberOfCopies();
         }
         order.setClient(client);
         order.setBook(book);
         order.setIssueDate(LocalDate.now());
-        order.setBookCount(bookCount);
+        order.setBookCount(orderRequest.getBookCount());
         if (orderRepository.addOrder(order)) {
-            book.removeBooks(bookCount);
+            book.removeBooks(orderRequest.getBookCount());
             try {
                 bookService.updateBook(book);
             } catch (SQLException e) {
                 throw new RuntimeException(BOOK_UPDATE_FAILED_MESSAGE);
             }
 
-            return String.format(ORDER_ADDED_SUCCESSFULLY_MESSAGE, client.fullName(), bookCount, book.getName());
+            return order;
         }
-        return ORDER_ADDITION_FAILED_MESSAGE;
+        return null;
     }
 
     @Override
-    public String findAllOrdersByClient(Client clientById) throws NoEntriesFoundException {
-        builder.setLength(0);
-        List<Order> ordersByClientId = orderRepository.findOrdersByClientId(clientById.getId());
-        if (ordersByClientId.isEmpty()) {
+    public List<OrderDto> findAllOrdersByClient(Client clientById) {
+        List<OrderDto> orderDtos = orderMapper.mapToDtoList(orderRepository.findOrdersByClientId(clientById.getId()));
+        if (orderDtos.isEmpty()) {
             throw new NoEntriesFoundException();
         }
-        ordersByClientId.forEach(order -> builder.append(order.toString()));
-        return builder.toString();
+        return orderDtos;
     }
 
     @Override
