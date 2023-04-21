@@ -26,6 +26,15 @@ public class AuthorRepositoryImpl implements AuthorRepository {
         this.dataLoaderService = dataLoaderService;
         this.dataWriterService = dataWriterService;
         authorList = new ArrayList<>();
+        init();
+    }
+
+    private void init() {
+        try {
+            loadAuthors();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

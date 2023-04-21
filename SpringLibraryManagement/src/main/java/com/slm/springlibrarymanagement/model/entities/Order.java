@@ -1,8 +1,6 @@
 package com.slm.springlibrarymanagement.model.entities;
 
 import com.slm.springlibrarymanagement.constants.IncreasePeriod;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 import java.time.LocalDate;
 
@@ -19,8 +17,6 @@ public class Order extends BaseEntity implements Comparable<Order> {
     public Order() {
     }
 
-    @ManyToOne
-    @JoinColumn(name = "client")
     public Client getClient() {
         return client;
     }
@@ -29,8 +25,7 @@ public class Order extends BaseEntity implements Comparable<Order> {
         this.client = client;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "book")
+
     public Book getBook() {
         return book;
     }
@@ -74,11 +69,6 @@ public class Order extends BaseEntity implements Comparable<Order> {
         this.bookCount = bookCount;
     }
 
-    @Override
-    public String toString() {
-        return String.format("Order ID: %d\nClient: %s\nBook: %s\nIssue date: %s\nDue date: %s\nBook count: %d\n",
-                getId(), getClient().fullName(), getBook().getName(), getIssueDate(), getDueDate(), getBookCount());
-    }
 
     public void extendDueDate(Integer count, IncreasePeriod period) {
         switch (period) {

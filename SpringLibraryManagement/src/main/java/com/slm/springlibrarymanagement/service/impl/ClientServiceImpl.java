@@ -1,8 +1,12 @@
 package com.slm.springlibrarymanagement.service.impl;
 
+import com.slm.springlibrarymanagement.controller.request.ClientRequest;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
+import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
 import com.slm.springlibrarymanagement.exceptions.client.*;
+import com.slm.springlibrarymanagement.mappers.ClientMapper;
+import com.slm.springlibrarymanagement.model.dto.ClientDto;
 import com.slm.springlibrarymanagement.model.entities.Client;
 import com.slm.springlibrarymanagement.repository.ClientRepository;
 import com.slm.springlibrarymanagement.service.ClientService;
@@ -10,35 +14,30 @@ import com.slm.springlibrarymanagement.util.InputValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
-
-import static com.slm.springlibrarymanagement.constants.messages.ClientMessages.*;
 
 @Service
 public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
     private final InputValidator inputValidator;
 
+    private final ClientMapper clientMapper;
+
     @Autowired
-    public ClientServiceImpl(ClientRepository clientRepository, InputValidator inputValidator) {
+    public ClientServiceImpl(ClientRepository clientRepository, InputValidator inputValidator, ClientMapper clientMapper) {
         this.clientRepository = clientRepository;
         this.inputValidator = inputValidator;
+        this.clientMapper = clientMapper;
     }
 
     @Override
-    public String findAllClients() throws NoEntriesFoundException {
-        StringBuilder builder = new StringBuilder();
-        clientRepository.findAllClients().forEach(client -> builder.append(String.format(CLIENT_VIEW_TEMPLATE,
-                client.getId(),
-                client.getFirstName(),
-                client.getLastName())).append("\n"));
-        if (builder.toString().isEmpty() || builder.toString().isBlank()) {
+    public List<ClientDto> findAllClients() {
+        List<ClientDto> clientDtos = clientMapper.mapToDtoList(clientRepository.findAllClients());
+        if (clientDtos.isEmpty()) {
             throw new NoEntriesFoundException();
         }
-
-        return builder.toString();
+        return clientDtos;
     }
 
 
@@ -48,34 +47,34 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public String insertClient(String firstName, String lastName, String address, String phoneNumber) throws InvalidClientFirstNameException, InvalidClientLastNameException, InvalidClientPhoneException, ClientAlreadyExistsException {
+    public Client insertClient(ClientRequest clientRequest) {
         Client client = new Client();
-        if (inputValidator.isNotValidFirstLastName(firstName)) {
+        if (inputValidator.isNotValidFirstLastName(clientRequest.getFirstName())) {
             throw new InvalidClientFirstNameException();
         }
-        if (inputValidator.isNotValidFirstLastName(lastName)) {
+        if (inputValidator.isNotValidFirstLastName(clientRequest.getLastName())) {
             throw new InvalidClientLastNameException();
         }
-        client.setFirstName(firstName);
-        client.setLastName(lastName);
-        if (!address.isBlank() && !address.isEmpty()) {
-            client.setAddress(address);
+        client.setFirstName(clientRequest.getFirstName());
+        client.setLastName(clientRequest.getLastName());
+        if (!clientRequest.getAddress().isBlank() && !clientRequest.getAddress().isEmpty()) {
+            client.setAddress(clientRequest.getAddress());
         }
-        if (inputValidator.isNotValidPhoneNumber(phoneNumber)) {
+        if (inputValidator.isNotValidPhoneNumber(clientRequest.getPhoneNumber())) {
             throw new InvalidClientPhoneException();
         }
         try {
-            findClientByPhoneNumber(phoneNumber);
+            findClientByPhoneNumber(clientRequest.getPhoneNumber());
             throw new ClientAlreadyExistsException();
         } catch (ClientNotFoundException e) {
-            client.setPhoneNumber(phoneNumber);
+            client.setPhoneNumber(clientRequest.getPhoneNumber());
 
             if (clientRepository.addClient(client)) {
-                return String.format(CLIENT_ADDED_SUCCESSFULLY_MESSAGE, client.fullName());
+                return client;
             }
 
         }
-        return CLIENT_ADDITION_FAILED_MESSAGE;
+        return null;
     }
 
     @Override
@@ -130,16 +129,18 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client findClientById(Long clientId) throws ClientNotFoundException {
+    public ClientDto findClientById(String clientId) throws ClientNotFoundException {
+        long id;
         try {
-            return clientRepository.findById(clientId);
+            id = Long.parseLong(clientId);
+        } catch (NumberFormatException e) {
+            throw new InvalidIdException();
+        }
+        try {
+            return clientMapper.mapToDto(clientRepository.findById(id));
         } catch (NoSuchElementException e) {
             throw new ClientNotFoundException();
         }
     }
 
-    @Override
-    public void loadClientData() throws SQLException {
-        clientRepository.loadClients();
-    }
 }

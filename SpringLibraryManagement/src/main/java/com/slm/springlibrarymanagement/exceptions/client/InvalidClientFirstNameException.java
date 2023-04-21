@@ -1,6 +1,6 @@
 package com.slm.springlibrarymanagement.exceptions.client;
 
-public class InvalidClientFirstNameException extends Exception {
+public class InvalidClientFirstNameException extends RuntimeException {
     private static final String INVALID_CLIENT_FIRST_NAME_MESSAGE = """
             Invalid client first name!
                         

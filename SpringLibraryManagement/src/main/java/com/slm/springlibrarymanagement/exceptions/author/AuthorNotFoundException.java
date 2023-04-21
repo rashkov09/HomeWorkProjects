@@ -1,11 +1,8 @@
 package com.slm.springlibrarymanagement.exceptions.author;
 
-public class AuthorNotFoundException extends Exception {
-    private static final String AUTHOR_NOT_FOUND_MESSAGE = """
-            Author not found!
-                
-            You can add a new author.
-            """;
+public class
+AuthorNotFoundException extends RuntimeException {
+    private static final String AUTHOR_NOT_FOUND_MESSAGE = "Author not found!";
 
     @Override
     public String getMessage() {

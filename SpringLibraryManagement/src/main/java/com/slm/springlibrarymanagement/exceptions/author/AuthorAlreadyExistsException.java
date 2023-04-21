@@ -1,6 +1,6 @@
 package com.slm.springlibrarymanagement.exceptions.author;
 
-public class AuthorAlreadyExistsException extends Exception {
+public class AuthorAlreadyExistsException extends RuntimeException {
     private static final String DUPLICATE_AUTHOR_MESSAGE = """
             Author already exists!
                        

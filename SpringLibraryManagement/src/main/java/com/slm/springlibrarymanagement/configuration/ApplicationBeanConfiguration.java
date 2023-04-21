@@ -1,11 +1,9 @@
 package com.slm.springlibrarymanagement.configuration;
 
-import com.slm.springlibrarymanagement.mappers.AuthorRowMapper;
-import com.slm.springlibrarymanagement.mappers.BookRowMapper;
-import com.slm.springlibrarymanagement.mappers.ClientRowMapper;
-import com.slm.springlibrarymanagement.mappers.OrderRowMapper;
-import com.slm.springlibrarymanagement.util.ConsoleRangeReader;
-import com.slm.springlibrarymanagement.util.ConsoleReader;
+import com.slm.springlibrarymanagement.mappers.AuthorMapper;
+import com.slm.springlibrarymanagement.mappers.BookMapper;
+import com.slm.springlibrarymanagement.mappers.ClientMapper;
+import com.slm.springlibrarymanagement.mappers.OrderMapper;
 import com.slm.springlibrarymanagement.util.CustomDateFormatter;
 import com.slm.springlibrarymanagement.util.InputValidator;
 import com.zaxxer.hikari.HikariConfig;
@@ -48,23 +46,23 @@ public class ApplicationBeanConfiguration {
     }
 
     @Bean
-    public AuthorRowMapper authorRowMapper() {
-        return new AuthorRowMapper();
+    public AuthorMapper authorRowMapper() {
+        return new AuthorMapper();
     }
 
     @Bean
-    public BookRowMapper bookRowMapper() {
-        return new BookRowMapper();
+    public BookMapper bookRowMapper() {
+        return new BookMapper();
     }
 
     @Bean
-    public ClientRowMapper clientRowMapper() {
-        return new ClientRowMapper();
+    public ClientMapper clientRowMapper() {
+        return new ClientMapper();
     }
 
     @Bean
-    public OrderRowMapper orderRowMapper() {
-        return new OrderRowMapper();
+    public OrderMapper orderRowMapper() {
+        return new OrderMapper();
     }
 
     @Bean
@@ -75,16 +73,6 @@ public class ApplicationBeanConfiguration {
     @Bean
     public Scanner scanner() {
         return new Scanner(System.in);
-    }
-
-    @Bean
-    public ConsoleRangeReader consoleRangeReader() {
-        return new ConsoleRangeReader(consoleReader());
-    }
-
-    @Bean
-    public ConsoleReader consoleReader() {
-        return new ConsoleReader(scanner());
     }
 
 

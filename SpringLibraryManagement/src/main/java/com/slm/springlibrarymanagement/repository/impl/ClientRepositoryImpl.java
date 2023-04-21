@@ -29,6 +29,15 @@ public class ClientRepositoryImpl implements ClientRepository {
         this.dataLoaderService = dataLoaderService;
         this.dataWriterService = dataWriterService;
         clientList = new ArrayList<>();
+        init();
+    }
+
+    private void init() {
+        try {
+            loadClients();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

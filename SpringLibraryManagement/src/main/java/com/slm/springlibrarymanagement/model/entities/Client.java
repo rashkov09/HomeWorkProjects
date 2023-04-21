@@ -1,8 +1,5 @@
 package com.slm.springlibrarymanagement.model.entities;
 
-import jakarta.persistence.Column;
-
-
 public class Client extends BaseEntity {
     private String firstName;
     private String lastName;
@@ -30,7 +27,7 @@ public class Client extends BaseEntity {
         this.lastName = lastName;
     }
 
-    @Column()
+
     public String getAddress() {
         return address;
     }

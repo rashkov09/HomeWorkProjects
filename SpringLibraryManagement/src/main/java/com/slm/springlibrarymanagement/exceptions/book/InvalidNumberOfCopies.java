@@ -1,6 +1,6 @@
 package com.slm.springlibrarymanagement.exceptions.book;
 
-public class InvalidNumberOfCopies extends Exception {
+public class InvalidNumberOfCopies extends RuntimeException {
     private static final String INVALID_NUMBER_MESSAGE = """
             Invalid number of copies!
                 

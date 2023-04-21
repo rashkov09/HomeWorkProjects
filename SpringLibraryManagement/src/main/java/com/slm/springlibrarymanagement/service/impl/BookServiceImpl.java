@@ -1,12 +1,14 @@
 package com.slm.springlibrarymanagement.service.impl;
 
+import com.slm.springlibrarymanagement.controller.request.BookRequest;
 import com.slm.springlibrarymanagement.exceptions.BackUpFailedException;
 import com.slm.springlibrarymanagement.exceptions.InvalidDateException;
-import com.slm.springlibrarymanagement.exceptions.InvalidIdException;
 import com.slm.springlibrarymanagement.exceptions.NoEntriesFoundException;
-import com.slm.springlibrarymanagement.exceptions.author.AuthorNotFoundException;
 import com.slm.springlibrarymanagement.exceptions.book.BookNotFoundException;
-import com.slm.springlibrarymanagement.exceptions.book.InvalidNumberOfCopies;
+import com.slm.springlibrarymanagement.exceptions.book.InvalidBookNameException;
+import com.slm.springlibrarymanagement.mappers.AuthorMapper;
+import com.slm.springlibrarymanagement.mappers.BookMapper;
+import com.slm.springlibrarymanagement.model.dto.BookDto;
 import com.slm.springlibrarymanagement.model.entities.Author;
 import com.slm.springlibrarymanagement.model.entities.Book;
 import com.slm.springlibrarymanagement.repository.BookRepository;
@@ -22,80 +24,58 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.slm.springlibrarymanagement.constants.messages.BookMessages.*;
-
 @Service
 public class BookServiceImpl implements BookService {
     private final CustomDateFormatter formatter;
     private final BookRepository bookRepository;
     private final AuthorService authorService;
-
+    private final AuthorMapper authorMapper;
+    private final BookMapper bookMapper;
     private final InputValidator inputValidator;
 
     @Autowired
     public BookServiceImpl(CustomDateFormatter formatter,
                            BookRepository bookRepository,
                            AuthorService authorService,
-                           InputValidator inputValidator) {
+                           AuthorMapper authorMapper, BookMapper bookMapper, InputValidator inputValidator) {
         this.formatter = formatter;
         this.bookRepository = bookRepository;
         this.authorService = authorService;
+        this.authorMapper = authorMapper;
+        this.bookMapper = bookMapper;
         this.inputValidator = inputValidator;
     }
 
 
     @Override
-    public String findAllBooks() throws NoEntriesFoundException {
-        StringBuilder builder = new StringBuilder();
-        bookRepository.findAllBooks().forEach(book -> builder.append(book.toString()));
-        if (builder.toString().isEmpty() || builder.toString().isBlank()) {
+    public List<BookDto> findAllBooks() {
+        List<BookDto> bookDtos = bookMapper.mapToDtoList(bookRepository.findAllBooks());
+        if (bookDtos.isEmpty()) {
             throw new NoEntriesFoundException();
         }
-
-        return builder.toString();
+        return bookDtos;
     }
 
     @Override
-    public String insertBook(String authorId, String bookName, String issueDate, String numberOfCopies) throws InvalidIdException, AuthorNotFoundException, InvalidNumberOfCopies, InvalidDateException {
-        StringBuilder builder = new StringBuilder();
+    public Book insertBook(BookRequest bookRequest) {
 
-        try {
-            Integer.parseInt(numberOfCopies);
-        } catch (NumberFormatException e) {
-            throw new InvalidNumberOfCopies();
+        if (bookRequest.getName().isEmpty()) {
+            throw new InvalidBookNameException();
         }
 
-        try {
-            Book book = bookRepository.findByName(bookName);
-            book.addCopies(Integer.parseInt(numberOfCopies));
-            builder.append(bookRepository.updateBook(book) ?
-                    String.format(BOOK_COPIES_ADDED_SUCCESSFULLY_MESSAGE, numberOfCopies, book.getName()) :
-                    BOOK_COPIES_ADDITION_FAILED_MESSAGE);
-        } catch (NoSuchElementException e) {
-            if (inputValidator.isNotValidDate(issueDate)) {
-                throw new InvalidDateException();
-            }
-            Book book = new Book();
-            try {
-                Author author = authorService.findAuthorById(authorId);
-                book.setAuthor(author);
-                book.setName(bookName);
-                book.setIssueDate(LocalDate.parse(issueDate, formatter.getFormatter()));
-                book.setNumberOfCopies(Integer.parseInt(numberOfCopies));
-                if (bookRepository.addBook(book)) {
-                    builder.append(String.format(BOOK_ADDED_SUCCESSFULLY_MESSAGE, book.getName()));
-                } else {
-                    builder.append(String.format(BOOK_ADDITION_FAILED_MESSAGE, book.getName()));
-                }
-            } catch (InvalidIdException i) {
-                throw new InvalidIdException();
-            } catch (AuthorNotFoundException a) {
-                throw new AuthorNotFoundException();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        if (inputValidator.isNotValidDate(bookRequest.getIssueDate().toString())) {
+            throw new InvalidDateException();
         }
-        return builder.toString();
+        Book book = new Book();
+        Author author = authorMapper.mapFromDto(authorService.findAuthorById(bookRequest.getAuthor().getId().toString()));
+        book.setAuthor(author);
+        book.setName(bookRequest.getName());
+        book.setIssueDate(bookRequest.getIssueDate());
+        book.setNumberOfCopies(bookRequest.getNumberOfCopies());
+        if (bookRepository.addBook(book)) {
+            return book;
+        }
+        return null;
     }
 
     @Override
@@ -105,9 +85,9 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book findBookByName(String bookName) throws BookNotFoundException {
+    public BookDto findBookByName(String bookName) {
         try {
-            return bookRepository.findByName(bookName);
+            return bookMapper.mapToDto(bookRepository.findByName(bookName));
         } catch (NoSuchElementException e) {
             throw new BookNotFoundException();
         }
@@ -141,9 +121,9 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book findBookById(Long bookId) throws BookNotFoundException {
+    public BookDto findBookById(Long bookId) {
         try {
-            return bookRepository.findById(bookId);
+            return bookMapper.mapToDto(bookRepository.findById(bookId));
         } catch (NoSuchElementException e) {
             throw new BookNotFoundException();
         }
@@ -155,8 +135,4 @@ public class BookServiceImpl implements BookService {
         bookRepository.updateBook(book);
     }
 
-    @Override
-    public void loadBookData() throws SQLException {
-        bookRepository.loadBookData();
-    }
 }
