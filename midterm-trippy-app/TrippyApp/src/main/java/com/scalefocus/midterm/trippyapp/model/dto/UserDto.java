@@ -5,9 +5,10 @@ import com.scalefocus.midterm.trippyapp.model.Review;
 import java.time.LocalDate;
 import java.util.List;
 
-public class UserDto{
+public class UserDto {
     private Long id;
     private String username;
+    private String email;
     private String firstName;
     private String lastName;
     private String city;
@@ -31,6 +32,14 @@ public class UserDto{
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getFirstName() {

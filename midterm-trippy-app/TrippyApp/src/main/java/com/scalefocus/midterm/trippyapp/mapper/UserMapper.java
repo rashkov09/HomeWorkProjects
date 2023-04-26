@@ -14,12 +14,12 @@ public class UserMapper implements RowMapper<User> {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setUsername(user.getUsername());
+        userDto.setEmail(user.getEmail());
         userDto.setFirstName(user.getFirstName());
         userDto.setLastName(user.getLastName());
         userDto.setCity(user.getCity());
         userDto.setJoiningDate(user.getJoiningDate());
         userDto.setReviewList(user.getReviewList());
-
 
         return userDto;
     }
@@ -28,6 +28,7 @@ public class UserMapper implements RowMapper<User> {
     public User mapFromRequest(UserRequest userRequest) {
         User user = new User();
         user.setUsername(userRequest.getUsername());
+        user.setEmail(userRequest.getEmail());
         user.setFirstName(userRequest.getFirstName());
         user.setLastName(userRequest.getLastName());
         user.setCity(userRequest.getCity());
@@ -40,6 +41,7 @@ public class UserMapper implements RowMapper<User> {
         User user = new User();
         user.setId(rs.getLong("id"));
         user.setUsername(rs.getString("username"));
+        user.setEmail(rs.getString("email"));
         user.setFirstName(rs.getString("first_name"));
         user.setLastName(rs.getString("last_name"));
         user.setCity(rs.getString("city"));

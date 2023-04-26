@@ -1,6 +1,7 @@
 package com.scalefocus.midterm.trippyapp.service.impl;
 
 import com.scalefocus.midterm.trippyapp.controller.request.UserRequest;
+import com.scalefocus.midterm.trippyapp.exception.NoDataFoundException;
 import com.scalefocus.midterm.trippyapp.exception.UserExceptions.UserAlreadyExistsException;
 import com.scalefocus.midterm.trippyapp.exception.UserExceptions.UserNotFoundException;
 import com.scalefocus.midterm.trippyapp.mapper.UserMapper;
@@ -14,16 +15,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
-    private final Repository<User> repository;
+    private final Repository<User> userRepository;
     private final UserMapper userMapper;
 
     @Autowired
-    public UserServiceImpl(Repository<User> repository, UserMapper userMapper) {
-        this.repository = repository;
+    public UserServiceImpl(Repository<User> userRepository, UserMapper userMapper) {
+        this.userRepository = userRepository;
         this.userMapper = userMapper;
     }
 
@@ -32,10 +34,13 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.mapFromRequest(userRequest);
         try {
             log.info("Author added successfully!");
-            return repository.add(user);
+            return userRepository.add(user);
         } catch (SQLException e) {
-            if (e.getSQLState().equals("23505")){
-                throw new UserAlreadyExistsException(user.getUsername());
+            if (e.getSQLState().equals("23505")) {
+                throw new UserAlreadyExistsException(user.getUsername(), user.getEmail());
+            }
+            if (e.getSQLState().equals("23502")) {
+                throw new NullPointerException(e.getMessage());
             }
             throw new RuntimeException(e);
         }
@@ -43,17 +48,57 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto editUser(UserRequest userRequest, Integer id) {
-        User user =  repository.update(userMapper.mapFromRequest(userRequest),id.longValue());
+        User user = userMapper.mapFromRequest(userRequest);
+        try {
+            userRepository.update(user, id.longValue());
+            return userMapper.mapToDto(user);
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("23505")) {
+                throw new UserAlreadyExistsException(user.getUsername(), user.getEmail());
+            }
+            if (e.getSQLState().equals("23502")) {
+                throw new NullPointerException(e.getMessage());
+            }
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public UserDto getUserById(Long id) {
+        User user = userRepository.getById(id);
+        if (user == null) {
+            log.error("User not found!");
+            throw new UserNotFoundException("id " + id);
+        }
         return userMapper.mapToDto(user);
     }
 
     @Override
-    public UserDto getAuthorById(String id) {
-        User user = repository.getById(Long.parseLong(id));
-        if (user == null){
-            log.error("Author not found!");
-            throw new UserNotFoundException(Long.parseLong(id));
+    public List<UserDto> getAllUsers() {
+        List<UserDto> userDtos = userRepository.getAll().stream().map(userMapper::mapToDto).toList();
+        if (userDtos.isEmpty()) {
+            throw new NoDataFoundException();
         }
-      return   userMapper.mapToDto(user);
+        return userDtos;
+    }
+
+    @Override
+    public UserDto getUserByUsername(String username) {
+        User user = userRepository.getByUsername(username);
+        if (user == null) {
+            log.error("User not found!");
+            throw new UserNotFoundException("username " + username);
+        }
+        return userMapper.mapToDto(user);
+    }
+
+    @Override
+    public UserDto getUserByEmail(String email) {
+        User user = userRepository.getByEmail(email);
+        if (user == null) {
+            log.error("User not found!");
+            throw new UserNotFoundException("email " + email);
+        }
+        return userMapper.mapToDto(user);
     }
 }

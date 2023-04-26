@@ -2,14 +2,19 @@ package com.scalefocus.midterm.trippyapp.controller.impl;
 
 import com.scalefocus.midterm.trippyapp.controller.UserController;
 import com.scalefocus.midterm.trippyapp.controller.request.UserRequest;
+import com.scalefocus.midterm.trippyapp.exception.NoDataFoundException;
 import com.scalefocus.midterm.trippyapp.model.dto.UserDto;
 import com.scalefocus.midterm.trippyapp.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+
 import java.net.URI;
+import java.util.List;
 
 @RestController
 public class UserControllerImpl  implements UserController {
@@ -21,8 +26,26 @@ public class UserControllerImpl  implements UserController {
     }
 
     @Override
-    public ResponseEntity<UserDto> getUserById(String id) {
-        UserDto userDto = userService.getAuthorById(id);
+    public ResponseEntity<List<UserDto>> getAllAuthor() {
+        List<UserDto> userDtos= userService.getAllUsers();
+        return ResponseEntity.ok(userDtos);
+    }
+
+    @Override
+    public ResponseEntity<UserDto> getUserById(Long id) {
+        UserDto userDto = userService.getUserById(id);
+        return ResponseEntity.ok(userDto);
+    }
+
+    @Override
+    public ResponseEntity<UserDto> getUserByUsername(String username) {
+        UserDto userDto = userService.getUserByUsername(username);
+        return ResponseEntity.ok(userDto);
+    }
+
+    @Override
+    public ResponseEntity<UserDto> getUserByEmail(String email) {
+        UserDto userDto = userService.getUserByEmail(email);
         return ResponseEntity.ok(userDto);
     }
 
@@ -38,10 +61,10 @@ public class UserControllerImpl  implements UserController {
     }
 
     @Override
-    public ResponseEntity<UserDto> updateItem(UserRequest itemRequest, int id, boolean returnOld) {
-            UserDto itemDto = userService.editUser(itemRequest, id);
+    public ResponseEntity<UserDto> updateUser(UserRequest userRequest, int id, boolean returnOld) {
+            UserDto userDto = userService.editUser(userRequest, id);
             if (returnOld) {
-                return ResponseEntity.ok(itemDto);
+                return ResponseEntity.ok(userDto);
             } else {
                 return ResponseEntity.noContent().build();
             }
