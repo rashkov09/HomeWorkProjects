@@ -1,10 +1,12 @@
-package com.scalefocus.midterm.trippyapp.model;
+package com.scalefocus.midterm.trippyapp.model.dto;
+
+import com.scalefocus.midterm.trippyapp.model.Review;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-public class User extends BaseEntity{
+public class UserDto{
+    private Long id;
     private String username;
     private String firstName;
     private String lastName;
@@ -12,9 +14,15 @@ public class User extends BaseEntity{
     private LocalDate joiningDate;
     private List<Review> reviewList;
 
-    public User() {
-        setJoiningDate(LocalDate.now());
-        setReviewList(new ArrayList<>());
+    public UserDto() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -24,7 +32,6 @@ public class User extends BaseEntity{
     public void setUsername(String username) {
         this.username = username;
     }
-
 
     public String getFirstName() {
         return firstName;
@@ -62,7 +69,7 @@ public class User extends BaseEntity{
         return reviewList;
     }
 
-    private void setReviewList(List<Review> reviewList) {
+    public void setReviewList(List<Review> reviewList) {
         this.reviewList = reviewList;
     }
 }
