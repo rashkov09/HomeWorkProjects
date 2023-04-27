@@ -82,8 +82,8 @@ public class UserRepositoryImpl implements Repository<User> {
     }
 
     @Override
-    public Boolean delete(User object) {
-        return null;
+    public Boolean delete(User user) {
+        return false;
     }
 
     @Override
