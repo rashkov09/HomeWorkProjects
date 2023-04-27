@@ -13,7 +13,7 @@ import java.util.List;
 public interface UserController {
 
     @GetMapping()
-    ResponseEntity<List<UserDto>> getAllAuthor();
+    ResponseEntity<List<UserDto>> getAllUsers();
 
     @GetMapping("/{id}")
     ResponseEntity<UserDto> getUserById(@PathVariable

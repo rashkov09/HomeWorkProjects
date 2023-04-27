@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @org.springframework.stereotype.Repository
-public class RepositoryImpl implements Repository<User> {
+public class UserRepositoryImpl implements Repository<User> {
     private final static String INSERT_SQL_STATEMENT = "INSERT INTO ta.users (username,email, first_name, last_name, city, joining_date) VALUES (?, ?, ? ,? ,?, ?)";
     private final static String UPDATE_SQL_STATEMENT = "UPDATE ta.users SET username=? , email =?, first_name=?, last_name=?, city= ? WHERE id=? ";
     private final static String SELECT_BY_ID_SQL_STATEMENT = "SELECT * FROM ta.users WHERE id = ?";
@@ -24,7 +24,7 @@ public class RepositoryImpl implements Repository<User> {
     private final UserMapper userMapper;
 
     @Autowired
-    public RepositoryImpl(HikariDataSource hikariDataSource, UserMapper userMapper) {
+    public UserRepositoryImpl(HikariDataSource hikariDataSource, UserMapper userMapper) {
         this.hikariDataSource = hikariDataSource;
         this.userMapper = userMapper;
     }
@@ -65,7 +65,7 @@ public class RepositoryImpl implements Repository<User> {
     }
 
     @Override
-    public User update(User user, Long id) throws  SQLException {
+    public User update(User user, Long id) throws SQLException {
         User oldUser = getById(id);
         try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(UPDATE_SQL_STATEMENT)) {
             preparedStatement.setString(1, user.getUsername());
@@ -98,13 +98,14 @@ public class RepositoryImpl implements Repository<User> {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-      return null;
+        return null;
     }
 
     @Override
     public User getByEmail(String email) {
         return getUser(email, FIND_BY_EMAIL_SQL_STATEMENT);
     }
+
     @Override
     public User getByUsername(String username) {
         return getUser(username, SELECT_BY_USERNAME_SQL_STATEMENT);

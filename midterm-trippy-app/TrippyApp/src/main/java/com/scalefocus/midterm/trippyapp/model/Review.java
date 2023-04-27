@@ -4,7 +4,7 @@ import com.scalefocus.midterm.trippyapp.constants.enums.ReviewRating;
 
 import java.time.LocalDate;
 
-public class Review extends BaseEntity{
+public class Review extends BaseEntity {
     private String username;
     private LocalDate createdOn;
     private ReviewRating rating;

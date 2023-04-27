@@ -5,6 +5,7 @@ import com.scalefocus.midterm.trippyapp.model.dto.UserDto;
 
 import java.util.List;
 
+
 public interface UserService {
     Long createUser(UserRequest userRequest);
 

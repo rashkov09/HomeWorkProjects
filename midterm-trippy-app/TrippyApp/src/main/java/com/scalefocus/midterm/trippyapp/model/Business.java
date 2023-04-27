@@ -1,6 +1,6 @@
 package com.scalefocus.midterm.trippyapp.model;
 
-public class Business extends BaseEntity{
+public class Business extends BaseEntity {
     private String name;
     private String city;
     private Integer numberOfReviews;

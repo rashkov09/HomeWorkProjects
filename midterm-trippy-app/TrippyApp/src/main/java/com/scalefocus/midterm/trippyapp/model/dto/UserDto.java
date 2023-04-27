@@ -3,6 +3,7 @@ package com.scalefocus.midterm.trippyapp.model.dto;
 import com.scalefocus.midterm.trippyapp.model.Review;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDto {
@@ -16,6 +17,17 @@ public class UserDto {
     private List<Review> reviewList;
 
     public UserDto() {
+    }
+
+    public UserDto(Long id, String username, String email, String firstName, String lastName, String city, LocalDate joiningDate) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.city = city;
+        this.joiningDate = joiningDate;
+        setReviewList(new ArrayList<>());
     }
 
     public Long getId() {
