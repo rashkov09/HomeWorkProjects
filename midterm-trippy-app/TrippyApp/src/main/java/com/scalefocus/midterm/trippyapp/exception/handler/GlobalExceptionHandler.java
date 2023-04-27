@@ -1,6 +1,7 @@
 package com.scalefocus.midterm.trippyapp.exception.handler;
 
 
+import com.scalefocus.midterm.trippyapp.exception.MissingRequestFieldsException;
 import com.scalefocus.midterm.trippyapp.exception.NoDataFoundException;
 import com.scalefocus.midterm.trippyapp.exception.UserExceptions.UserAlreadyExistsException;
 import com.scalefocus.midterm.trippyapp.exception.UserExceptions.UserNotFoundException;
@@ -43,8 +44,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(formatErrorsResponse(errors), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity<Map<String, List<String>>> handleNullPointerException(NullPointerException exception) {
+    @ExceptionHandler(MissingRequestFieldsException.class)
+    public ResponseEntity<Map<String, List<String>>> handleNullPointerException(MissingRequestFieldsException exception) {
         log.error("Caught exception: ", exception);
 
         String error = exception.getMessage();

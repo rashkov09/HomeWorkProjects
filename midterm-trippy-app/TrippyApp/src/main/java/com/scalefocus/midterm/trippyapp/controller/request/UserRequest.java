@@ -7,7 +7,7 @@ public class UserRequest {
     @Pattern(regexp = "^[A-Za-z0-9]{6,}$", message = "Username must not be empty and 6 or more characters")
     private String username;
 
-    @Pattern(regexp = "^([A-Za-z0-9]+)@([a-z]+).([a-z]){2,3}$", message = "Invalid email format")
+    @Pattern(regexp = "^([A-Za-z0-9]+)@([a-z]+).([a-z]){2,6}$", message = "Invalid email format")
     private String email;
 
     @Pattern(regexp = "^([A-Za-z]+)$", message = "First name must start with capital letter, not be empty or contain numbers")

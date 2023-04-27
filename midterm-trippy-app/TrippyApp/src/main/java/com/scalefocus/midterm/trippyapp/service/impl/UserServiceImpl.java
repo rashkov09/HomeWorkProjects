@@ -1,6 +1,7 @@
 package com.scalefocus.midterm.trippyapp.service.impl;
 
 import com.scalefocus.midterm.trippyapp.controller.request.UserRequest;
+import com.scalefocus.midterm.trippyapp.exception.MissingRequestFieldsException;
 import com.scalefocus.midterm.trippyapp.exception.NoDataFoundException;
 import com.scalefocus.midterm.trippyapp.exception.UserExceptions.UserAlreadyExistsException;
 import com.scalefocus.midterm.trippyapp.exception.UserExceptions.UserNotFoundException;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -29,36 +31,51 @@ public class UserServiceImpl implements UserService {
         this.userMapper = userMapper;
     }
 
+    private static void checkForMissingFields(UserRequest userRequest) {
+        for (Field field : userRequest.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            Object value;
+            try {
+                value = field.get(userRequest);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            if (value == null) {
+                log.error(String.format("Null value for field %s!", field.getName()));
+                throw new MissingRequestFieldsException();
+            }
+        }
+    }
+
     @Override
     public Long createUser(UserRequest userRequest) {
+        checkForMissingFields(userRequest);
         User user = userMapper.mapFromRequest(userRequest);
+        if (userExists(user)) {
+            throw new UserAlreadyExistsException(user.getUsername(), user.getEmail());
+        }
         try {
-            log.info("Author added successfully!");
-            return userRepository.add(user);
+            Long id = userRepository.add(user);
+            log.info(String.format("User with username: %s and email: %s added successfully!", user.getUsername(), user.getEmail()));
+            return id;
         } catch (SQLException e) {
-            if (e.getSQLState().equals("23505")) {
-                throw new UserAlreadyExistsException(user.getUsername(), user.getEmail());
-            }
-            if (e.getSQLState().equals("23502")) {
-                throw new NullPointerException(e.getMessage());
-            }
-            throw new RuntimeException(e);
+            throw new RuntimeException("Unexpected error", e);
         }
     }
 
     @Override
     public UserDto editUser(UserRequest userRequest, Integer id) {
+        checkForMissingFields(userRequest);
         User user = userMapper.mapFromRequest(userRequest);
+        if (userExists(user)) {
+            throw new UserAlreadyExistsException(user.getUsername(), user.getEmail());
+        }
         try {
             userRepository.update(user, id.longValue());
+            user.setId(id.longValue());
+            log.info(String.format("User with id %d edited successfully!", id));
             return userMapper.mapToDto(user);
         } catch (SQLException e) {
-            if (e.getSQLState().equals("23505")) {
-                throw new UserAlreadyExistsException(user.getUsername(), user.getEmail());
-            }
-            if (e.getSQLState().equals("23502")) {
-                throw new NullPointerException(e.getMessage());
-            }
             throw new RuntimeException(e);
         }
     }
@@ -67,7 +84,7 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserById(Long id) {
         User user = userRepository.getById(id);
         if (user == null) {
-            log.error("User not found!");
+            log.info(String.format("User with id %d not found!", id));
             throw new UserNotFoundException("id " + id);
         }
         return userMapper.mapToDto(user);
@@ -77,6 +94,7 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getAllUsers() {
         List<UserDto> userDtos = userRepository.getAll().stream().map(userMapper::mapToDto).toList();
         if (userDtos.isEmpty()) {
+            log.error("No data found in database!");
             throw new NoDataFoundException();
         }
         return userDtos;
@@ -86,7 +104,7 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserByUsername(String username) {
         User user = userRepository.getByUsername(username);
         if (user == null) {
-            log.error("User not found!");
+            log.info(String.format("User with username %s not found!", username));
             throw new UserNotFoundException("username " + username);
         }
         return userMapper.mapToDto(user);
@@ -96,9 +114,23 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserByEmail(String email) {
         User user = userRepository.getByEmail(email);
         if (user == null) {
-            log.error("User not found!");
+            log.info(String.format("User with email %s not found!", email));
             throw new UserNotFoundException("email " + email);
         }
         return userMapper.mapToDto(user);
+    }
+
+    @Override
+    public Boolean userExists(User user) {
+        try {
+            getUserByEmail(user.getEmail());
+        } catch (UserNotFoundException e) {
+            try {
+                getUserByUsername(user.getUsername());
+            } catch (UserNotFoundException d) {
+                return false;
+            }
+        }
+        return true;
     }
 }
