@@ -26,7 +26,6 @@ import static com.scalefocus.midterm.trippyapp.testutils.User.UserFactory.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -121,7 +120,8 @@ public class UserServiceImplTest {
     public void createUser_noException_returnsId() throws SQLException {
         when(userCustomRepository.add(any())).thenReturn(USER_ID);
         when(userMapper.mapFromRequest(any())).thenReturn(getDefaultUser());
-        userService.createUser(getDefaultUserRequest());
+       Long id = userService.createUser(getDefaultUserRequest());
+        Assert.assertEquals(USER_ID,id);
     }
 
     @Test
