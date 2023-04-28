@@ -13,6 +13,14 @@ public class Review extends BaseEntity {
     public Review() {
     }
 
+    public Review(Long id, String username, LocalDate createdOn, ReviewRating rating, String text) {
+        super(id);
+        this.username = username;
+        this.createdOn = createdOn;
+        this.rating = rating;
+        this.text = text;
+    }
+
     public String getUsername() {
         return username;
     }

@@ -2,7 +2,6 @@ package com.scalefocus.midterm.trippyapp.repository.impl;
 
 import com.scalefocus.midterm.trippyapp.mapper.UserMapper;
 import com.scalefocus.midterm.trippyapp.model.User;
-import com.scalefocus.midterm.trippyapp.model.dto.UserDto;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -12,26 +11,22 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.sql.*;
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
 
 import static com.scalefocus.midterm.trippyapp.testutils.User.UserConstants.USER_ID;
 import static com.scalefocus.midterm.trippyapp.testutils.User.UserFactory.getDefaultUser;
-import static com.scalefocus.midterm.trippyapp.testutils.User.UserFactory.getDefaultUserDto;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
-public class UserRepositoryImplTest {
+public class UserRepositoryTest {
     @Mock
     private HikariDataSource hikariDataSource;
     @Mock
     private UserMapper userMapper;
 
     @InjectMocks
-    private UserRepositoryImpl userRepository;
+    private UserRepository userRepository;
 
 
     @Test
