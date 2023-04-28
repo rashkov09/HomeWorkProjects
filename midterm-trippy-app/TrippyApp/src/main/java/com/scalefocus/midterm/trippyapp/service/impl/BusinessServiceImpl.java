@@ -2,6 +2,7 @@ package com.scalefocus.midterm.trippyapp.service.impl;
 
 import com.scalefocus.midterm.trippyapp.constants.enums.BusinessType;
 import com.scalefocus.midterm.trippyapp.controller.request.BusinessRequest;
+import com.scalefocus.midterm.trippyapp.exception.BusinessExceptions.BusinessAlreadyExistsException;
 import com.scalefocus.midterm.trippyapp.exception.BusinessExceptions.BusinessNotFoundException;
 import com.scalefocus.midterm.trippyapp.exception.BusinessExceptions.BusinessTypeNotFoundException;
 import com.scalefocus.midterm.trippyapp.exception.NoDataFoundException;
@@ -38,12 +39,13 @@ public class BusinessServiceImpl implements BusinessService {
     public Long createBusiness(BusinessRequest businessRequest) {
         businessObjectChecker.checkForMissingFields(businessRequest);
         Business business = businessMapper.mapFromRequest(businessRequest);
-//        if (businessExists(business)) {
-//
-//        }
+
+        if (businessExists(business)) {
+            throw new BusinessAlreadyExistsException("name " + business.getName() + " and city " + business.getCity());
+        }
         try {
             Long id = businessRepository.add(business);
-            log.info("success");
+            log.info(String.format("Business added with name %s and city %s successfully!", business.getName(), business.getCity()));
             return id;
         } catch (SQLException e) {
             throw new RuntimeException("Unexpected error", e);
@@ -54,9 +56,10 @@ public class BusinessServiceImpl implements BusinessService {
     public BusinessDto editBusiness(BusinessRequest businessRequest, Integer id) {
         businessObjectChecker.checkForMissingFields(businessRequest);
         Business business = businessMapper.mapFromRequest(businessRequest);
-//        if (businessExists(business)) {
-//
-//        }
+
+        if (businessExists(business)) {
+            throw new BusinessAlreadyExistsException("name " + business.getName() + " and city " + business.getCity());
+        }
         try {
             Business old = businessRepository.update(business, id.longValue());
             business.setId(id.longValue());
@@ -81,8 +84,26 @@ public class BusinessServiceImpl implements BusinessService {
     public BusinessDto getBusinessByEmail(String email) {
         Business business = businessRepository.getByEmail(email);
         if (business == null) {
-            log.info(String.format("Business with id %d not found!", email));
+            log.info(String.format("Business with email %s not found!", email));
             throw new BusinessNotFoundException("email " + email);
+        }
+        return businessMapper.mapToDto(business);
+    }
+
+    @Override
+    public BusinessDto getBusinessByName(String name) {
+        Business business = businessRepository.getByName(name);
+        if (business == null) {
+            throw new BusinessNotFoundException("name " + name);
+        }
+        return businessMapper.mapToDto(business);
+    }
+
+    @Override
+    public BusinessDto getBusinessByNameAndCity(String name, String city) {
+        Business business = businessRepository.getByNameAndCity(name, city);
+        if (business == null) {
+            throw new BusinessNotFoundException("name " + name + " and city " + city);
         }
         return businessMapper.mapToDto(business);
     }
@@ -98,7 +119,7 @@ public class BusinessServiceImpl implements BusinessService {
     }
 
     @Override
-    public List<BusinessDto> getBusinessByCity(String city) {
+    public List<BusinessDto> getBusinessesByCity(String city) {
         List<BusinessDto> businessDtos = businessRepository.getBusinessByCityName(city).stream().map(businessMapper::mapToDto).toList();
         if (businessDtos.isEmpty()) {
             log.error("No data found in database!");
@@ -124,6 +145,7 @@ public class BusinessServiceImpl implements BusinessService {
 
     @Override
     public Boolean businessExists(Business business) {
-        return null;
+        Business search = businessRepository.getByNameAndCity(business.getName(), business.getCity());
+        return search != null;
     }
 }

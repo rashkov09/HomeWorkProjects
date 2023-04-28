@@ -26,6 +26,14 @@ public interface BusinessController {
     @GetMapping(params = "email")
     ResponseEntity<BusinessDto> getByBusinessEmail(@RequestParam(value = "email") String email);
 
+    @GetMapping(params = "name")
+    ResponseEntity<BusinessDto> getByBusinessName(@RequestParam(value = "name") String name);
+
+    @GetMapping(params = {"name", "city"})
+    ResponseEntity<BusinessDto> getByBusinessNameAndCity(
+            @RequestParam(value = "name") String name,
+            @RequestParam(value = "city") String city);
+
     @PostMapping()
     ResponseEntity<Void> addBusiness(@RequestBody @Valid BusinessRequest businessRequest);
 

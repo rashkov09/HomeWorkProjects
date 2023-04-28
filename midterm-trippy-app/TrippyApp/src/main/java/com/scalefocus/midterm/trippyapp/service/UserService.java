@@ -10,7 +10,7 @@ import java.util.List;
 public interface UserService {
     Long createUser(UserRequest userRequest);
 
-    UserDto editUser(UserRequest itemRequest, Integer id);
+    UserDto editUser(UserRequest userRequest, Integer id);
 
     UserDto getUserById(Long id);
 

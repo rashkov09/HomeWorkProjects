@@ -15,11 +15,17 @@ public interface BusinessService {
 
     BusinessDto getBusinessByEmail(String email);
 
+    BusinessDto getBusinessByName(String name);
+
+    BusinessDto getBusinessByNameAndCity(String name, String city);
+
     List<BusinessDto> getAllBusinesses();
 
-    List<BusinessDto> getBusinessByCity(String city);
+    List<BusinessDto> getBusinessesByCity(String city);
 
     List<BusinessDto> getByBusinessType(String type);
 
     Boolean businessExists(Business business);
+
+
 }

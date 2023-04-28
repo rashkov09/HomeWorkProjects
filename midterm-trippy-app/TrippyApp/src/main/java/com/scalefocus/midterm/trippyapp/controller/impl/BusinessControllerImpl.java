@@ -34,7 +34,7 @@ public class BusinessControllerImpl implements BusinessController {
 
     @Override
     public ResponseEntity<List<BusinessDto>> getBusinessByCity(String city) {
-        List<BusinessDto> filteredList = businessService.getBusinessByCity(city);
+        List<BusinessDto> filteredList = businessService.getBusinessesByCity(city);
         return ResponseEntity.ok(filteredList);
     }
 
@@ -48,6 +48,16 @@ public class BusinessControllerImpl implements BusinessController {
     public ResponseEntity<BusinessDto> getByBusinessEmail(String email) {
         BusinessDto businessDto = businessService.getBusinessByEmail(email);
         return ResponseEntity.ok(businessDto);
+    }
+
+    @Override
+    public ResponseEntity<BusinessDto> getByBusinessName(String name) {
+        return ResponseEntity.ok(businessService.getBusinessByName(name));
+    }
+
+    @Override
+    public ResponseEntity<BusinessDto> getByBusinessNameAndCity(String name, String city) {
+        return ResponseEntity.ok(businessService.getBusinessByNameAndCity(name, city));
     }
 
     @Override

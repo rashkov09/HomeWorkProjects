@@ -21,6 +21,8 @@ public class BusinessRepositoryImpl implements BusinessRepository {
     private final static String SELECT_BUSINESSES_BY_TYPE_STATEMENT = "SELECT * FROM ta.businesses WHERE business_type = ?";
     private final static String SELECT_BUSINESSES_BY_ID_STATEMENT = "SELECT * FROM ta.businesses WHERE id = ?";
     private final static String SELECT_BUSINESSES_BY_EMAIL_STATEMENT = "SELECT * FROM ta.businesses WHERE email = ?";
+    private final static String SELECT_BUSINESSES_BY_NAME_STATEMENT = "SELECT * FROM ta.businesses WHERE name = ?";
+    private final static String SELECT_BUSINESSES_BY_NAME_AND_CITY_STATEMENT = "SELECT * FROM ta.businesses WHERE name = ? and city=?";
     private final static String UPDATE_BUSINESSES_BY_ID_STATEMENT = "UPDATE ta.businesses SET name=?, city=?, business_type=?, address=?, email=?, phone=?, website=?  WHERE id = ?";
 
     private final static String GET_AVG_RATING_SQL = """
@@ -172,5 +174,36 @@ public class BusinessRepositoryImpl implements BusinessRepository {
             throw new RuntimeException(e);
         }
         return businesses;
+    }
+
+    @Override
+    public Business getByName(String name) {
+        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(SELECT_BUSINESSES_BY_NAME_STATEMENT)) {
+            preparedStatement.setString(1, name);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            Business business = null;
+            if (resultSet.next()) {
+                business = businessMapper.mapRow(resultSet, resultSet.getRow());
+            }
+            return business;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Business getByNameAndCity(String name, String city) {
+        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(SELECT_BUSINESSES_BY_NAME_AND_CITY_STATEMENT)) {
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, city);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            Business business = null;
+            if (resultSet.next()) {
+                business = businessMapper.mapRow(resultSet, resultSet.getRow());
+            }
+            return business;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
