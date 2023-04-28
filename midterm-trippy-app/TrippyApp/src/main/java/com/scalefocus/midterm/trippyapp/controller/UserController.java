@@ -2,6 +2,7 @@ package com.scalefocus.midterm.trippyapp.controller;
 
 import com.scalefocus.midterm.trippyapp.controller.request.UserRequest;
 import com.scalefocus.midterm.trippyapp.model.dto.UserDto;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +20,11 @@ public interface UserController {
     ResponseEntity<UserDto> getUserById(@PathVariable
                                         Long id);
 
-    @GetMapping("/username/{username}")
-    ResponseEntity<UserDto> getUserByUsername(@PathVariable
-                                              String username);
+    @GetMapping(params = "username")
+    ResponseEntity<UserDto> getUserByUsername(@RequestParam(value = "username") String username);
 
-    @GetMapping("/email/{email}")
-    ResponseEntity<UserDto> getUserByEmail(@PathVariable
-                                           String email);
+    @GetMapping(params = "email")
+    ResponseEntity<UserDto> getUserByEmail(@RequestParam(value = "email") String email);
 
     @PostMapping()
     ResponseEntity<Void> addUser(@RequestBody @Valid UserRequest userRequest);
