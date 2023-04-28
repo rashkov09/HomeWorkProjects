@@ -28,6 +28,9 @@ public class BusinessRequest {
         this.website = website;
     }
 
+    public BusinessRequest() {
+    }
+
     public String getName() {
         return name;
     }

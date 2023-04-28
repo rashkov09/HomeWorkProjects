@@ -16,7 +16,7 @@ public class BusinessMapper implements RowMapper<Business> {
         businessDto.setName(business.getName());
         businessDto.setCity(business.getCity());
         businessDto.setBusinessType(business.getBusinessType());
-        businessDto.setAverageRate(business.getAverageRate());
+        businessDto.setAverageRating(business.getAverageRate());
         businessDto.setNumberOfReviews(business.getNumberOfReviews());
         businessDto.setAddress(business.getAddress());
         businessDto.setEmail(business.getEmail());
