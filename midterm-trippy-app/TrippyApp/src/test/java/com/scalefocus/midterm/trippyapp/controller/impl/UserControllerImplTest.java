@@ -107,7 +107,7 @@ public class UserControllerImplTest {
     public void getUserByUsername_NoException_success() throws Exception {
         when(userService.getUserByUsername(USER_USERNAME)).thenReturn(getDefaultUserDto());
 
-        mockMvc.perform(get("/users/username/" + USER_USERNAME))
+        mockMvc.perform(get("/users?username="+USER_USERNAME))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.username").value(USER_USERNAME))
@@ -128,7 +128,7 @@ public class UserControllerImplTest {
     public void getUserByEmail_noException_success() throws Exception {
         when(userService.getUserByEmail(USER_EMAIL)).thenReturn(getDefaultUserDto());
 
-        mockMvc.perform(get("/users/email/" + USER_EMAIL))
+        mockMvc.perform(get("/users?email=" + USER_EMAIL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.username").value(USER_USERNAME))
