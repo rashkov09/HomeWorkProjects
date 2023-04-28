@@ -1,6 +1,9 @@
 package com.scalefocus.midterm.trippyapp.exception.handler;
 
 
+import com.scalefocus.midterm.trippyapp.exception.BusinessExceptions.BusinessAlreadyExistsException;
+import com.scalefocus.midterm.trippyapp.exception.BusinessExceptions.BusinessNotFoundException;
+import com.scalefocus.midterm.trippyapp.exception.BusinessExceptions.BusinessTypeNotFoundException;
 import com.scalefocus.midterm.trippyapp.exception.MissingRequestFieldsException;
 import com.scalefocus.midterm.trippyapp.exception.NoDataFoundException;
 import com.scalefocus.midterm.trippyapp.exception.UserExceptions.UserAlreadyExistsException;
@@ -61,6 +64,33 @@ public class GlobalExceptionHandler {
         String error = exception.getMessage();
         Map<String, List<String>> errorsMap = formatErrorsResponse(error);
         return new ResponseEntity<>(errorsMap, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BusinessNotFoundException.class)
+    public ResponseEntity<Map<String, List<String>>> handleBusinessNotFoundException(BusinessNotFoundException exception) {
+        log.error("Caught exception: ", exception);
+
+        String error = exception.getMessage();
+        Map<String, List<String>> errorsMap = formatErrorsResponse(error);
+        return new ResponseEntity<>(errorsMap, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BusinessAlreadyExistsException.class)
+    public ResponseEntity<Map<String, List<String>>> handleBusinessAlreadyExistsException(BusinessAlreadyExistsException exception) {
+        log.error("Caught exception: ", exception);
+
+        String error = exception.getMessage();
+        Map<String, List<String>> errorsMap = formatErrorsResponse(error);
+        return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BusinessTypeNotFoundException.class)
+    public ResponseEntity<Map<String, List<String>>> handleBusinessTypeNotFoundException(BusinessTypeNotFoundException exception) {
+        log.error("Caught exception: ", exception);
+
+        String error = exception.getMessage();
+        Map<String, List<String>> errorsMap = formatErrorsResponse(error);
+        return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NoDataFoundException.class)

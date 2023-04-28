@@ -1,14 +1,21 @@
 package com.scalefocus.midterm.trippyapp.controller.request;
 
 import com.scalefocus.midterm.trippyapp.constants.enums.BusinessType;
+import jakarta.validation.constraints.Pattern;
 
 public class BusinessRequest {
+    @Pattern(regexp = "^[A-Za-z0-9]$", message = "Name must not be empty")
     private String name;
+    @Pattern(regexp = "^[A-Za-z]$", message = "City name must not be empty and cannot contain numbers")
     private String city;
     private BusinessType businessType;
+    @Pattern(regexp = "^[A-Za-z0-9\\s]$", message = "Address must not be empty")
     private String address;
+    @Pattern(regexp = "^([A-Za-z0-9]+)@([a-z]+).([a-z]){2,6}$", message = "Invalid email format")
     private String email;
+    @Pattern(regexp = "^([+|0])[0-9]{2,3}-[0-9]{2,3}-[0-9]{6}$", message = "Invalid phone format ex.(+359-883-879883)")
     private String phone;
+    @Pattern(regexp = "^(w{3}).([a-z0-9]+).([a-z]{2,5})$$", message = "Invalid website format")
     private String website;
 
     public BusinessRequest(String name, String city, BusinessType businessType, String address, String email, String phone, String website) {

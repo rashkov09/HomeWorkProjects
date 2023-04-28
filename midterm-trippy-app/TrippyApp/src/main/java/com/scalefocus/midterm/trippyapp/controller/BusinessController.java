@@ -1,6 +1,5 @@
 package com.scalefocus.midterm.trippyapp.controller;
 
-import com.scalefocus.midterm.trippyapp.constants.enums.BusinessType;
 import com.scalefocus.midterm.trippyapp.controller.request.BusinessRequest;
 import com.scalefocus.midterm.trippyapp.model.dto.BusinessDto;
 import com.scalefocus.midterm.trippyapp.model.dto.UserDto;
@@ -23,7 +22,7 @@ public interface BusinessController {
     ResponseEntity<List<BusinessDto>> getBusinessByCity(@RequestParam(value = "city") String city);
 
     @GetMapping(params = "type")
-    ResponseEntity<List<BusinessDto>> getByBusinessType(@RequestParam(value = "type") BusinessType businessType);
+    ResponseEntity<List<BusinessDto>> getByBusinessType(@RequestParam(value = "type") String businessType);
 
     @PostMapping()
     ResponseEntity<Void> addBusiness(@RequestBody @Valid BusinessRequest businessRequest);

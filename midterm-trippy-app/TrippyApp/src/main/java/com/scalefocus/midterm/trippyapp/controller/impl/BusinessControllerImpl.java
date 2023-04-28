@@ -1,6 +1,5 @@
 package com.scalefocus.midterm.trippyapp.controller.impl;
 
-import com.scalefocus.midterm.trippyapp.constants.enums.BusinessType;
 import com.scalefocus.midterm.trippyapp.controller.BusinessController;
 import com.scalefocus.midterm.trippyapp.controller.request.BusinessRequest;
 import com.scalefocus.midterm.trippyapp.model.dto.BusinessDto;
@@ -36,12 +35,14 @@ public class BusinessControllerImpl implements BusinessController {
 
     @Override
     public ResponseEntity<List<BusinessDto>> getBusinessByCity(String city) {
-        return null;
+        List<BusinessDto> filteredList = businessService.getBusinessByCity(city);
+        return ResponseEntity.ok(filteredList);
     }
 
     @Override
-    public ResponseEntity<List<BusinessDto>> getByBusinessType(BusinessType businessType) {
-        return null;
+    public ResponseEntity<List<BusinessDto>> getByBusinessType(String businessType) {
+        List<BusinessDto> filteredList = businessService.getByBusinessType(businessType);
+        return ResponseEntity.ok(filteredList);
     }
 
     @Override

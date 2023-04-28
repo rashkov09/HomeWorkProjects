@@ -92,14 +92,14 @@ public class UserRepository implements CustomRepository<User> {
         try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(FIND_USER_BY_ID_SQL_STATEMENT)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
+            User user = null;
             if (resultSet.next()) {
-                return userMapper.mapRow(resultSet, resultSet.getRow());
+                user = userMapper.mapRow(resultSet, resultSet.getRow());
             }
-
+            return user;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return null;
     }
 
     @Override

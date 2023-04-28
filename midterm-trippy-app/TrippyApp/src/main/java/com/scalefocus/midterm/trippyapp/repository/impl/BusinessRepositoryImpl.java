@@ -1,9 +1,10 @@
 package com.scalefocus.midterm.trippyapp.repository.impl;
 
+import com.scalefocus.midterm.trippyapp.constants.enums.BusinessType;
 import com.scalefocus.midterm.trippyapp.mapper.BusinessMapper;
 import com.scalefocus.midterm.trippyapp.model.Business;
 import com.scalefocus.midterm.trippyapp.model.User;
-import com.scalefocus.midterm.trippyapp.repository.CustomRepository;
+import com.scalefocus.midterm.trippyapp.repository.BusinessRepository;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.stereotype.Repository;
 
@@ -12,11 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class BusinessRepository implements CustomRepository<Business> {
+public class BusinessRepositoryImpl implements BusinessRepository {
     private final static String INSERT_BUSINESS_SQL_STATEMENT = """
-            INSERT INTO ta.businesses (name, city, business_type, address, email, phone, website) 
+            INSERT INTO ta.businesses (name, city, business_type, address, email, phone, website)
             VALUES (?,?,?,?,?,?,?)""";
     private final static String SELECT_ALL_BUSINESSES_STATEMENT = "SELECT * FROM ta.businesses";
+    private final static String SELECT_BUSINESSES_BY_CITY_STATEMENT = "SELECT * FROM ta.businesses WHERE city = ?";
+    private final static String SELECT_BUSINESSES_BY_TYPE_STATEMENT = "SELECT * FROM ta.businesses WHERE business_type = ?";
 
     private final static String GET_AVG_RATING_SQL = """
              SELECT AVG(CASE r.rating
@@ -35,7 +38,7 @@ public class BusinessRepository implements CustomRepository<Business> {
     private final HikariDataSource hikariDataSource;
     private final BusinessMapper businessMapper;
 
-    public BusinessRepository(HikariDataSource hikariDataSource, BusinessMapper businessMapper) {
+    public BusinessRepositoryImpl(HikariDataSource hikariDataSource, BusinessMapper businessMapper) {
         this.hikariDataSource = hikariDataSource;
         this.businessMapper = businessMapper;
     }
@@ -55,6 +58,7 @@ public class BusinessRepository implements CustomRepository<Business> {
         }
         return businesses;
     }
+
 
     @Override
     public Long add(Business business) throws SQLException {
@@ -102,4 +106,36 @@ public class BusinessRepository implements CustomRepository<Business> {
         return null;
     }
 
+
+    @Override
+    public List<Business> getBusinessByCityName(String city) {
+        List<Business> businesses = new ArrayList<>();
+        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(SELECT_BUSINESSES_BY_CITY_STATEMENT)) {
+            preparedStatement.setString(1, city);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                businesses.add(businessMapper.mapRow(resultSet, resultSet.getRow()));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return businesses;
+    }
+
+    @Override
+    public List<Business> getBusinessByType(BusinessType type) {
+        List<Business> businesses = new ArrayList<>();
+        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(SELECT_BUSINESSES_BY_TYPE_STATEMENT)) {
+            preparedStatement.setObject(1, type.name(), Types.OTHER);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                businesses.add(businessMapper.mapRow(resultSet, resultSet.getRow()));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return businesses;
+    }
 }

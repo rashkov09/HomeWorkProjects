@@ -1,6 +1,5 @@
 package com.scalefocus.midterm.trippyapp.service;
 
-import com.scalefocus.midterm.trippyapp.constants.enums.BusinessType;
 import com.scalefocus.midterm.trippyapp.controller.request.BusinessRequest;
 import com.scalefocus.midterm.trippyapp.model.Business;
 import com.scalefocus.midterm.trippyapp.model.dto.BusinessDto;
@@ -16,9 +15,9 @@ public interface BusinessService {
 
     List<BusinessDto> getAllBusinesses();
 
-    BusinessDto getBusinessByCity(String city);
+    List<BusinessDto> getBusinessByCity(String city);
 
-    BusinessDto getByBusinessType(BusinessType type);
+    List<BusinessDto> getByBusinessType(String type);
 
     Boolean businessExists(Business business);
 }
