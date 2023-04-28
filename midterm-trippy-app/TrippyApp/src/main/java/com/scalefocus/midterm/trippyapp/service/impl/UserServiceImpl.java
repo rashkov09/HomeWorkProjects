@@ -1,7 +1,6 @@
 package com.scalefocus.midterm.trippyapp.service.impl;
 
 import com.scalefocus.midterm.trippyapp.controller.request.UserRequest;
-import com.scalefocus.midterm.trippyapp.exception.MissingRequestFieldsException;
 import com.scalefocus.midterm.trippyapp.exception.NoDataFoundException;
 import com.scalefocus.midterm.trippyapp.exception.UserExceptions.UserAlreadyExistsException;
 import com.scalefocus.midterm.trippyapp.exception.UserExceptions.UserNotFoundException;
@@ -10,12 +9,12 @@ import com.scalefocus.midterm.trippyapp.model.User;
 import com.scalefocus.midterm.trippyapp.model.dto.UserDto;
 import com.scalefocus.midterm.trippyapp.repository.CustomRepository;
 import com.scalefocus.midterm.trippyapp.service.UserService;
+import com.scalefocus.midterm.trippyapp.util.ObjectChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -25,31 +24,19 @@ public class UserServiceImpl implements UserService {
     private final CustomRepository<User> userCustomRepository;
     private final UserMapper userMapper;
 
+    private final ObjectChecker<UserRequest> userObjectChecker;
+
     @Autowired
-    public UserServiceImpl(CustomRepository<User> userCustomRepository, UserMapper userMapper) {
+    public UserServiceImpl(CustomRepository<User> userCustomRepository, UserMapper userMapper, ObjectChecker<UserRequest> userObjectChecker) {
         this.userCustomRepository = userCustomRepository;
         this.userMapper = userMapper;
+        this.userObjectChecker = userObjectChecker;
     }
 
-    private static void checkForMissingFields(UserRequest userRequest) {
-        for (Field field : userRequest.getClass().getDeclaredFields()) {
-            field.setAccessible(true);
-            Object value;
-            try {
-                value = field.get(userRequest);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-            if (value == null) {
-                log.error(String.format("Null value for field %s!", field.getName()));
-                throw new MissingRequestFieldsException();
-            }
-        }
-    }
 
     @Override
     public Long createUser(UserRequest userRequest) {
-        checkForMissingFields(userRequest);
+        userObjectChecker.checkForMissingFields(userRequest);
         User user = userMapper.mapFromRequest(userRequest);
         if (userExists(user)) {
             throw new UserAlreadyExistsException(user.getUsername(), user.getEmail());
@@ -65,16 +52,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto editUser(UserRequest userRequest, Integer id) {
-        checkForMissingFields(userRequest);
+        userObjectChecker.checkForMissingFields(userRequest);
         User user = userMapper.mapFromRequest(userRequest);
         if (userExists(user)) {
             throw new UserAlreadyExistsException(user.getUsername(), user.getEmail());
         }
         try {
-            userCustomRepository.update(user, id.longValue());
+            User oldUser = userCustomRepository.update(user, id.longValue());
             user.setId(id.longValue());
             log.info(String.format("User with id %d edited successfully!", id));
-            return userMapper.mapToDto(user);
+            return userMapper.mapToDto(oldUser);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

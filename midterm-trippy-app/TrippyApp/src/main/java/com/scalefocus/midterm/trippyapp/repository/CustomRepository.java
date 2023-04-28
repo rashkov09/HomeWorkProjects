@@ -1,7 +1,5 @@
 package com.scalefocus.midterm.trippyapp.repository;
 
-import com.scalefocus.midterm.trippyapp.model.User;
-
 import java.sql.SQLException;
 import java.util.List;
 
@@ -11,7 +9,7 @@ public interface CustomRepository<T> {
 
     Long add(T object) throws SQLException;
 
-    User update(T object, Long id) throws SQLException;
+    T update(T object, Long id) throws SQLException;
 
     Boolean delete(T object);
 

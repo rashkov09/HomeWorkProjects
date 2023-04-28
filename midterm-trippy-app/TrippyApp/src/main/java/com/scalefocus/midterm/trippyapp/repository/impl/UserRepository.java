@@ -75,7 +75,7 @@ public class UserRepository implements CustomRepository<User> {
             preparedStatement.setString(4, user.getLastName());
             preparedStatement.setString(5, user.getCity());
             preparedStatement.setLong(6, id);
-            int result = preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
 
             return oldUser;
         }

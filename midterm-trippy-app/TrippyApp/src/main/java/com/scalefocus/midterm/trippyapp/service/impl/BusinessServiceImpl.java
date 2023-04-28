@@ -11,6 +11,7 @@ import com.scalefocus.midterm.trippyapp.model.dto.BusinessDto;
 import com.scalefocus.midterm.trippyapp.repository.BusinessRepository;
 import com.scalefocus.midterm.trippyapp.repository.impl.BusinessRepositoryImpl;
 import com.scalefocus.midterm.trippyapp.service.BusinessService;
+import com.scalefocus.midterm.trippyapp.util.ObjectChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +25,18 @@ public class BusinessServiceImpl implements BusinessService {
     private static final Logger log = LoggerFactory.getLogger(BusinessServiceImpl.class);
     private final BusinessRepository businessRepository;
     private final BusinessMapper businessMapper;
+    private final ObjectChecker<BusinessRequest> businessObjectChecker;
 
     @Autowired
-    public BusinessServiceImpl(BusinessRepositoryImpl businessRepository, BusinessMapper businessMapper) {
+    public BusinessServiceImpl(BusinessRepositoryImpl businessRepository, BusinessMapper businessMapper, ObjectChecker<BusinessRequest> businessObjectChecker) {
         this.businessRepository = businessRepository;
         this.businessMapper = businessMapper;
+        this.businessObjectChecker = businessObjectChecker;
     }
 
     @Override
     public Long createBusiness(BusinessRequest businessRequest) {
+        businessObjectChecker.checkForMissingFields(businessRequest);
         Business business = businessMapper.mapFromRequest(businessRequest);
 //        if (businessExists(business)) {
 //
@@ -48,12 +52,39 @@ public class BusinessServiceImpl implements BusinessService {
 
     @Override
     public BusinessDto editBusiness(BusinessRequest businessRequest, Integer id) {
-        return null;
+        businessObjectChecker.checkForMissingFields(businessRequest);
+        Business business = businessMapper.mapFromRequest(businessRequest);
+//        if (businessExists(business)) {
+//
+//        }
+        try {
+            Business old = businessRepository.update(business, id.longValue());
+            business.setId(id.longValue());
+            log.info(String.format("Business with id %d edited successfully!", id));
+            return businessMapper.mapToDto(old);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public BusinessDto getBusinessById(Long id) {
-        return null;
+        Business business = businessRepository.getById(id);
+        if (business == null) {
+            log.info(String.format("Business with id %d not found!", id));
+            throw new BusinessNotFoundException("id " + id);
+        }
+        return businessMapper.mapToDto(business);
+    }
+
+    @Override
+    public BusinessDto getBusinessByEmail(String email) {
+        Business business = businessRepository.getByEmail(email);
+        if (business == null) {
+            log.info(String.format("Business with id %d not found!", email));
+            throw new BusinessNotFoundException("email " + email);
+        }
+        return businessMapper.mapToDto(business);
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.scalefocus.midterm.trippyapp.controller;
 
 import com.scalefocus.midterm.trippyapp.controller.request.BusinessRequest;
 import com.scalefocus.midterm.trippyapp.model.dto.BusinessDto;
-import com.scalefocus.midterm.trippyapp.model.dto.UserDto;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +23,14 @@ public interface BusinessController {
     @GetMapping(params = "type")
     ResponseEntity<List<BusinessDto>> getByBusinessType(@RequestParam(value = "type") String businessType);
 
+    @GetMapping(params = "email")
+    ResponseEntity<BusinessDto> getByBusinessEmail(@RequestParam(value = "email") String email);
+
     @PostMapping()
     ResponseEntity<Void> addBusiness(@RequestBody @Valid BusinessRequest businessRequest);
 
     @PutMapping("/{id}")
-    ResponseEntity<UserDto> updateBusiness(
+    ResponseEntity<BusinessDto> updateBusiness(
             @RequestBody @Valid BusinessRequest businessRequest, @PathVariable int id,
             @RequestParam(required = false) boolean returnOld);
 }

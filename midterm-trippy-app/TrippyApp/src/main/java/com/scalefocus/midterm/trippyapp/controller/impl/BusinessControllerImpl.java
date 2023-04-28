@@ -3,7 +3,6 @@ package com.scalefocus.midterm.trippyapp.controller.impl;
 import com.scalefocus.midterm.trippyapp.controller.BusinessController;
 import com.scalefocus.midterm.trippyapp.controller.request.BusinessRequest;
 import com.scalefocus.midterm.trippyapp.model.dto.BusinessDto;
-import com.scalefocus.midterm.trippyapp.model.dto.UserDto;
 import com.scalefocus.midterm.trippyapp.service.BusinessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +29,7 @@ public class BusinessControllerImpl implements BusinessController {
 
     @Override
     public ResponseEntity<BusinessDto> getBusinessById(Long id) {
-        return null;
+        return ResponseEntity.ok(businessService.getBusinessById(id));
     }
 
     @Override
@@ -46,6 +45,12 @@ public class BusinessControllerImpl implements BusinessController {
     }
 
     @Override
+    public ResponseEntity<BusinessDto> getByBusinessEmail(String email) {
+        BusinessDto businessDto = businessService.getBusinessByEmail(email);
+        return ResponseEntity.ok(businessDto);
+    }
+
+    @Override
     public ResponseEntity<Void> addBusiness(BusinessRequest businessRequest) {
         Long id = businessService.createBusiness(businessRequest);
 
@@ -57,7 +62,12 @@ public class BusinessControllerImpl implements BusinessController {
     }
 
     @Override
-    public ResponseEntity<UserDto> updateBusiness(BusinessRequest businessRequest, int id, boolean returnOld) {
-        return null;
+    public ResponseEntity<BusinessDto> updateBusiness(BusinessRequest businessRequest, int id, boolean returnOld) {
+        BusinessDto businessDto = businessService.editBusiness(businessRequest, id);
+        if (returnOld) {
+            return ResponseEntity.ok(businessDto);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 }

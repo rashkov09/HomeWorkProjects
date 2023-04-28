@@ -3,7 +3,6 @@ package com.scalefocus.midterm.trippyapp.repository.impl;
 import com.scalefocus.midterm.trippyapp.constants.enums.BusinessType;
 import com.scalefocus.midterm.trippyapp.mapper.BusinessMapper;
 import com.scalefocus.midterm.trippyapp.model.Business;
-import com.scalefocus.midterm.trippyapp.model.User;
 import com.scalefocus.midterm.trippyapp.repository.BusinessRepository;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.stereotype.Repository;
@@ -20,6 +19,9 @@ public class BusinessRepositoryImpl implements BusinessRepository {
     private final static String SELECT_ALL_BUSINESSES_STATEMENT = "SELECT * FROM ta.businesses";
     private final static String SELECT_BUSINESSES_BY_CITY_STATEMENT = "SELECT * FROM ta.businesses WHERE city = ?";
     private final static String SELECT_BUSINESSES_BY_TYPE_STATEMENT = "SELECT * FROM ta.businesses WHERE business_type = ?";
+    private final static String SELECT_BUSINESSES_BY_ID_STATEMENT = "SELECT * FROM ta.businesses WHERE id = ?";
+    private final static String SELECT_BUSINESSES_BY_EMAIL_STATEMENT = "SELECT * FROM ta.businesses WHERE email = ?";
+    private final static String UPDATE_BUSINESSES_BY_ID_STATEMENT = "UPDATE ta.businesses SET name=?, city=?, business_type=?, address=?, email=?, phone=?, website=?  WHERE id = ?";
 
     private final static String GET_AVG_RATING_SQL = """
              SELECT AVG(CASE r.rating
@@ -82,8 +84,21 @@ public class BusinessRepositoryImpl implements BusinessRepository {
     }
 
     @Override
-    public User update(Business business, Long id) throws SQLException {
-        return null;
+    public Business update(Business business, Long id) throws SQLException {
+        Business oldBusiness = getById(id);
+        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(UPDATE_BUSINESSES_BY_ID_STATEMENT)) {
+            preparedStatement.setString(1, business.getName());
+            preparedStatement.setString(2, business.getCity());
+            preparedStatement.setObject(3, business.getBusinessType().name(), Types.OTHER);
+            preparedStatement.setString(4, business.getAddress());
+            preparedStatement.setString(5, business.getEmail());
+            preparedStatement.setString(6, business.getPhone());
+            preparedStatement.setString(7, business.getWebsite());
+            preparedStatement.setLong(8, id);
+            preparedStatement.executeUpdate();
+
+            return oldBusiness;
+        }
     }
 
     @Override
@@ -93,12 +108,32 @@ public class BusinessRepositoryImpl implements BusinessRepository {
 
     @Override
     public Business getById(Long id) {
-        return null;
+        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(SELECT_BUSINESSES_BY_ID_STATEMENT)) {
+            preparedStatement.setLong(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            Business business = null;
+            if (resultSet.next()) {
+                business = businessMapper.mapRow(resultSet, resultSet.getRow());
+            }
+            return business;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public Business getByEmail(String email) {
-        return null;
+        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(SELECT_BUSINESSES_BY_EMAIL_STATEMENT)) {
+            preparedStatement.setString(1, email);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            Business business = null;
+            if (resultSet.next()) {
+                business = businessMapper.mapRow(resultSet, resultSet.getRow());
+            }
+            return business;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

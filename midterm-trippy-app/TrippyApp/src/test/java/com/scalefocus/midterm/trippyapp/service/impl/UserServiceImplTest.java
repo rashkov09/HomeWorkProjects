@@ -9,6 +9,7 @@ import com.scalefocus.midterm.trippyapp.mapper.UserMapper;
 import com.scalefocus.midterm.trippyapp.model.User;
 import com.scalefocus.midterm.trippyapp.model.dto.UserDto;
 import com.scalefocus.midterm.trippyapp.repository.CustomRepository;
+import com.scalefocus.midterm.trippyapp.util.ObjectChecker;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +26,7 @@ import static com.scalefocus.midterm.trippyapp.testutils.User.UserFactory.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -34,6 +36,9 @@ public class UserServiceImplTest {
 
     @Mock
     private UserMapper userMapper;
+
+    @Mock
+    private ObjectChecker<UserRequest> objectChecker;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -167,6 +172,7 @@ public class UserServiceImplTest {
 
     @Test(expected = MissingRequestFieldsException.class)
     public void createUserMissingEmail_withException_throws() {
+        when(objectChecker.checkForMissingFields(any())).thenThrow(new MissingRequestFieldsException());
         UserRequest userRequest = getDefaultUserRequest();
         userRequest.setEmail(null);
         userService.createUser(userRequest);
@@ -174,6 +180,7 @@ public class UserServiceImplTest {
 
     @Test(expected = MissingRequestFieldsException.class)
     public void createUserWithMissingUsername_withException_throws() {
+        when(objectChecker.checkForMissingFields(any())).thenThrow(new MissingRequestFieldsException());
         UserRequest userRequest = getDefaultUserRequest();
         userRequest.setUsername(null);
         userService.createUser(userRequest);
@@ -181,6 +188,7 @@ public class UserServiceImplTest {
 
     @Test(expected = MissingRequestFieldsException.class)
     public void createUserWithMissingFirstName_withException_throws() {
+        when(objectChecker.checkForMissingFields(any())).thenThrow(new MissingRequestFieldsException());
         UserRequest userRequest = getDefaultUserRequest();
         userRequest.setFirstName(null);
         userService.createUser(userRequest);
@@ -188,6 +196,7 @@ public class UserServiceImplTest {
 
     @Test(expected = MissingRequestFieldsException.class)
     public void createUserWithMissingLastName_withException_throws() {
+        when(objectChecker.checkForMissingFields(any())).thenThrow(new MissingRequestFieldsException());
         UserRequest userRequest = getDefaultUserRequest();
         userRequest.setLastName(null);
         userService.createUser(userRequest);
@@ -195,6 +204,7 @@ public class UserServiceImplTest {
 
     @Test(expected = MissingRequestFieldsException.class)
     public void createUserWithMissingCity_withException_throws() {
+        when(objectChecker.checkForMissingFields(any())).thenThrow(new MissingRequestFieldsException());
         UserRequest userRequest = getDefaultUserRequest();
         userRequest.setCity(null);
         userService.createUser(userRequest);
@@ -202,6 +212,7 @@ public class UserServiceImplTest {
 
     @Test(expected = UserAlreadyExistsException.class)
     public void createUserWithAlreadyExistingEmail_withException_throws() {
+        when(objectChecker.checkForMissingFields(any())).thenReturn(false);
         when(userCustomRepository.getByEmail(any())).thenReturn(getDefaultUser());
         when(userMapper.mapFromRequest(any())).thenReturn(getDefaultUser());
         userService.createUser(getDefaultUserRequest());
@@ -211,6 +222,7 @@ public class UserServiceImplTest {
     public void createUserWithAlreadyExistingUsername_withException_throws() {
         when(userCustomRepository.getByUsername(any())).thenReturn(getDefaultUser());
         when(userMapper.mapFromRequest(any())).thenReturn(getDefaultUser());
+        when(objectChecker.checkForMissingFields(any())).thenReturn(false);
         userService.createUser(getDefaultUserRequest());
     }
 
