@@ -1,32 +1,41 @@
-package com.scalefocus.midterm.trippyapp.model;
+package com.scalefocus.midterm.trippyapp.model.dto;
 
 import com.scalefocus.midterm.trippyapp.constants.enums.BusinessType;
 
-public class Business extends BaseEntity {
+public class BusinessDto {
+    private Long id;
     private String name;
     private String city;
     private BusinessType businessType;
     private Integer numberOfReviews;
-    private Double averageRate;
+    private Double averageRating;
     private String address;
     private String email;
     private String phone;
     private String website;
 
-    public Business() {
+    public BusinessDto() {
     }
 
-    public Business(Long id, String name, String city, BusinessType businessType, Integer numberOfReviews, Double averageRate, String address, String email, String phone, String website) {
-        super(id);
+    public BusinessDto(Long id, String name, String city, BusinessType businessType, Integer numberOfReviews, Double averageRating, String address, String email, String phone, String website) {
+        this.id = id;
         this.name = name;
         this.city = city;
         this.businessType = businessType;
-        this.numberOfReviews = 0;
-        this.averageRate = 0.00;
+        this.numberOfReviews = numberOfReviews;
+        this.averageRating = averageRating;
         this.address = address;
         this.email = email;
         this.phone = phone;
         this.website = website;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -61,12 +70,12 @@ public class Business extends BaseEntity {
         this.numberOfReviews = numberOfReviews;
     }
 
-    public Double getAverageRate() {
-        return averageRate;
+    public Double getAverageRating() {
+        return averageRating;
     }
 
-    public void setAverageRate(Double averageRate) {
-        this.averageRate = averageRate;
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
     }
 
     public String getAddress() {

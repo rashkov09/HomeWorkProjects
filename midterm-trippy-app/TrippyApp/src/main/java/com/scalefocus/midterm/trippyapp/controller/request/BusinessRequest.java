@@ -1,32 +1,34 @@
-package com.scalefocus.midterm.trippyapp.model;
+package com.scalefocus.midterm.trippyapp.controller.request;
 
 import com.scalefocus.midterm.trippyapp.constants.enums.BusinessType;
+import jakarta.validation.constraints.Pattern;
 
-public class Business extends BaseEntity {
+public class BusinessRequest {
+    @Pattern(regexp = "^[A-Za-z0-9\\s]+$", message = "Name must not be empty")
     private String name;
+    @Pattern(regexp = "^[A-Za-z\\s]+$", message = "City name must not be empty and cannot contain numbers")
     private String city;
     private BusinessType businessType;
-    private Integer numberOfReviews;
-    private Double averageRate;
+    @Pattern(regexp = "^[A-Za-z0-9\\s]+$", message = "Address must not be empty")
     private String address;
+    @Pattern(regexp = "^([A-Za-z0-9]+)@([a-z]+).([a-z]){2,6}$", message = "Invalid email format")
     private String email;
+    @Pattern(regexp = "^([+|0])[0-9]{2,3}-[0-9]{2,3}-[0-9]{6}$", message = "Invalid phone format ex.(+359-883-879883)")
     private String phone;
+    @Pattern(regexp = "^(w{3}).([a-z0-9]+).([a-z]{2,5})$$", message = "Invalid website format")
     private String website;
 
-    public Business() {
-    }
-
-    public Business(Long id, String name, String city, BusinessType businessType, Integer numberOfReviews, Double averageRate, String address, String email, String phone, String website) {
-        super(id);
+    public BusinessRequest(String name, String city, BusinessType businessType, String address, String email, String phone, String website) {
         this.name = name;
         this.city = city;
         this.businessType = businessType;
-        this.numberOfReviews = 0;
-        this.averageRate = 0.00;
         this.address = address;
         this.email = email;
         this.phone = phone;
         this.website = website;
+    }
+
+    public BusinessRequest() {
     }
 
     public String getName() {
@@ -51,22 +53,6 @@ public class Business extends BaseEntity {
 
     public void setBusinessType(BusinessType businessType) {
         this.businessType = businessType;
-    }
-
-    public Integer getNumberOfReviews() {
-        return numberOfReviews;
-    }
-
-    public void setNumberOfReviews(Integer numberOfReviews) {
-        this.numberOfReviews = numberOfReviews;
-    }
-
-    public Double getAverageRate() {
-        return averageRate;
-    }
-
-    public void setAverageRate(Double averageRate) {
-        this.averageRate = averageRate;
     }
 
     public String getAddress() {
