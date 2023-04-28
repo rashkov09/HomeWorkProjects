@@ -8,7 +8,7 @@ import com.scalefocus.midterm.trippyapp.exception.UserExceptions.UserNotFoundExc
 import com.scalefocus.midterm.trippyapp.mapper.UserMapper;
 import com.scalefocus.midterm.trippyapp.model.User;
 import com.scalefocus.midterm.trippyapp.model.dto.UserDto;
-import com.scalefocus.midterm.trippyapp.repository.Repository;
+import com.scalefocus.midterm.trippyapp.repository.CustomRepository;
 import com.scalefocus.midterm.trippyapp.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +22,12 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
-    private final Repository<User> userRepository;
+    private final CustomRepository<User> userCustomRepository;
     private final UserMapper userMapper;
 
     @Autowired
-    public UserServiceImpl(Repository<User> userRepository, UserMapper userMapper) {
-        this.userRepository = userRepository;
+    public UserServiceImpl(CustomRepository<User> userCustomRepository, UserMapper userMapper) {
+        this.userCustomRepository = userCustomRepository;
         this.userMapper = userMapper;
     }
 
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
             throw new UserAlreadyExistsException(user.getUsername(), user.getEmail());
         }
         try {
-            Long id = userRepository.add(user);
+            Long id = userCustomRepository.add(user);
             log.info(String.format("User with username: %s and email: %s added successfully!", user.getUsername(), user.getEmail()));
             return id;
         } catch (SQLException e) {
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
             throw new UserAlreadyExistsException(user.getUsername(), user.getEmail());
         }
         try {
-            userRepository.update(user, id.longValue());
+            userCustomRepository.update(user, id.longValue());
             user.setId(id.longValue());
             log.info(String.format("User with id %d edited successfully!", id));
             return userMapper.mapToDto(user);
@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(Long id) {
-        User user = userRepository.getById(id);
+        User user = userCustomRepository.getById(id);
         if (user == null) {
             log.info(String.format("User with id %d not found!", id));
             throw new UserNotFoundException("id " + id);
@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllUsers() {
-        List<UserDto> userDtos = userRepository.getAll().stream().map(userMapper::mapToDto).toList();
+        List<UserDto> userDtos = userCustomRepository.getAll().stream().map(userMapper::mapToDto).toList();
         if (userDtos.isEmpty()) {
             log.error("No data found in database!");
             throw new NoDataFoundException();
@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserByUsername(String username) {
-        User user = userRepository.getByUsername(username);
+        User user = userCustomRepository.getByUsername(username);
         if (user == null) {
             log.info(String.format("User with username %s not found!", username));
             throw new UserNotFoundException("username " + username);
@@ -112,7 +112,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserByEmail(String email) {
-        User user = userRepository.getByEmail(email);
+        User user = userCustomRepository.getByEmail(email);
         if (user == null) {
             log.info(String.format("User with email %s not found!", email));
             throw new UserNotFoundException("email " + email);

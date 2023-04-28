@@ -2,7 +2,6 @@ package com.scalefocus.midterm.trippyapp.controller;
 
 import com.scalefocus.midterm.trippyapp.controller.request.UserRequest;
 import com.scalefocus.midterm.trippyapp.model.dto.UserDto;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

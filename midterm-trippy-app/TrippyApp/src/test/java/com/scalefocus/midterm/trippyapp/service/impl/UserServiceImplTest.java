@@ -8,7 +8,7 @@ import com.scalefocus.midterm.trippyapp.exception.UserExceptions.UserNotFoundExc
 import com.scalefocus.midterm.trippyapp.mapper.UserMapper;
 import com.scalefocus.midterm.trippyapp.model.User;
 import com.scalefocus.midterm.trippyapp.model.dto.UserDto;
-import com.scalefocus.midterm.trippyapp.repository.Repository;
+import com.scalefocus.midterm.trippyapp.repository.CustomRepository;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceImplTest {
     @Mock
-    private Repository<User> userRepository;
+    private CustomRepository<User> userCustomRepository;
 
     @Mock
     private UserMapper userMapper;
@@ -40,7 +40,7 @@ public class UserServiceImplTest {
 
     @Test
     public void getAllUsers_noException_success() {
-        when(userRepository.getAll()).thenReturn(Collections.singletonList(getDefaultUser()));
+        when(userCustomRepository.getAll()).thenReturn(Collections.singletonList(getDefaultUser()));
         when(userMapper.mapToDto(any())).thenReturn(getDefaultUserDto());
         List<UserDto> users = userService.getAllUsers();
         Assert.assertEquals(USER_ID, users.get(0).getId());
@@ -55,7 +55,7 @@ public class UserServiceImplTest {
 
     @Test
     public void getUserById_noException_success() {
-        when(userRepository.getById(any())).thenReturn(getDefaultUser());
+        when(userCustomRepository.getById(any())).thenReturn(getDefaultUser());
         when(userMapper.mapToDto(any())).thenReturn(getDefaultUserDto());
         UserDto user = userService.getUserById(any());
         Assert.assertEquals(USER_ID, user.getId());
@@ -70,7 +70,7 @@ public class UserServiceImplTest {
 
     @Test
     public void getUserByEmail_noException_success() {
-        when(userRepository.getByEmail(any())).thenReturn(getDefaultUser());
+        when(userCustomRepository.getByEmail(any())).thenReturn(getDefaultUser());
         when(userMapper.mapToDto(any())).thenReturn(getDefaultUserDto());
         UserDto user = userService.getUserByEmail(any());
         Assert.assertEquals(USER_ID, user.getId());
@@ -85,7 +85,7 @@ public class UserServiceImplTest {
 
     @Test
     public void getUserByUsername_noException_success() {
-        when(userRepository.getByUsername(any())).thenReturn(getDefaultUser());
+        when(userCustomRepository.getByUsername(any())).thenReturn(getDefaultUser());
         when(userMapper.mapToDto(any())).thenReturn(getDefaultUserDto());
         UserDto user = userService.getUserByUsername(any());
         Assert.assertEquals(USER_ID, user.getId());
@@ -100,21 +100,21 @@ public class UserServiceImplTest {
 
     @Test
     public void checkIfUserWithEmailExists_noException_returnsTrue() {
-        when(userRepository.getByEmail(any())).thenReturn(getDefaultUser());
+        when(userCustomRepository.getByEmail(any())).thenReturn(getDefaultUser());
         User user = getDefaultUser();
         assertTrue(userService.userExists(user));
     }
 
     @Test
     public void checkIfUserWithUsernameExists_noException_returnsTrue() {
-        when(userRepository.getByUsername(any())).thenReturn(getDefaultUser());
+        when(userCustomRepository.getByUsername(any())).thenReturn(getDefaultUser());
         User user = getDefaultUser();
         assertTrue(userService.userExists(user));
     }
 
     @Test
     public void createUser_noException_returnsId() throws SQLException {
-        when(userRepository.add(any())).thenReturn(USER_ID);
+        when(userCustomRepository.add(any())).thenReturn(USER_ID);
         when(userMapper.mapFromRequest(any())).thenReturn(getDefaultUser());
         userService.createUser(getDefaultUserRequest());
     }
@@ -132,7 +132,7 @@ public class UserServiceImplTest {
         updatedUserDto.setUsername("tamantam");
         updatedUserDto.setEmail("tamantam@asdadd.com");
         when(userMapper.mapFromRequest(any())).thenReturn(updatedUser);
-        when(userRepository.update(any(), any())).thenReturn(updatedUser);
+        when(userCustomRepository.update(any(), any())).thenReturn(updatedUser);
         when(userMapper.mapToDto(any())).thenReturn(updatedUserDto);
         UserDto userDto = userService.editUser(getDefaultUserRequest(), USER_ID.intValue());
         assertEquals(userDto.getFirstName(), updatedUser.getFirstName());
@@ -143,25 +143,25 @@ public class UserServiceImplTest {
 
     @Test(expected = NoDataFoundException.class)
     public void getAllUsers_withException_throws() {
-        when(userRepository.getAll()).thenReturn(Collections.emptyList());
+        when(userCustomRepository.getAll()).thenReturn(Collections.emptyList());
         userService.getAllUsers();
     }
 
     @Test(expected = UserNotFoundException.class)
     public void getUserById_withException_throws() {
-        when(userRepository.getById(any())).thenReturn(null);
+        when(userCustomRepository.getById(any())).thenReturn(null);
         userService.getUserById(any());
     }
 
     @Test(expected = UserNotFoundException.class)
     public void getUserByUsername_withException_throws() {
-        when(userRepository.getByUsername(any())).thenReturn(null);
+        when(userCustomRepository.getByUsername(any())).thenReturn(null);
         userService.getUserByUsername(any());
     }
 
     @Test(expected = UserNotFoundException.class)
     public void getUserByEmail_withException_throws() {
-        when(userRepository.getByEmail(any())).thenReturn(null);
+        when(userCustomRepository.getByEmail(any())).thenReturn(null);
         userService.getUserByEmail(any());
     }
 
@@ -202,14 +202,14 @@ public class UserServiceImplTest {
 
     @Test(expected = UserAlreadyExistsException.class)
     public void createUserWithAlreadyExistingEmail_withException_throws() {
-        when(userRepository.getByEmail(any())).thenReturn(getDefaultUser());
+        when(userCustomRepository.getByEmail(any())).thenReturn(getDefaultUser());
         when(userMapper.mapFromRequest(any())).thenReturn(getDefaultUser());
         userService.createUser(getDefaultUserRequest());
     }
 
     @Test(expected = UserAlreadyExistsException.class)
     public void createUserWithAlreadyExistingUsername_withException_throws() {
-        when(userRepository.getByUsername(any())).thenReturn(getDefaultUser());
+        when(userCustomRepository.getByUsername(any())).thenReturn(getDefaultUser());
         when(userMapper.mapFromRequest(any())).thenReturn(getDefaultUser());
         userService.createUser(getDefaultUserRequest());
     }

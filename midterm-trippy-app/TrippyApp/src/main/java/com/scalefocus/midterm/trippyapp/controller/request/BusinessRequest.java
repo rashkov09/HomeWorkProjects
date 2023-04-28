@@ -1,28 +1,20 @@
-package com.scalefocus.midterm.trippyapp.model;
+package com.scalefocus.midterm.trippyapp.controller.request;
 
 import com.scalefocus.midterm.trippyapp.constants.enums.BusinessType;
 
-public class Business extends BaseEntity {
+public class BusinessRequest {
     private String name;
     private String city;
     private BusinessType businessType;
-    private Integer numberOfReviews;
-    private Double averageRate;
     private String address;
     private String email;
     private String phone;
     private String website;
 
-    public Business() {
-    }
-
-    public Business(Long id, String name, String city, BusinessType businessType, Integer numberOfReviews, Double averageRate, String address, String email, String phone, String website) {
-        super(id);
+    public BusinessRequest(String name, String city, BusinessType businessType, String address, String email, String phone, String website) {
         this.name = name;
         this.city = city;
         this.businessType = businessType;
-        this.numberOfReviews = 0;
-        this.averageRate = 0.00;
         this.address = address;
         this.email = email;
         this.phone = phone;
@@ -51,22 +43,6 @@ public class Business extends BaseEntity {
 
     public void setBusinessType(BusinessType businessType) {
         this.businessType = businessType;
-    }
-
-    public Integer getNumberOfReviews() {
-        return numberOfReviews;
-    }
-
-    public void setNumberOfReviews(Integer numberOfReviews) {
-        this.numberOfReviews = numberOfReviews;
-    }
-
-    public Double getAverageRate() {
-        return averageRate;
-    }
-
-    public void setAverageRate(Double averageRate) {
-        this.averageRate = averageRate;
     }
 
     public String getAddress() {

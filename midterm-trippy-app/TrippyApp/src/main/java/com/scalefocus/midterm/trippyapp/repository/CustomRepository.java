@@ -5,7 +5,7 @@ import com.scalefocus.midterm.trippyapp.model.User;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface Repository<T> {
+public interface CustomRepository<T> {
 
     List<T> getAll();
 
