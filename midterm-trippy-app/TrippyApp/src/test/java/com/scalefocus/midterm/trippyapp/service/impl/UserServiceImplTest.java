@@ -137,7 +137,7 @@ public class UserServiceImplTest {
         updatedUserDto.setUsername("tamantam");
         updatedUserDto.setEmail("tamantam@asdadd.com");
         when(userMapper.mapFromRequest(any())).thenReturn(updatedUser);
-        when(userCustomRepository.update(any(), any())).thenReturn(updatedUser);
+        when(userCustomRepository.edit(any(), any())).thenReturn(updatedUser);
         when(userMapper.mapToDto(any())).thenReturn(updatedUserDto);
         UserDto userDto = userService.editUser(getDefaultUserRequest(), USER_ID.intValue());
         assertEquals(userDto.getFirstName(), updatedUser.getFirstName());

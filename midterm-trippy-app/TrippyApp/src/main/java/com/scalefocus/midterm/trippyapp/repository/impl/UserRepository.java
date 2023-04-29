@@ -33,7 +33,8 @@ public class UserRepository implements CustomRepository<User> {
     @Override
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
-        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(SELECT_ALL_USERS_STATEMENT)) {
+        try (Connection connection = hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_USERS_STATEMENT)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 users.add(userMapper.mapRow(resultSet, resultSet.getRow()));
@@ -47,7 +48,8 @@ public class UserRepository implements CustomRepository<User> {
 
     @Override
     public Long add(User user) throws SQLException {
-        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(INSERT_USER_SQL_STATEMENT, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER_SQL_STATEMENT, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getEmail());
             preparedStatement.setString(3, user.getFirstName());
@@ -66,9 +68,10 @@ public class UserRepository implements CustomRepository<User> {
     }
 
     @Override
-    public User update(User user, Long id) throws SQLException {
+    public User edit(User user, Long id) throws SQLException {
         User oldUser = getById(id);
-        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(UPDATE_USER_SQL_STATEMENT)) {
+        try (Connection connection = hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER_SQL_STATEMENT)) {
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getEmail());
             preparedStatement.setString(3, user.getFirstName());
@@ -89,7 +92,8 @@ public class UserRepository implements CustomRepository<User> {
 
     @Override
     public User getById(Long id) {
-        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(FIND_USER_BY_ID_SQL_STATEMENT)) {
+        try (Connection connection = hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_USER_BY_ID_SQL_STATEMENT)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             User user = null;
@@ -114,17 +118,19 @@ public class UserRepository implements CustomRepository<User> {
 
     @Nullable
     private User getUser(String param, String sql) {
-        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(sql)) {
+        User user = null;
+        try (Connection connection = hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, param);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return userMapper.mapRow(resultSet, resultSet.getRow());
+                user = userMapper.mapRow(resultSet, resultSet.getRow());
             }
-
+            resultSet.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return null;
+        return user;
     }
 
 

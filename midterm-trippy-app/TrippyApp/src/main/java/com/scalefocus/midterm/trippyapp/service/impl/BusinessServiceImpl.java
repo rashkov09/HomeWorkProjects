@@ -61,7 +61,7 @@ public class BusinessServiceImpl implements BusinessService {
             throw new BusinessAlreadyExistsException("name " + business.getName() + " and city " + business.getCity());
         }
         try {
-            Business old = businessRepository.update(business, id.longValue());
+            Business old = businessRepository.edit(business, id.longValue());
             business.setId(id.longValue());
             log.info(String.format("Business with id %d edited successfully!", id));
             return businessMapper.mapToDto(old);
@@ -147,5 +147,10 @@ public class BusinessServiceImpl implements BusinessService {
     public Boolean businessExists(Business business) {
         Business search = businessRepository.getByNameAndCity(business.getName(), business.getCity());
         return search != null;
+    }
+
+    @Override
+    public void updateBusiness(Business business) {
+        businessRepository.update(business);
     }
 }

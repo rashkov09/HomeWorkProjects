@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
             throw new UserAlreadyExistsException(user.getUsername(), user.getEmail());
         }
         try {
-            User oldUser = userCustomRepository.update(user, id.longValue());
+            User oldUser = userCustomRepository.edit(user, id.longValue());
             user.setId(id.longValue());
             log.info(String.format("User with id %d edited successfully!", id));
             return userMapper.mapToDto(oldUser);

@@ -81,7 +81,7 @@ public class UserRepositoryTest {
         when(preparedStatement.executeUpdate()).thenReturn(1);
 
         User user = getDefaultUser();
-        userRepository.update(user, USER_ID);
+        userRepository.edit(user, USER_ID);
 
         verify(preparedStatement, times(1)).setString(1, user.getUsername());
         verify(preparedStatement, times(1)).setString(2, user.getEmail());

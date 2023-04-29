@@ -24,6 +24,7 @@ public class BusinessRepositoryImpl implements BusinessRepository {
     private final static String SELECT_BUSINESSES_BY_NAME_STATEMENT = "SELECT * FROM ta.businesses WHERE name = ?";
     private final static String SELECT_BUSINESSES_BY_NAME_AND_CITY_STATEMENT = "SELECT * FROM ta.businesses WHERE name = ? and city=?";
     private final static String UPDATE_BUSINESSES_BY_ID_STATEMENT = "UPDATE ta.businesses SET name=?, city=?, business_type=?, address=?, email=?, phone=?, website=?  WHERE id = ?";
+    private final static String UPDATE_BUSINESSES_STATISTIC_BY_ID_STATEMENT = "UPDATE ta.businesses SET average_rating=?, number_of_reviews=?  WHERE id = ?";
 
     private final static String GET_AVG_RATING_SQL = """
              SELECT AVG(CASE r.rating
@@ -34,8 +35,7 @@ public class BusinessRepositoryImpl implements BusinessRepository {
                            WHEN 'VERY_GOOD' THEN 5.00
                          END) AS average_rating
              FROM ta.review AS r
-             JOIN ta.business_reviews AS br ON br.review_id = r.id
-             JOIN ta.business AS b ON b.id = br.business_id
+             JOIN ta.businesses AS b ON b.id = r.business_id
              WHERE b.id = (?);
             """;
 
@@ -51,7 +51,8 @@ public class BusinessRepositoryImpl implements BusinessRepository {
     @Override
     public List<Business> getAll() {
         List<Business> businesses = new ArrayList<>();
-        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(SELECT_ALL_BUSINESSES_STATEMENT)) {
+        try (Connection connection = hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_BUSINESSES_STATEMENT)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 businesses.add(businessMapper.mapRow(resultSet, resultSet.getRow()));
@@ -66,7 +67,8 @@ public class BusinessRepositoryImpl implements BusinessRepository {
 
     @Override
     public Long add(Business business) throws SQLException {
-        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(INSERT_BUSINESS_SQL_STATEMENT, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_BUSINESS_SQL_STATEMENT, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, business.getName());
             preparedStatement.setString(2, business.getCity());
             preparedStatement.setObject(3, business.getBusinessType().name(), Types.OTHER);
@@ -86,9 +88,10 @@ public class BusinessRepositoryImpl implements BusinessRepository {
     }
 
     @Override
-    public Business update(Business business, Long id) throws SQLException {
+    public Business edit(Business business, Long id) throws SQLException {
         Business oldBusiness = getById(id);
-        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(UPDATE_BUSINESSES_BY_ID_STATEMENT)) {
+        try (Connection connection = hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_BUSINESSES_BY_ID_STATEMENT)) {
             preparedStatement.setString(1, business.getName());
             preparedStatement.setString(2, business.getCity());
             preparedStatement.setObject(3, business.getBusinessType().name(), Types.OTHER);
@@ -105,12 +108,13 @@ public class BusinessRepositoryImpl implements BusinessRepository {
 
     @Override
     public Boolean delete(Business business) {
-        return null;
+        return false;
     }
 
     @Override
     public Business getById(Long id) {
-        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(SELECT_BUSINESSES_BY_ID_STATEMENT)) {
+        try (Connection connection = hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BUSINESSES_BY_ID_STATEMENT)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             Business business = null;
@@ -125,7 +129,8 @@ public class BusinessRepositoryImpl implements BusinessRepository {
 
     @Override
     public Business getByEmail(String email) {
-        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(SELECT_BUSINESSES_BY_EMAIL_STATEMENT)) {
+        try (Connection connection = hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BUSINESSES_BY_EMAIL_STATEMENT)) {
             preparedStatement.setString(1, email);
             ResultSet resultSet = preparedStatement.executeQuery();
             Business business = null;
@@ -147,7 +152,8 @@ public class BusinessRepositoryImpl implements BusinessRepository {
     @Override
     public List<Business> getBusinessByCityName(String city) {
         List<Business> businesses = new ArrayList<>();
-        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(SELECT_BUSINESSES_BY_CITY_STATEMENT)) {
+        try (Connection connection = hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BUSINESSES_BY_CITY_STATEMENT)) {
             preparedStatement.setString(1, city);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -163,7 +169,8 @@ public class BusinessRepositoryImpl implements BusinessRepository {
     @Override
     public List<Business> getBusinessByType(BusinessType type) {
         List<Business> businesses = new ArrayList<>();
-        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(SELECT_BUSINESSES_BY_TYPE_STATEMENT)) {
+        try (Connection connection = hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BUSINESSES_BY_TYPE_STATEMENT)) {
             preparedStatement.setObject(1, type.name(), Types.OTHER);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -178,7 +185,8 @@ public class BusinessRepositoryImpl implements BusinessRepository {
 
     @Override
     public Business getByName(String name) {
-        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(SELECT_BUSINESSES_BY_NAME_STATEMENT)) {
+        try (Connection connection = hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BUSINESSES_BY_NAME_STATEMENT)) {
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
             Business business = null;
@@ -193,7 +201,8 @@ public class BusinessRepositoryImpl implements BusinessRepository {
 
     @Override
     public Business getByNameAndCity(String name, String city) {
-        try (PreparedStatement preparedStatement = hikariDataSource.getConnection().prepareStatement(SELECT_BUSINESSES_BY_NAME_AND_CITY_STATEMENT)) {
+        try (Connection connection = hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BUSINESSES_BY_NAME_AND_CITY_STATEMENT)) {
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, city);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -202,6 +211,30 @@ public class BusinessRepositoryImpl implements BusinessRepository {
                 business = businessMapper.mapRow(resultSet, resultSet.getRow());
             }
             return business;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void update(Business business) {
+
+        try (Connection connection = hikariDataSource.getConnection();
+             PreparedStatement updatePreparedStatement = connection.prepareStatement(UPDATE_BUSINESSES_STATISTIC_BY_ID_STATEMENT);
+             PreparedStatement subStatement = connection.prepareStatement(GET_AVG_RATING_SQL)) {
+            subStatement.setLong(1, business.getId());
+            ResultSet resultSet = subStatement.executeQuery();
+            double rate = 0.00;
+            if (resultSet.next()) {
+                rate = resultSet.getDouble("average_rating");
+            }
+            resultSet.close();
+            business.setAverageRate(rate);
+            business.setNumberOfReviews(business.getNumberOfReviews() + 1);
+            updatePreparedStatement.setDouble(1, business.getAverageRate());
+            updatePreparedStatement.setInt(2, business.getNumberOfReviews());
+            updatePreparedStatement.setLong(3, business.getId());
+            updatePreparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

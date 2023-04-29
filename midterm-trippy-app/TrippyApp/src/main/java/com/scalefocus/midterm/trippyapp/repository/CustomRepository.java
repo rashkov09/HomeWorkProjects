@@ -9,7 +9,7 @@ public interface CustomRepository<T> {
 
     Long add(T object) throws SQLException;
 
-    T update(T object, Long id) throws SQLException;
+    T edit(T object, Long id) throws SQLException;
 
     Boolean delete(T object);
 
