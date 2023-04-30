@@ -38,7 +38,7 @@ public class BusinessMapper implements RowMapper<Business> {
         business.setAddress(businessDto.getAddress());
         business.setEmail(businessDto.getEmail());
         business.setWebsite(businessDto.getWebsite());
-        business.setPhone(business.getPhone());
+        business.setPhone(businessDto.getPhone());
 
 
         return business;

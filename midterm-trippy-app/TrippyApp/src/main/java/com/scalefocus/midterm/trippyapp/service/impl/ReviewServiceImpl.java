@@ -7,6 +7,7 @@ import com.scalefocus.midterm.trippyapp.mapper.BusinessMapper;
 import com.scalefocus.midterm.trippyapp.mapper.ReviewMapper;
 import com.scalefocus.midterm.trippyapp.model.Business;
 import com.scalefocus.midterm.trippyapp.model.Review;
+import com.scalefocus.midterm.trippyapp.model.User;
 import com.scalefocus.midterm.trippyapp.model.dto.ReviewDto;
 import com.scalefocus.midterm.trippyapp.model.dto.UserDto;
 import com.scalefocus.midterm.trippyapp.repository.impl.ReviewRepository;
@@ -20,12 +21,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
     private static final Logger log = LoggerFactory.getLogger(ReviewServiceImpl.class);
-    private final UserService userService;
+
     private final BusinessService businessService;
     private final ReviewRepository reviewRepository;
     private final ObjectChecker<ReviewRequest> reviewObjectChecker;
@@ -34,8 +36,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final BusinessMapper businessMapper;
 
     @Autowired
-    public ReviewServiceImpl(UserService userService, BusinessService businessService, ReviewRepository reviewRepository, ObjectChecker<ReviewRequest> reviewObjectChecker, ReviewMapper reviewMapper, BusinessMapper businessMapper) {
-        this.userService = userService;
+    public ReviewServiceImpl(BusinessService businessService, ReviewRepository reviewRepository, ObjectChecker<ReviewRequest> reviewObjectChecker, ReviewMapper reviewMapper, BusinessMapper businessMapper) {
         this.businessService = businessService;
         this.reviewRepository = reviewRepository;
         this.reviewObjectChecker = reviewObjectChecker;
@@ -46,16 +47,16 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Long createReview(ReviewRequest reviewRequest, String username) {
         reviewObjectChecker.checkForMissingFields(reviewRequest);
-        UserDto user = userService.getUserByUsername(username);
-        if (user == null) {
-            throw new UserNotFoundException("username " + username);
-        }
-        Review review = reviewMapper.mapFromRequest(reviewRequest, user.getUsername());
+
+        Review review = reviewMapper.mapFromRequest(reviewRequest);
         Business business = businessMapper.mapFromDto(businessService.getBusinessById(reviewRequest.getBusinessId()));
         if (business == null) {
             log.error("Business not found");
             throw new BusinessNotFoundException("id " + reviewRequest.getBusinessId());
         }
+        User user = new User();
+        user.setUsername(username);
+        review.setUsername(username);
         review.setBusiness(business);
         try {
             Long id = reviewRepository.add(review);
@@ -85,5 +86,12 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public List<ReviewDto> getAllReviews() {
         return null;
+    }
+
+    @Override
+    public List<Review> getReviewsByUsername(String username) {
+        List<Review> listOfReviews = reviewRepository.getReviewsByUsername(username);
+        listOfReviews.forEach(review -> review.setBusiness(businessMapper.mapFromDto(businessService.getBusinessById(review.getBusiness().getId()))));
+        return listOfReviews.isEmpty() ?  new ArrayList<>() : listOfReviews;
     }
 }

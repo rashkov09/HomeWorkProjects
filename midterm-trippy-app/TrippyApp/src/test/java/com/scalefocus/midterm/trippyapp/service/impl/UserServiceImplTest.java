@@ -9,6 +9,7 @@ import com.scalefocus.midterm.trippyapp.mapper.UserMapper;
 import com.scalefocus.midterm.trippyapp.model.User;
 import com.scalefocus.midterm.trippyapp.model.dto.UserDto;
 import com.scalefocus.midterm.trippyapp.repository.CustomRepository;
+import com.scalefocus.midterm.trippyapp.service.ReviewService;
 import com.scalefocus.midterm.trippyapp.util.ObjectChecker;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,6 +40,9 @@ public class UserServiceImplTest {
 
     @Mock
     private ObjectChecker<UserRequest> objectChecker;
+
+    @Mock
+    private ReviewService reviewService;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -61,6 +66,7 @@ public class UserServiceImplTest {
     public void getUserById_noException_success() {
         when(userCustomRepository.getById(any())).thenReturn(getDefaultUser());
         when(userMapper.mapToDto(any())).thenReturn(getDefaultUserDto());
+        when(reviewService.getReviewsByUsername(any())).thenReturn(new ArrayList<>());
         UserDto user = userService.getUserById(any());
         Assert.assertEquals(USER_ID, user.getId());
         Assert.assertEquals(USER_USERNAME, user.getUsername());
@@ -76,6 +82,7 @@ public class UserServiceImplTest {
     public void getUserByEmail_noException_success() {
         when(userCustomRepository.getByEmail(any())).thenReturn(getDefaultUser());
         when(userMapper.mapToDto(any())).thenReturn(getDefaultUserDto());
+        when(reviewService.getReviewsByUsername(any())).thenReturn(new ArrayList<>());
         UserDto user = userService.getUserByEmail(any());
         Assert.assertEquals(USER_ID, user.getId());
         Assert.assertEquals(USER_USERNAME, user.getUsername());
@@ -91,6 +98,7 @@ public class UserServiceImplTest {
     public void getUserByUsername_noException_success() {
         when(userCustomRepository.getByUsername(any())).thenReturn(getDefaultUser());
         when(userMapper.mapToDto(any())).thenReturn(getDefaultUserDto());
+        when(reviewService.getReviewsByUsername(any())).thenReturn(new ArrayList<>());
         UserDto user = userService.getUserByUsername(any());
         Assert.assertEquals(USER_ID, user.getId());
         Assert.assertEquals(USER_USERNAME, user.getUsername());

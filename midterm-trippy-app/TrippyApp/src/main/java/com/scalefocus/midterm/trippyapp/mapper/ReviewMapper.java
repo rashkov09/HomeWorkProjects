@@ -2,6 +2,7 @@ package com.scalefocus.midterm.trippyapp.mapper;
 
 import com.scalefocus.midterm.trippyapp.constants.enums.ReviewRating;
 import com.scalefocus.midterm.trippyapp.controller.request.ReviewRequest;
+import com.scalefocus.midterm.trippyapp.model.Business;
 import com.scalefocus.midterm.trippyapp.model.Review;
 import com.scalefocus.midterm.trippyapp.model.dto.ReviewDto;
 import org.springframework.jdbc.core.RowMapper;
@@ -22,9 +23,8 @@ public class ReviewMapper implements RowMapper<Review> {
     }
 
 
-    public Review mapFromRequest(ReviewRequest reviewRequest, String username) {
+    public Review mapFromRequest(ReviewRequest reviewRequest) {
         Review review = new Review();
-        review.setUsername(username);
         review.setRating(reviewRequest.getRating());
         review.setText(reviewRequest.getText());
 
@@ -38,6 +38,9 @@ public class ReviewMapper implements RowMapper<Review> {
         review.setUsername(rs.getString("username"));
         review.setRating(ReviewRating.valueOf(rs.getString("rating")));
         review.setText(rs.getString("text_body"));
+        Business business = new Business();
+        business.setId(rs.getLong("business_id"));
+        review.setBusiness(business);
 
         return review;
     }
