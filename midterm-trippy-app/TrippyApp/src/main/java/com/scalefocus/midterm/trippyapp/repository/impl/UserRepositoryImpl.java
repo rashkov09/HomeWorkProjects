@@ -2,7 +2,7 @@ package com.scalefocus.midterm.trippyapp.repository.impl;
 
 import com.scalefocus.midterm.trippyapp.mapper.UserMapper;
 import com.scalefocus.midterm.trippyapp.model.User;
-import com.scalefocus.midterm.trippyapp.repository.CustomRepository;
+import com.scalefocus.midterm.trippyapp.repository.UserRepository;
 import com.zaxxer.hikari.HikariDataSource;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class UserRepository implements CustomRepository<User> {
+public class UserRepositoryImpl implements UserRepository {
     private final static String INSERT_USER_SQL_STATEMENT = "INSERT INTO ta.users (username,email, first_name, last_name, city, joining_date) VALUES (?, ?, ? ,? ,?, ?)";
     private final static String UPDATE_USER_SQL_STATEMENT = "UPDATE ta.users SET username=? , email =?, first_name=?, last_name=?, city= ? WHERE id=? ";
     private final static String FIND_USER_BY_ID_SQL_STATEMENT = "SELECT * FROM ta.users WHERE id = ?";
@@ -25,7 +25,7 @@ public class UserRepository implements CustomRepository<User> {
     private final UserMapper userMapper;
 
     @Autowired
-    public UserRepository(HikariDataSource hikariDataSource, UserMapper userMapper) {
+    public UserRepositoryImpl(HikariDataSource hikariDataSource, UserMapper userMapper) {
         this.hikariDataSource = hikariDataSource;
         this.userMapper = userMapper;
     }
@@ -83,11 +83,6 @@ public class UserRepository implements CustomRepository<User> {
             return oldUser;
         }
 
-    }
-
-    @Override
-    public Boolean delete(User user) {
-        return false;
     }
 
     @Override

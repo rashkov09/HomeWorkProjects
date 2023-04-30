@@ -21,4 +21,5 @@ public interface UserService {
     UserDto getUserByEmail(String email);
 
     Boolean userExists(User user);
+
 }

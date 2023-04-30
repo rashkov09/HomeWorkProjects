@@ -73,7 +73,7 @@ public class BusinessDto {
     }
 
     public Double getAverageRating() {
-        return  Double.parseDouble(averageRating);
+        return Double.parseDouble(averageRating);
     }
 
     public void setAverageRating(Double averageRating) {

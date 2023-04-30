@@ -11,12 +11,6 @@ public interface CustomRepository<T> {
 
     T edit(T object, Long id) throws SQLException;
 
-    Boolean delete(T object);
-
     T getById(Long id);
-
-    T getByEmail(String email);
-
-    T getByUsername(String username);
 
 }

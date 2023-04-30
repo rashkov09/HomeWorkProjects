@@ -19,14 +19,14 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
-public class UserRepositoryTest {
+public class UserRepositoryImplTest {
     @Mock
     private HikariDataSource hikariDataSource;
     @Mock
     private UserMapper userMapper;
 
     @InjectMocks
-    private UserRepository userRepository;
+    private UserRepositoryImpl userRepositoryImpl;
 
 
     @Test
@@ -45,7 +45,7 @@ public class UserRepositoryTest {
         when(resultSet.next()).thenReturn(true);
         when(resultSet.getLong(1)).thenReturn(1L);
         User user = getDefaultUser();
-        Long result = userRepository.add(user);
+        Long result = userRepositoryImpl.add(user);
 
         Assertions.assertEquals(1L, result);
         verify(preparedStatement, times(1)).setString(1, user.getUsername());
@@ -81,7 +81,7 @@ public class UserRepositoryTest {
         when(preparedStatement.executeUpdate()).thenReturn(1);
 
         User user = getDefaultUser();
-        userRepository.edit(user, USER_ID);
+        userRepositoryImpl.edit(user, USER_ID);
 
         verify(preparedStatement, times(1)).setString(1, user.getUsername());
         verify(preparedStatement, times(1)).setString(2, user.getEmail());
@@ -93,8 +93,4 @@ public class UserRepositoryTest {
 
     }
 
-    @Test
-    public void deleteMethod_doNothing_returnFalse() {
-        assertFalse(userRepository.delete(getDefaultUser()));
-    }
 }

@@ -41,6 +41,7 @@ public class BusinessServiceImpl implements BusinessService {
         Business business = businessMapper.mapFromRequest(businessRequest);
 
         if (businessExists(business)) {
+            log.error(String.format("Business with name %s and city %s not found!", business.getName(), business.getCity()));
             throw new BusinessAlreadyExistsException("name " + business.getName() + " and city " + business.getCity());
         }
         try {
@@ -94,6 +95,7 @@ public class BusinessServiceImpl implements BusinessService {
     public BusinessDto getBusinessByName(String name) {
         Business business = businessRepository.getByName(name);
         if (business == null) {
+            log.error(String.format("Business with name %s not found!", name));
             throw new BusinessNotFoundException("name " + name);
         }
         return businessMapper.mapToDto(business);
@@ -103,6 +105,7 @@ public class BusinessServiceImpl implements BusinessService {
     public BusinessDto getBusinessByNameAndCity(String name, String city) {
         Business business = businessRepository.getByNameAndCity(name, city);
         if (business == null) {
+            log.error(String.format("Business with name %s and city %s not found!", name, city));
             throw new BusinessNotFoundException("name " + name + " and city " + city);
         }
         return businessMapper.mapToDto(business);

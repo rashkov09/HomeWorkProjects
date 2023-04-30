@@ -9,6 +9,7 @@ import com.scalefocus.midterm.trippyapp.mapper.UserMapper;
 import com.scalefocus.midterm.trippyapp.model.User;
 import com.scalefocus.midterm.trippyapp.model.dto.UserDto;
 import com.scalefocus.midterm.trippyapp.repository.CustomRepository;
+import com.scalefocus.midterm.trippyapp.repository.UserRepository;
 import com.scalefocus.midterm.trippyapp.service.ReviewService;
 import com.scalefocus.midterm.trippyapp.util.ObjectChecker;
 import org.junit.Assert;
@@ -33,7 +34,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceImplTest {
     @Mock
-    private CustomRepository<User> userCustomRepository;
+    private UserRepository userCustomRepository;
 
     @Mock
     private UserMapper userMapper;

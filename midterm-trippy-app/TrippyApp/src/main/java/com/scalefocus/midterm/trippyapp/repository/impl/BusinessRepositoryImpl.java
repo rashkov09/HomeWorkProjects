@@ -107,11 +107,6 @@ public class BusinessRepositoryImpl implements BusinessRepository {
     }
 
     @Override
-    public Boolean delete(Business business) {
-        return false;
-    }
-
-    @Override
     public Business getById(Long id) {
         try (Connection connection = hikariDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BUSINESSES_BY_ID_STATEMENT)) {
@@ -142,12 +137,6 @@ public class BusinessRepositoryImpl implements BusinessRepository {
             throw new RuntimeException(e);
         }
     }
-
-    @Override
-    public Business getByUsername(String username) {
-        return null;
-    }
-
 
     @Override
     public List<Business> getBusinessByCityName(String city) {

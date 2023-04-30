@@ -11,7 +11,7 @@ public interface ReviewService {
 
     ReviewDto editReview(ReviewRequest reviewRequest, Integer id);
 
-    ReviewDto deleteReview(ReviewRequest reviewRequest, Integer id);
+    ReviewDto deleteReview(Integer id, String username);
 
     ReviewDto getReviewById(Long id);
 

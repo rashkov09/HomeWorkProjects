@@ -29,9 +29,9 @@ public interface ReviewController {
             @RequestParam(required = false) boolean returnOld,
             @RequestParam(value = "username") String username);
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(value = "/{id}", params = "username")
     ResponseEntity<ReviewDto> deleteReview(
-            @RequestBody @Valid ReviewRequest reviewRequest, @PathVariable int id,
+            @PathVariable int id,
             @RequestParam(required = false) boolean returnOld,
             @RequestParam(value = "username") String username);
 

@@ -48,7 +48,12 @@ public class ReviewControllerImpl implements ReviewController {
     }
 
     @Override
-    public ResponseEntity<ReviewDto> deleteReview(ReviewRequest reviewRequest, int id, boolean returnOld, String username) {
-        return null;
+    public ResponseEntity<ReviewDto> deleteReview(int id, boolean returnOld, String username) {
+        ReviewDto reviewDto = reviewService.deleteReview(id, username);
+        if (returnOld) {
+            return ResponseEntity.ok(reviewDto);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 }
