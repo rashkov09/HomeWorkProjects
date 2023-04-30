@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -155,5 +156,23 @@ public class BusinessServiceImpl implements BusinessService {
     @Override
     public void updateBusiness(Business business) {
         businessRepository.update(business);
+    }
+
+    @Override
+    public List<BusinessDto> getBusinessesByRate(Double averageRate, String query) {
+        List<BusinessDto> dtos = new ArrayList<>();
+        switch (query) {
+            case "biggerThan" -> {
+                dtos = businessRepository.getBusinessByRateBiggerThan(averageRate);
+                break;
+            }
+            case "lowerThan" -> {
+                dtos = businessRepository.getBusinessByRateLowerThan(averageRate);
+            }
+        }
+        if (dtos.isEmpty()) {
+            throw new NoDataFoundException();
+        }
+        return dtos;
     }
 }

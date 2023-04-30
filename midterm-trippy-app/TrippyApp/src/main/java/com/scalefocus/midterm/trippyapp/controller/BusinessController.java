@@ -34,6 +34,11 @@ public interface BusinessController {
             @RequestParam(value = "name") String name,
             @RequestParam(value = "city") String city);
 
+    @GetMapping(params = {"rate", "query"})
+    ResponseEntity<List<BusinessDto>> getByBusinessRate(
+            @RequestParam(value = "rate") double old,
+            @RequestParam(value = "query") String query);
+
     @PostMapping()
     ResponseEntity<Void> addBusiness(@RequestBody @Valid BusinessRequest businessRequest);
 
