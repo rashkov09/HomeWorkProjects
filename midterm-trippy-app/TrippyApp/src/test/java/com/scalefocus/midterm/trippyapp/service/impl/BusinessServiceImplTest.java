@@ -192,6 +192,48 @@ public class BusinessServiceImplTest {
     }
 
     @Test
+    public void getByBusinessRateBiggerThan_noException_success() {
+        when(businessRepository.getBusinessByRateBiggerThan(any())).thenReturn(Collections.singletonList(getDefaultBusinessDto()));
+        List<BusinessDto> businessDto = businessService.getBusinessesByRate(2.00, "biggerThan");
+        Assert.assertEquals(BUSINESS_ID, businessDto.get(0).getId());
+        Assert.assertEquals(BUSINESS_NAME, businessDto.get(0).getName());
+        Assert.assertEquals(BUSINESS_CITY, businessDto.get(0).getCity());
+        Assert.assertEquals(BUSINESS_TYPE, businessDto.get(0).getBusinessType());
+        Assert.assertEquals(BUSINESS_AVERAGE_RATING, businessDto.get(0).getAverageRating());
+        Assert.assertEquals(BUSINESS_NUMBER_OF_REVIEWS, businessDto.get(0).getNumberOfReviews());
+        Assert.assertEquals(BUSINESS_ADDRESS, businessDto.get(0).getAddress());
+        Assert.assertEquals(BUSINESS_EMAIL, businessDto.get(0).getEmail());
+        Assert.assertEquals(BUSINESS_PHONE, businessDto.get(0).getPhone());
+        Assert.assertEquals(BUSINESS_WEBSITE, businessDto.get(0).getWebsite());
+    }
+
+    @Test
+    public void getByBusinessRateLowerThan_noException_success() {
+        when(businessRepository.getBusinessByRateLowerThan(any())).thenReturn(Collections.singletonList(getDefaultBusinessDto()));
+        List<BusinessDto> businessDto = businessService.getBusinessesByRate(4.00, "lowerThan");
+        Assert.assertEquals(BUSINESS_ID, businessDto.get(0).getId());
+        Assert.assertEquals(BUSINESS_NAME, businessDto.get(0).getName());
+        Assert.assertEquals(BUSINESS_CITY, businessDto.get(0).getCity());
+        Assert.assertEquals(BUSINESS_TYPE, businessDto.get(0).getBusinessType());
+        Assert.assertEquals(BUSINESS_AVERAGE_RATING, businessDto.get(0).getAverageRating());
+        Assert.assertEquals(BUSINESS_NUMBER_OF_REVIEWS, businessDto.get(0).getNumberOfReviews());
+        Assert.assertEquals(BUSINESS_ADDRESS, businessDto.get(0).getAddress());
+        Assert.assertEquals(BUSINESS_EMAIL, businessDto.get(0).getEmail());
+        Assert.assertEquals(BUSINESS_PHONE, businessDto.get(0).getPhone());
+        Assert.assertEquals(BUSINESS_WEBSITE, businessDto.get(0).getWebsite());
+    }
+
+    @Test(expected = NoDataFoundException.class)
+    public void getByBusinessRateLowerThan_withException_throws() {
+        businessService.getBusinessesByRate(1.00, "lowerThan");
+    }
+
+    @Test(expected = NoDataFoundException.class)
+    public void getByBusinessRateBiggerThan_withException_throws() {
+        businessService.getBusinessesByRate(4.00, "biggerThan");
+    }
+
+    @Test
     public void businessExists_noException_exists() {
         when(businessRepository.getByNameAndCity(any(), any())).thenReturn(getDefaultBusiness());
         Business search = businessRepository.getByNameAndCity(BUSINESS_NAME, BUSINESS_CITY);

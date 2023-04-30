@@ -35,39 +35,40 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @RunWith(MockitoJUnitRunner.class)
 public class BusinessControllerImplTest {
-   private MockMvc mockMvc;
-   @Mock
-   private  BusinessService businessService;
-   @InjectMocks
-   private BusinessControllerImpl businessController;
-   @Before
-   public void setUp() {
-      mockMvc = MockMvcBuilders
-              .standaloneSetup(businessController)
-              .build();
-   }
+    private MockMvc mockMvc;
+    @Mock
+    private BusinessService businessService;
+    @InjectMocks
+    private BusinessControllerImpl businessController;
 
-   @Test
-    public void getAllBusinesses_noException_success() throws Exception {
-       BusinessDto businessDto = getDefaultBusinessDto();
-       when(businessService.getAllBusinesses()).thenReturn(Collections.singletonList(businessDto));
-
-       mockMvc.perform(get("/businesses"))
-               .andExpect(status().isOk())
-               .andExpect(jsonPath("$[0].id").value(BUSINESS_ID))
-               .andExpect(jsonPath("$[0].name").value(BUSINESS_NAME))
-               .andExpect(jsonPath("$[0].city").value(BUSINESS_CITY))
-               .andExpect(jsonPath("$[0].businessType").value("BAR"))
-               .andExpect(jsonPath("$[0].averageRating").value(BUSINESS_AVERAGE_RATING))
-               .andExpect(jsonPath("$[0].numberOfReviews").value(BUSINESS_NUMBER_OF_REVIEWS))
-               .andExpect(jsonPath("$[0].address").value(BUSINESS_ADDRESS))
-               .andExpect(jsonPath("$[0].email").value(BUSINESS_EMAIL))
-               .andExpect(jsonPath("$[0].phone").value(BUSINESS_PHONE))
-               .andExpect(jsonPath("$[0].website").value(BUSINESS_WEBSITE));
+    @Before
+    public void setUp() {
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(businessController)
+                .build();
     }
 
     @Test
-    public void getAllBusinesses_noException_emptyList() throws Exception{
+    public void getAllBusinesses_noException_success() throws Exception {
+        BusinessDto businessDto = getDefaultBusinessDto();
+        when(businessService.getAllBusinesses()).thenReturn(Collections.singletonList(businessDto));
+
+        mockMvc.perform(get("/businesses"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(BUSINESS_ID))
+                .andExpect(jsonPath("$[0].name").value(BUSINESS_NAME))
+                .andExpect(jsonPath("$[0].city").value(BUSINESS_CITY))
+                .andExpect(jsonPath("$[0].businessType").value("BAR"))
+                .andExpect(jsonPath("$[0].averageRating").value(BUSINESS_AVERAGE_RATING))
+                .andExpect(jsonPath("$[0].numberOfReviews").value(BUSINESS_NUMBER_OF_REVIEWS))
+                .andExpect(jsonPath("$[0].address").value(BUSINESS_ADDRESS))
+                .andExpect(jsonPath("$[0].email").value(BUSINESS_EMAIL))
+                .andExpect(jsonPath("$[0].phone").value(BUSINESS_PHONE))
+                .andExpect(jsonPath("$[0].website").value(BUSINESS_WEBSITE));
+    }
+
+    @Test
+    public void getAllBusinesses_noException_emptyList() throws Exception {
         when(businessService.getAllBusinesses()).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/businesses"))
@@ -96,7 +97,7 @@ public class BusinessControllerImplTest {
     }
 
     @Test
-    public void getBusinessByCity_noException_success() throws Exception{
+    public void getBusinessByCity_noException_success() throws Exception {
         when(businessService.getBusinessesByCity(BUSINESS_CITY)).thenReturn(Collections.singletonList(getDefaultBusinessDto()));
 
         mockMvc.perform(get("/businesses?city=" + BUSINESS_CITY))
@@ -114,8 +115,8 @@ public class BusinessControllerImplTest {
     }
 
     @Test
-    public void getByBusinessType_noException_success() throws Exception{
-        when(businessService.getByBusinessType ("BAR")).thenReturn(Collections.singletonList(getDefaultBusinessDto()));
+    public void getByBusinessType_noException_success() throws Exception {
+        when(businessService.getByBusinessType("BAR")).thenReturn(Collections.singletonList(getDefaultBusinessDto()));
 
         mockMvc.perform(get("/businesses?type=" + BUSINESS_TYPE.name()))
                 .andExpect(status().isOk())
@@ -150,7 +151,7 @@ public class BusinessControllerImplTest {
     }
 
     @Test
-    public void getByBusinessName_noException_success() throws Exception{
+    public void getByBusinessName_noException_success() throws Exception {
         when(businessService.getBusinessByName(BUSINESS_NAME)).thenReturn(getDefaultBusinessDto());
 
         mockMvc.perform(get("/businesses?name=" + BUSINESS_NAME))
@@ -169,9 +170,9 @@ public class BusinessControllerImplTest {
 
     @Test
     public void getByBusinessNameAndCity_noException_success() throws Exception {
-        when(businessService.getBusinessByNameAndCity(BUSINESS_NAME,BUSINESS_CITY)).thenReturn(getDefaultBusinessDto());
+        when(businessService.getBusinessByNameAndCity(BUSINESS_NAME, BUSINESS_CITY)).thenReturn(getDefaultBusinessDto());
 
-        mockMvc.perform(get("/businesses?name=" + BUSINESS_NAME+"&city="+ BUSINESS_CITY))
+        mockMvc.perform(get("/businesses?name=" + BUSINESS_NAME + "&city=" + BUSINESS_CITY))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.name").value(BUSINESS_NAME))
@@ -186,13 +187,50 @@ public class BusinessControllerImplTest {
     }
 
     @Test
-    public void addBusiness_noException_success() {
-       when(businessService.createBusiness(any())).thenReturn(BUSINESS_ID);
-        Assert.assertEquals(BUSINESS_ID,businessService.createBusiness(any()));
+    public void getByBusinessRateBiggerThan_noException_success() throws Exception {
+        when(businessService.getBusinessesByRate(2.00, "biggerThan")).thenReturn(Collections.singletonList(getDefaultBusinessDto()));
+
+        mockMvc.perform(get("/businesses?rate=" + 2.00 + "&query=" + "biggerThan"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").exists())
+                .andExpect(jsonPath("$[0].name").value(BUSINESS_NAME))
+                .andExpect(jsonPath("$[0].city").value(BUSINESS_CITY))
+                .andExpect(jsonPath("$[0].businessType").value("BAR"))
+                .andExpect(jsonPath("$[0].averageRating").value(BUSINESS_AVERAGE_RATING))
+                .andExpect(jsonPath("$[0].numberOfReviews").value(BUSINESS_NUMBER_OF_REVIEWS))
+                .andExpect(jsonPath("$[0].address").value(BUSINESS_ADDRESS))
+                .andExpect(jsonPath("$[0].email").value(BUSINESS_EMAIL))
+                .andExpect(jsonPath("$[0].phone").value(BUSINESS_PHONE))
+                .andExpect(jsonPath("$[0].website").value(BUSINESS_WEBSITE));
     }
 
     @Test
-    public  void addBusinessSecond_noException_success() throws Exception {
+    public void getByBusinessRateLowerThan_noException_success() throws Exception {
+        when(businessService.getBusinessesByRate(4.00, "lowerThan")).thenReturn(Collections.singletonList(getDefaultBusinessDto()));
+
+        mockMvc.perform(get("/businesses?rate=" + 4.00 + "&query=" + "lowerThan"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").exists())
+                .andExpect(jsonPath("$[0].name").value(BUSINESS_NAME))
+                .andExpect(jsonPath("$[0].city").value(BUSINESS_CITY))
+                .andExpect(jsonPath("$[0].businessType").value("BAR"))
+                .andExpect(jsonPath("$[0].averageRating").value(BUSINESS_AVERAGE_RATING))
+                .andExpect(jsonPath("$[0].numberOfReviews").value(BUSINESS_NUMBER_OF_REVIEWS))
+                .andExpect(jsonPath("$[0].address").value(BUSINESS_ADDRESS))
+                .andExpect(jsonPath("$[0].email").value(BUSINESS_EMAIL))
+                .andExpect(jsonPath("$[0].phone").value(BUSINESS_PHONE))
+                .andExpect(jsonPath("$[0].website").value(BUSINESS_WEBSITE));
+    }
+
+
+    @Test
+    public void addBusiness_noException_success() {
+        when(businessService.createBusiness(any())).thenReturn(BUSINESS_ID);
+        Assert.assertEquals(BUSINESS_ID, businessService.createBusiness(any()));
+    }
+
+    @Test
+    public void addBusinessSecond_noException_success() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
 
         String json = mapper.writeValueAsString(getDefaultBusinessRequest());

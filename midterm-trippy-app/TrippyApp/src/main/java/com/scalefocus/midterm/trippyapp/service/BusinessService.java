@@ -29,4 +29,6 @@ public interface BusinessService {
 
 
     void updateBusiness(Business business);
+
+    List<BusinessDto> getBusinessesByRate(Double averageRate, String query);
 }
