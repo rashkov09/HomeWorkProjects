@@ -4,7 +4,6 @@ import com.scalefocus.midterm.trippyapp.controller.UserController;
 import com.scalefocus.midterm.trippyapp.controller.request.UserRequest;
 import com.scalefocus.midterm.trippyapp.model.dto.UserDto;
 import com.scalefocus.midterm.trippyapp.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

@@ -9,14 +9,8 @@ public interface CustomRepository<T> {
 
     Long add(T object) throws SQLException;
 
-    T update(T object, Long id) throws SQLException;
-
-    Boolean delete(T object);
+    T edit(T object, Long id) throws SQLException;
 
     T getById(Long id);
-
-    T getByEmail(String email);
-
-    T getByUsername(String username);
 
 }

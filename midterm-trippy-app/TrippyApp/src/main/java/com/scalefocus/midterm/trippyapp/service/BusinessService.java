@@ -28,4 +28,7 @@ public interface BusinessService {
     Boolean businessExists(Business business);
 
 
+    void updateBusiness(Business business);
+
+    List<BusinessDto> getBusinessesByRate(Double averageRate, String query);
 }

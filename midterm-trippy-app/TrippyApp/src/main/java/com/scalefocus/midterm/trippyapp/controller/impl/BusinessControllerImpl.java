@@ -61,6 +61,11 @@ public class BusinessControllerImpl implements BusinessController {
     }
 
     @Override
+    public ResponseEntity<List<BusinessDto>> getByBusinessRate(double averageRate, String query) {
+        return ResponseEntity.ok(businessService.getBusinessesByRate(averageRate, query));
+    }
+
+    @Override
     public ResponseEntity<Void> addBusiness(BusinessRequest businessRequest) {
         Long id = businessService.createBusiness(businessRequest);
 

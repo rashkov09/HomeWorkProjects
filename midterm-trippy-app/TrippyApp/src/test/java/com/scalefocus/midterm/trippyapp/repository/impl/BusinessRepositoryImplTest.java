@@ -82,7 +82,7 @@ public class BusinessRepositoryImplTest {
         when(preparedStatement.executeUpdate()).thenReturn(1);
 
         Business business = getDefaultBusiness();
-        businessRepository.update(business, BUSINESS_ID);
+        businessRepository.edit(business, BUSINESS_ID);
 
         verify(preparedStatement, times(1)).setString(1, business.getName());
         verify(preparedStatement, times(1)).setString(2, business.getCity());
