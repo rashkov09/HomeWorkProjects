@@ -6,6 +6,8 @@ import com.scalefocus.midterm.trippyapp.exception.BusinessExceptions.BusinessNot
 import com.scalefocus.midterm.trippyapp.exception.BusinessExceptions.BusinessTypeNotFoundException;
 import com.scalefocus.midterm.trippyapp.exception.MissingRequestFieldsException;
 import com.scalefocus.midterm.trippyapp.exception.NoDataFoundException;
+import com.scalefocus.midterm.trippyapp.exception.ReviewExceptions.ReviewAccessDeniedException;
+import com.scalefocus.midterm.trippyapp.exception.ReviewExceptions.ReviewNotFoundException;
 import com.scalefocus.midterm.trippyapp.exception.UserExceptions.UserAlreadyExistsException;
 import com.scalefocus.midterm.trippyapp.exception.UserExceptions.UserNotFoundException;
 import org.slf4j.Logger;
@@ -66,6 +68,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorsMap, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(ReviewNotFoundException.class)
+    public ResponseEntity<Map<String, List<String>>> handleReviewNotFoundException(ReviewNotFoundException exception) {
+        log.error("Caught exception: ", exception);
+
+        String error = exception.getMessage();
+        Map<String, List<String>> errorsMap = formatErrorsResponse(error);
+        return new ResponseEntity<>(errorsMap, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(BusinessNotFoundException.class)
     public ResponseEntity<Map<String, List<String>>> handleBusinessNotFoundException(BusinessNotFoundException exception) {
         log.error("Caught exception: ", exception);
@@ -100,6 +111,15 @@ public class GlobalExceptionHandler {
         String error = exception.getMessage();
         Map<String, List<String>> errorsMap = formatErrorsResponse(error);
         return new ResponseEntity<>(errorsMap, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ReviewAccessDeniedException.class)
+    public ResponseEntity<Map<String, List<String>>> handleReviewAccessDeniedException(ReviewAccessDeniedException exception) {
+        log.error("Caught exception: ", exception);
+
+        String error = exception.getMessage();
+        Map<String, List<String>> errorsMap = formatErrorsResponse(error);
+        return new ResponseEntity<>(errorsMap, HttpStatus.FORBIDDEN);
     }
 
 

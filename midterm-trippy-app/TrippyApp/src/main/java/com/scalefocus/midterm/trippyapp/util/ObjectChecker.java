@@ -3,9 +3,11 @@ package com.scalefocus.midterm.trippyapp.util;
 import com.scalefocus.midterm.trippyapp.exception.MissingRequestFieldsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 
+@Component
 public class ObjectChecker<T> {
     private static final Logger log = LoggerFactory.getLogger(ObjectChecker.class);
 

@@ -12,7 +12,7 @@ public final class BusinessFactory {
     }
 
     public static Business getDefaultBusiness() {
-        return new Business(BUSINESS_ID, BUSINESS_NAME, BUSINESS_CITY, BUSINESS_TYPE, BUSINESS_NUMBER_OF_REVIEWS, BUSINESS_AVERAGE_RATING, BUSINESS_ADDRESS, BUSINESS_EMAIL, BUSINESS_PHONE, BUSINESS_WEBSITE);
+        return new Business(BUSINESS_ID, BUSINESS_NAME, BUSINESS_CITY, BUSINESS_TYPE, BUSINESS_ADDRESS, BUSINESS_EMAIL, BUSINESS_PHONE, BUSINESS_WEBSITE);
     }
 
     public static BusinessDto getDefaultBusinessDto() {

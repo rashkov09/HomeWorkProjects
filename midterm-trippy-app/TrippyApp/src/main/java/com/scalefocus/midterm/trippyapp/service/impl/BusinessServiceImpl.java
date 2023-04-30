@@ -41,6 +41,7 @@ public class BusinessServiceImpl implements BusinessService {
         Business business = businessMapper.mapFromRequest(businessRequest);
 
         if (businessExists(business)) {
+            log.error(String.format("Business with name %s and city %s not found!", business.getName(), business.getCity()));
             throw new BusinessAlreadyExistsException("name " + business.getName() + " and city " + business.getCity());
         }
         try {
@@ -61,7 +62,7 @@ public class BusinessServiceImpl implements BusinessService {
             throw new BusinessAlreadyExistsException("name " + business.getName() + " and city " + business.getCity());
         }
         try {
-            Business old = businessRepository.update(business, id.longValue());
+            Business old = businessRepository.edit(business, id.longValue());
             business.setId(id.longValue());
             log.info(String.format("Business with id %d edited successfully!", id));
             return businessMapper.mapToDto(old);
@@ -94,6 +95,7 @@ public class BusinessServiceImpl implements BusinessService {
     public BusinessDto getBusinessByName(String name) {
         Business business = businessRepository.getByName(name);
         if (business == null) {
+            log.error(String.format("Business with name %s not found!", name));
             throw new BusinessNotFoundException("name " + name);
         }
         return businessMapper.mapToDto(business);
@@ -103,6 +105,7 @@ public class BusinessServiceImpl implements BusinessService {
     public BusinessDto getBusinessByNameAndCity(String name, String city) {
         Business business = businessRepository.getByNameAndCity(name, city);
         if (business == null) {
+            log.error(String.format("Business with name %s and city %s not found!", name, city));
             throw new BusinessNotFoundException("name " + name + " and city " + city);
         }
         return businessMapper.mapToDto(business);
@@ -147,5 +150,10 @@ public class BusinessServiceImpl implements BusinessService {
     public Boolean businessExists(Business business) {
         Business search = businessRepository.getByNameAndCity(business.getName(), business.getCity());
         return search != null;
+    }
+
+    @Override
+    public void updateBusiness(Business business) {
+        businessRepository.update(business);
     }
 }
