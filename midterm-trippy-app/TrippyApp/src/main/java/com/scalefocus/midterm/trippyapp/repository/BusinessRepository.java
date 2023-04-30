@@ -14,4 +14,8 @@ public interface BusinessRepository extends CustomRepository<Business> {
     Business getByName(String name);
 
     Business getByNameAndCity(String name, String city);
+
+    void update(Business business);
+
+    Business getByEmail(String email);
 }

@@ -81,7 +81,7 @@ public class User extends BaseEntity {
         return reviewList;
     }
 
-    private void setReviewList(List<Review> reviewList) {
+    public void setReviewList(List<Review> reviewList) {
         this.reviewList = reviewList;
     }
 }

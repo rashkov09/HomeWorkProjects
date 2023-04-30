@@ -22,12 +22,9 @@ import java.util.List;
 
 import static com.scalefocus.midterm.trippyapp.testutils.Business.BusinessConstants.*;
 import static com.scalefocus.midterm.trippyapp.testutils.Business.BusinessFactory.*;
-import static com.scalefocus.midterm.trippyapp.testutils.User.UserFactory.getDefaultUser;
-import static com.scalefocus.midterm.trippyapp.testutils.User.UserFactory.getDefaultUserRequest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -66,7 +63,7 @@ public class BusinessServiceImplTest {
         updatedBusinessDto.setAddress("tamantam");
         updatedBusinessDto.setEmail("tamantam@asdadd.com");
         when(businessMapper.mapFromRequest(any())).thenReturn(updatedBusiness);
-        when(businessRepository.update(any(), any())).thenReturn(updatedBusiness);
+        when(businessRepository.edit(any(), any())).thenReturn(updatedBusiness);
         when(businessMapper.mapToDto(any())).thenReturn(updatedBusinessDto);
         BusinessDto businessDto = businessService.editBusiness(getDefaultBusinessRequest(), BUSINESS_ID.intValue());
         assertEquals(businessDto.getName(), updatedBusiness.getName());

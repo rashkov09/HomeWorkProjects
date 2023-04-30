@@ -28,4 +28,5 @@ public interface BusinessService {
     Boolean businessExists(Business business);
 
 
+    void updateBusiness(Business business);
 }

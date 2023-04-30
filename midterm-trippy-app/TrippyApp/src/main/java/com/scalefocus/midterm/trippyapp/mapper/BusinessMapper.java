@@ -27,6 +27,23 @@ public class BusinessMapper implements RowMapper<Business> {
         return businessDto;
     }
 
+    public Business mapFromDto(BusinessDto businessDto) {
+        Business business = new Business();
+        business.setId(businessDto.getId());
+        business.setName(businessDto.getName());
+        business.setCity(businessDto.getCity());
+        business.setBusinessType(businessDto.getBusinessType());
+        business.setAverageRate(businessDto.getAverageRating());
+        business.setNumberOfReviews(businessDto.getNumberOfReviews());
+        business.setAddress(businessDto.getAddress());
+        business.setEmail(businessDto.getEmail());
+        business.setWebsite(businessDto.getWebsite());
+        business.setPhone(businessDto.getPhone());
+
+
+        return business;
+    }
+
 
     public Business mapFromRequest(BusinessRequest businessRequest) {
         Business business = new Business();

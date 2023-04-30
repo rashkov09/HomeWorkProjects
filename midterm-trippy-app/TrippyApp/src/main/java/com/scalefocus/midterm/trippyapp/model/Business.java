@@ -16,7 +16,7 @@ public class Business extends BaseEntity {
     public Business() {
     }
 
-    public Business(Long id, String name, String city, BusinessType businessType, Integer numberOfReviews, Double averageRate, String address, String email, String phone, String website) {
+    public Business(Long id, String name, String city, BusinessType businessType, String address, String email, String phone, String website) {
         super(id);
         this.name = name;
         this.city = city;
