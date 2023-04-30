@@ -3,13 +3,16 @@ package com.scalefocus.midterm.trippyapp.repository.impl;
 import com.scalefocus.midterm.trippyapp.constants.enums.BusinessType;
 import com.scalefocus.midterm.trippyapp.mapper.BusinessMapper;
 import com.scalefocus.midterm.trippyapp.model.Business;
+import com.scalefocus.midterm.trippyapp.model.dto.BusinessDto;
 import com.scalefocus.midterm.trippyapp.repository.BusinessRepository;
 import com.zaxxer.hikari.HikariDataSource;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class BusinessRepositoryImpl implements BusinessRepository {
@@ -26,6 +29,8 @@ public class BusinessRepositoryImpl implements BusinessRepository {
     private final static String UPDATE_BUSINESSES_BY_ID_STATEMENT = "UPDATE ta.businesses SET name=?, city=?, business_type=?, address=?, email=?, phone=?, website=?  WHERE id = ?";
     private final static String UPDATE_BUSINESSES_STATISTIC_BY_ID_STATEMENT = "UPDATE ta.businesses SET average_rating=?, number_of_reviews=?  WHERE id = ?";
     private final static String GET_NUMBER_OF_REVIEWS_SQL = "SELECT COUNT(r.id) AS number_of_reviews FROM ta.review AS r JOIN ta.businesses AS b ON b.id = r.business_id  WHERE b.id = ?";
+    private final static String SELECT_BUSINESSES_BY_RATE_BIGGER_THAN_STATEMENT = "SELECT * FROM ta.businesses WHERE average_rating > ?";
+    private final static String SELECT_BUSINESSES_BY_RATE_LOWER_THAN_STATEMENT = "SELECT * FROM ta.businesses WHERE average_rating < ?";
 
     private final static String GET_AVG_RATING_SQL = """
              SELECT AVG(CASE r.rating
@@ -137,6 +142,32 @@ public class BusinessRepositoryImpl implements BusinessRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<BusinessDto> getBusinessByRateBiggerThan(Double averageRate) {
+        return getBusinessDtos(averageRate, SELECT_BUSINESSES_BY_RATE_BIGGER_THAN_STATEMENT);
+    }
+
+    @Override
+    public List<BusinessDto> getBusinessByRateLowerThan(Double averageRate) {
+        return getBusinessDtos(averageRate, SELECT_BUSINESSES_BY_RATE_LOWER_THAN_STATEMENT);
+    }
+
+    @NotNull
+    private List<BusinessDto> getBusinessDtos(Double averageRate, String sql) {
+        List<Business> businesses = new ArrayList<>();
+        try (Connection connection = hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setDouble(1, averageRate);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                businesses.add(businessMapper.mapRow(resultSet, resultSet.getRow()));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return businesses.stream().map(businessMapper::mapToDto).collect(Collectors.toList());
     }
 
     @Override
