@@ -37,7 +37,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final BusinessMapper businessMapper;
 
     @Autowired
-    public ReviewServiceImpl(BusinessService businessService, ReviewRepositoryImpl reviewRepository, ObjectChecker<ReviewRequest> reviewObjectChecker, ReviewMapper reviewMapper, BusinessMapper businessMapper) {
+    public ReviewServiceImpl(BusinessService businessService, ReviewRepository reviewRepository, ObjectChecker<ReviewRequest> reviewObjectChecker, ReviewMapper reviewMapper, BusinessMapper businessMapper) {
         this.businessService = businessService;
         this.reviewRepository = reviewRepository;
         this.reviewObjectChecker = reviewObjectChecker;

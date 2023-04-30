@@ -6,7 +6,9 @@ import com.scalefocus.midterm.trippyapp.model.Review;
 import com.scalefocus.midterm.trippyapp.model.User;
 import com.scalefocus.midterm.trippyapp.model.dto.ReviewDto;
 import com.scalefocus.midterm.trippyapp.repository.ReviewRepository;
+import com.scalefocus.midterm.trippyapp.repository.UserRepository;
 import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -21,12 +23,13 @@ public class ReviewRepositoryImpl implements ReviewRepository {
     private final static String SELECT_REVIEWS_BY_USERNAME_SQL_STATEMENT = "SELECT * FROM ta.review WHERE username=?";
     private final static String SELECT_REVIEWS_BY_ID_SQL_STATEMENT = "SELECT * FROM ta.review WHERE id=?";
     private final static String DELETE_REVIEWS_BY_USERNAME_SQL_STATEMENT = "DELETE FROM ta.review WHERE id=? AND username=?";
-    private final UserRepositoryImpl userRepositoryImpl;
+    private final UserRepository userRepository;
     private final HikariDataSource hikariDataSource;
     private final ReviewMapper reviewMapper;
 
-    public ReviewRepositoryImpl(UserRepositoryImpl userRepositoryImpl, HikariDataSource hikariDataSource, ReviewMapper reviewMapper) {
-        this.userRepositoryImpl = userRepositoryImpl;
+    @Autowired
+    public ReviewRepositoryImpl(UserRepository userRepository, HikariDataSource hikariDataSource, ReviewMapper reviewMapper) {
+        this.userRepository = userRepository;
         this.hikariDataSource = hikariDataSource;
         this.reviewMapper = reviewMapper;
     }
@@ -51,7 +54,7 @@ public class ReviewRepositoryImpl implements ReviewRepository {
     public Long add(Review review) throws SQLException {
         try (Connection connection = hikariDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_REVIEW_SQL_STATEMENT, Statement.RETURN_GENERATED_KEYS)) {
-            User user = userRepositoryImpl.getByUsername(review.getUsername());
+            User user = userRepository.getByUsername(review.getUsername());
             if (user == null) {
                 throw new UserNotFoundException("username " + review.getUsername());
             }
