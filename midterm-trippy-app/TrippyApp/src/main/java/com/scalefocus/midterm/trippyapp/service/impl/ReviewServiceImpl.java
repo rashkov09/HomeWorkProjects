@@ -10,6 +10,7 @@ import com.scalefocus.midterm.trippyapp.model.Business;
 import com.scalefocus.midterm.trippyapp.model.Review;
 import com.scalefocus.midterm.trippyapp.model.User;
 import com.scalefocus.midterm.trippyapp.model.dto.ReviewDto;
+import com.scalefocus.midterm.trippyapp.repository.ReviewRepository;
 import com.scalefocus.midterm.trippyapp.repository.impl.ReviewRepositoryImpl;
 import com.scalefocus.midterm.trippyapp.service.BusinessService;
 import com.scalefocus.midterm.trippyapp.service.ReviewService;
@@ -22,22 +23,23 @@ import org.springframework.stereotype.Service;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
     private static final Logger log = LoggerFactory.getLogger(ReviewServiceImpl.class);
 
     private final BusinessService businessService;
-    private final ReviewRepositoryImpl reviewRepositoryImpl;
+    private final ReviewRepository reviewRepository;
     private final ObjectChecker<ReviewRequest> reviewObjectChecker;
 
     private final ReviewMapper reviewMapper;
     private final BusinessMapper businessMapper;
 
     @Autowired
-    public ReviewServiceImpl(BusinessService businessService, ReviewRepositoryImpl reviewRepositoryImpl, ObjectChecker<ReviewRequest> reviewObjectChecker, ReviewMapper reviewMapper, BusinessMapper businessMapper) {
+    public ReviewServiceImpl(BusinessService businessService, ReviewRepositoryImpl reviewRepository, ObjectChecker<ReviewRequest> reviewObjectChecker, ReviewMapper reviewMapper, BusinessMapper businessMapper) {
         this.businessService = businessService;
-        this.reviewRepositoryImpl = reviewRepositoryImpl;
+        this.reviewRepository = reviewRepository;
         this.reviewObjectChecker = reviewObjectChecker;
         this.reviewMapper = reviewMapper;
         this.businessMapper = businessMapper;
@@ -58,7 +60,7 @@ public class ReviewServiceImpl implements ReviewService {
         review.setUsername(username);
         review.setBusiness(business);
         try {
-            Long id = reviewRepositoryImpl.add(review);
+            Long id = reviewRepository.add(review);
             log.info("Review added successfully!");
             businessService.updateBusiness(business);
             return id;
@@ -68,13 +70,31 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewDto editReview(ReviewRequest reviewRequest, Integer id) {
-        return null;
+    public ReviewDto editReview(ReviewRequest reviewRequest, Integer id, String username) {
+        Review newReview = reviewMapper.mapFromRequest(reviewRequest);
+        Review old = reviewRepository.getById(id.longValue());
+        if (old == null) {
+            throw new ReviewNotFoundException();
+        }
+        if (!old.getUsername().equals(username)) {
+            throw new ReviewAccessDeniedException();
+        }
+        try {
+            old = reviewRepository.edit(newReview, id.longValue());
+            old.setBusiness(getBusiness(old.getBusiness().getId()));
+            log.info(String.format("Review with id %d edited successfully!", id));
+            businessService.updateBusiness(getBusiness(old.getBusiness().getId()));
+            return reviewMapper.mapToDto(old);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
+
 
     @Override
     public ReviewDto deleteReview(Integer id, String username) {
-        Review review = reviewRepositoryImpl.getById(id.longValue());
+        Review review = reviewRepository.getById(id.longValue());
         if (review == null) {
             log.error(String.format("Failed to remove review with id %s. Review not found!", id));
             throw new ReviewNotFoundException();
@@ -83,26 +103,38 @@ public class ReviewServiceImpl implements ReviewService {
             log.error(String.format("User %s tried deleting review that he does not own!", username));
             throw new ReviewAccessDeniedException();
         }
-        review.setBusiness(businessMapper.mapFromDto(businessService.getBusinessById(review.getBusiness().getId())));
+        review.setBusiness(getBusiness(review.getBusiness().getId()));
 
-        return reviewRepositoryImpl.delete(review);
+        return reviewRepository.delete(review);
     }
 
     @Override
     public ReviewDto getReviewById(Long id) {
-        return null;
+        Review review = reviewRepository.getById(id);
+        if (review == null) {
+            log.error(String.format("Review with id %d not found!", id));
+            throw new ReviewNotFoundException();
+        }
+        review.setBusiness(getBusiness(review.getBusiness().getId()));
+        return reviewMapper.mapToDto(review);
+    }
+
+    private Business getBusiness(Long id) {
+        return businessMapper.mapFromDto(businessService.getBusinessById(id));
     }
 
 
     @Override
     public List<ReviewDto> getAllReviews() {
-        return null;
+        List<Review> reviews = reviewRepository.getAll();
+        reviews.forEach(review -> review.setBusiness(getBusiness(review.getBusiness().getId())));
+        return reviews.stream().map(reviewMapper::mapToDto).collect(Collectors.toList());
     }
 
     @Override
     public List<Review> getReviewsByUsername(String username) {
-        List<Review> listOfReviews = reviewRepositoryImpl.getReviewsByUsername(username);
-        listOfReviews.forEach(review -> review.setBusiness(businessMapper.mapFromDto(businessService.getBusinessById(review.getBusiness().getId()))));
+        List<Review> listOfReviews = reviewRepository.getReviewsByUsername(username);
+        listOfReviews.forEach(review -> review.setBusiness(getBusiness(review.getBusiness().getId())));
         return listOfReviews.isEmpty() ? new ArrayList<>() : listOfReviews;
     }
 }

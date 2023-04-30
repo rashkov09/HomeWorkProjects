@@ -44,7 +44,12 @@ public class ReviewControllerImpl implements ReviewController {
 
     @Override
     public ResponseEntity<ReviewDto> updateReview(ReviewRequest reviewRequest, int id, boolean returnOld, String username) {
-        return null;
+        ReviewDto reviewDto = reviewService.editReview(reviewRequest, id, username);
+        if (returnOld) {
+            return ResponseEntity.ok(reviewDto);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @Override

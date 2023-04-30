@@ -25,6 +25,7 @@ public class BusinessRepositoryImpl implements BusinessRepository {
     private final static String SELECT_BUSINESSES_BY_NAME_AND_CITY_STATEMENT = "SELECT * FROM ta.businesses WHERE name = ? and city=?";
     private final static String UPDATE_BUSINESSES_BY_ID_STATEMENT = "UPDATE ta.businesses SET name=?, city=?, business_type=?, address=?, email=?, phone=?, website=?  WHERE id = ?";
     private final static String UPDATE_BUSINESSES_STATISTIC_BY_ID_STATEMENT = "UPDATE ta.businesses SET average_rating=?, number_of_reviews=?  WHERE id = ?";
+    private final static String GET_NUMBER_OF_REVIEWS_SQL = "SELECT COUNT(r.id) AS number_of_reviews FROM ta.review AS r JOIN ta.businesses AS b ON b.id = r.business_id  WHERE b.id = ?";
 
     private final static String GET_AVG_RATING_SQL = """
              SELECT AVG(CASE r.rating
@@ -210,8 +211,10 @@ public class BusinessRepositoryImpl implements BusinessRepository {
 
         try (Connection connection = hikariDataSource.getConnection();
              PreparedStatement updatePreparedStatement = connection.prepareStatement(UPDATE_BUSINESSES_STATISTIC_BY_ID_STATEMENT);
-             PreparedStatement subStatement = connection.prepareStatement(GET_AVG_RATING_SQL)) {
+             PreparedStatement subStatement = connection.prepareStatement(GET_AVG_RATING_SQL);
+             PreparedStatement countStatement = connection.prepareStatement(GET_NUMBER_OF_REVIEWS_SQL)) {
             subStatement.setLong(1, business.getId());
+            countStatement.setLong(1, business.getId());
             ResultSet resultSet = subStatement.executeQuery();
             double rate = 0.00;
             if (resultSet.next()) {
@@ -219,7 +222,13 @@ public class BusinessRepositoryImpl implements BusinessRepository {
             }
             resultSet.close();
             business.setAverageRate(rate);
-            business.setNumberOfReviews(business.getNumberOfReviews() + 1);
+            int count = 0;
+            ResultSet countResultSet = countStatement.executeQuery();
+            if (countResultSet.next()) {
+                count = countResultSet.getInt("number_of_reviews");
+            }
+            countResultSet.close();
+            business.setNumberOfReviews(count);
             updatePreparedStatement.setDouble(1, business.getAverageRate());
             updatePreparedStatement.setInt(2, business.getNumberOfReviews());
             updatePreparedStatement.setLong(3, business.getId());

@@ -16,6 +16,7 @@ import java.util.List;
 @Repository
 public class ReviewRepositoryImpl implements ReviewRepository {
     private final static String INSERT_REVIEW_SQL_STATEMENT = "INSERT INTO ta.review (username,stamp_created, rating, text_body,business_id) VALUES (?, ?, ? ,?,?)";
+    private final static String EDIT_REVIEW_SQL_STATEMENT = "UPDATE ta.review SET username=?, stamp_created= ?, rating=?, text_body=?, business_id=? WHERE id = ? AND username = ?";
     private final static String SELECT_ALL_REVIEWS_SQL_STATEMENT = "SELECT * FROM ta.review";
     private final static String SELECT_REVIEWS_BY_USERNAME_SQL_STATEMENT = "SELECT * FROM ta.review WHERE username=?";
     private final static String SELECT_REVIEWS_BY_ID_SQL_STATEMENT = "SELECT * FROM ta.review WHERE id=?";
@@ -71,7 +72,19 @@ public class ReviewRepositoryImpl implements ReviewRepository {
 
     @Override
     public Review edit(Review review, Long id) throws SQLException {
-        return null;
+        Review old = getById(id);
+        try (Connection connection = hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(EDIT_REVIEW_SQL_STATEMENT)) {
+            preparedStatement.setString(1, old.getUsername());
+            preparedStatement.setDate(2, Date.valueOf(review.getCreatedOn()));
+            preparedStatement.setObject(3, review.getRating().name(), Types.OTHER);
+            preparedStatement.setString(4, review.getText());
+            preparedStatement.setObject(5, old.getBusiness().getId());
+            preparedStatement.setLong(6, id);
+            preparedStatement.setString(7, old.getUsername());
+            preparedStatement.executeUpdate();
+        }
+        return old;
     }
 
     @Override
@@ -104,11 +117,6 @@ public class ReviewRepositoryImpl implements ReviewRepository {
         return review;
     }
 
-
-    @Override
-    public Review getByUsername(String username) {
-        return null;
-    }
 
     public List<Review> getReviewsByUsername(String username) {
         List<Review> listOfReviews = new ArrayList<>();
