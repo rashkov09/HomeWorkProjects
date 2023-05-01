@@ -8,7 +8,8 @@
 # Starting the project
 1. Clone the repository dobrin-rashkov/midterm-trippy-app/TrippyApp/
 2. Run `mvn clean install` command
-3. Open pgAdmin -> Query tool -> Open CreateTrippyAppDb.sql file -> Select all lines and run.
+3. Make sure you have port 8085 free or you can change it in src/main/resources/application.properties
+4. Open pgAdmin -> Query tool -> Open CreateTrippyAppDb.sql file or copy its content -> Select all lines and run query.
 
 # Functionalities
 ### Implemented
@@ -63,7 +64,7 @@
 
        1.7 Get businesses by user city
 
-                                 Request: GET http://localhost:8085/users/1/businesses
+                                 Request: GET http://localhost:8085/users/{user_id}/businesses
       
 2. Business:
 
@@ -174,5 +175,5 @@
                               
 ### Not implemented
 1. Testing is around 70% 
-2. 
-3.
+2. Error handling can be improved 
+3. Validation can be improved
