@@ -18,7 +18,7 @@ public final class ReviewConstants {
     public final static Long REVIEW_ID = 1L;
     public final static String REVIEW_USERNAME = "test";
     public final static LocalDate REVIEW_STAMP_CREATED= LocalDate.of(2023,4,27);
-    public final static ReviewRating REVIEW_RATING= ReviewRating.POOR;
+    public final static String REVIEW_RATING= "2";
     public final static String REVIEW_TEXT= "Some test text";
     public final static Business REVIEW_BUSINESS= business;
 }

@@ -1,6 +1,9 @@
 package com.scalefocus.midterm.trippyapp.controller.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.scalefocus.midterm.trippyapp.constants.enums.BusinessType;
+import com.scalefocus.midterm.trippyapp.constants.enums.ReviewRating;
+import com.scalefocus.midterm.trippyapp.mapper.BusinessMapper;
 import com.scalefocus.midterm.trippyapp.repository.ReviewRepository;
 import com.scalefocus.midterm.trippyapp.service.ReviewService;
 import org.junit.Before;
@@ -49,7 +52,7 @@ public class ReviewControllerImplTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(REVIEW_ID))
                 .andExpect(jsonPath("$[0].username").value(REVIEW_USERNAME))
-                .andExpect(jsonPath("$[0].rating").value("POOR"))
+                .andExpect(jsonPath("$[0].rating").value(ReviewRating.values()[1].name()))
                 .andExpect(jsonPath("$[0].text").value(REVIEW_TEXT))
                 .andExpect(jsonPath("$[0].business.id").value(REVIEW_BUSINESS.getId()));
     }
@@ -61,7 +64,7 @@ public class ReviewControllerImplTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(REVIEW_ID))
                 .andExpect(jsonPath("$.username").value(REVIEW_USERNAME))
-                .andExpect(jsonPath("$.rating").value("POOR"))
+                .andExpect(jsonPath("$.rating").value(ReviewRating.values()[1].name()))
                 .andExpect(jsonPath("$.text").value(REVIEW_TEXT))
                 .andExpect(jsonPath("$.business.id").value(REVIEW_BUSINESS.getId()));
     }
@@ -91,7 +94,7 @@ public class ReviewControllerImplTest {
                         .content(json))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value(REVIEW_USERNAME))
-                .andExpect(jsonPath("$.rating").value("POOR"))
+                .andExpect(jsonPath("$.rating").value(ReviewRating.values()[1].name()))
                 .andExpect(jsonPath("$.text").value(REVIEW_TEXT))
                 .andExpect(jsonPath("$.business.id").value(REVIEW_BUSINESS.getId()));
 
@@ -109,7 +112,7 @@ public class ReviewControllerImplTest {
                         .content(json))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value(REVIEW_USERNAME))
-                .andExpect(jsonPath("$.rating").value("POOR"))
+                .andExpect(jsonPath("$.rating").value(ReviewRating.values()[1].name()))
                 .andExpect(jsonPath("$.text").value(REVIEW_TEXT))
                 .andExpect(jsonPath("$.business.id").value(REVIEW_BUSINESS.getId()));
 

@@ -49,7 +49,7 @@ public class BusinessMapper implements RowMapper<Business> {
         Business business = new Business();
         business.setName(businessRequest.getName());
         business.setCity(businessRequest.getCity());
-        business.setBusinessType(businessRequest.getBusinessType());
+        business.setBusinessType(BusinessType.valueOf(businessRequest.getBusinessType()));
         business.setAddress(businessRequest.getAddress());
         business.setEmail(businessRequest.getEmail());
         business.setPhone(businessRequest.getPhone());

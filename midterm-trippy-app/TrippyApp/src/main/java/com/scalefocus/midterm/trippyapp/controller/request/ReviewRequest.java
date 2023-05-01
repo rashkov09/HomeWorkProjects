@@ -1,30 +1,32 @@
 package com.scalefocus.midterm.trippyapp.controller.request;
 
-import com.scalefocus.midterm.trippyapp.constants.enums.ReviewRating;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 public class ReviewRequest {
 
-
-    private ReviewRating rating;
+    @Pattern(regexp = "^[1-5]$", message = "Rating not valid must be between 1 and 5")
+    private String rating;
     private String text;
 
+    @NotNull
     private Long businessId;
 
     public ReviewRequest() {
     }
 
-    public ReviewRequest(ReviewRating rating, String text, Long businessId) {
+    public ReviewRequest(String rating, String text, Long businessId) {
 
         this.rating = rating;
         this.text = text;
         this.businessId = businessId;
     }
 
-    public ReviewRating getRating() {
+    public String getRating() {
         return rating;
     }
 
-    public void setRating(ReviewRating rating) {
+    public void setRating(String rating) {
         this.rating = rating;
     }
 

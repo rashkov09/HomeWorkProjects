@@ -1,5 +1,6 @@
 package com.scalefocus.midterm.trippyapp.testutils.Business;
 
+import com.scalefocus.midterm.trippyapp.constants.enums.BusinessType;
 import com.scalefocus.midterm.trippyapp.controller.request.BusinessRequest;
 import com.scalefocus.midterm.trippyapp.model.Business;
 import com.scalefocus.midterm.trippyapp.model.dto.BusinessDto;
@@ -12,11 +13,11 @@ public final class BusinessFactory {
     }
 
     public static Business getDefaultBusiness() {
-        return new Business(BUSINESS_ID, BUSINESS_NAME, BUSINESS_CITY, BUSINESS_TYPE, BUSINESS_ADDRESS, BUSINESS_EMAIL, BUSINESS_PHONE, BUSINESS_WEBSITE);
+        return new Business(BUSINESS_ID, BUSINESS_NAME, BUSINESS_CITY, BusinessType.valueOf(BUSINESS_TYPE), BUSINESS_ADDRESS, BUSINESS_EMAIL, BUSINESS_PHONE, BUSINESS_WEBSITE);
     }
 
     public static BusinessDto getDefaultBusinessDto() {
-        return new BusinessDto(BUSINESS_ID, BUSINESS_NAME, BUSINESS_CITY, BUSINESS_TYPE, BUSINESS_NUMBER_OF_REVIEWS, BUSINESS_AVERAGE_RATING, BUSINESS_ADDRESS, BUSINESS_EMAIL, BUSINESS_PHONE, BUSINESS_WEBSITE);
+        return new BusinessDto(BUSINESS_ID, BUSINESS_NAME, BUSINESS_CITY,BusinessType.valueOf(BUSINESS_TYPE), BUSINESS_NUMBER_OF_REVIEWS, BUSINESS_AVERAGE_RATING, BUSINESS_ADDRESS, BUSINESS_EMAIL, BUSINESS_PHONE, BUSINESS_WEBSITE);
     }
 
     public static BusinessRequest getDefaultBusinessRequest() {

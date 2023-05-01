@@ -1,13 +1,12 @@
 package com.scalefocus.midterm.trippyapp.constants.enums;
 
 public enum ReviewRating {
-    VERY_POOR(1),
-    POOR(2),
-    AVERAGE(3),
-    GOOD(4),
-    VERY_GOOD(5);
+    VERY_POOR,
+    POOR,
+    AVERAGE,
+    GOOD,
+    VERY_GOOD;
 
-    ReviewRating(int value) {
-    }
+
 
 }
