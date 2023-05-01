@@ -2,6 +2,8 @@ package com.scalefocus.midterm.trippyapp.controller.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scalefocus.midterm.trippyapp.model.dto.UserDto;
+import com.scalefocus.midterm.trippyapp.service.BusinessService;
+import com.scalefocus.midterm.trippyapp.service.impl.BusinessServiceImpl;
 import com.scalefocus.midterm.trippyapp.service.impl.UserServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +20,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.Collections;
 import java.util.List;
 
+import static com.scalefocus.midterm.trippyapp.testutils.Business.BusinessConstants.*;
+import static com.scalefocus.midterm.trippyapp.testutils.Business.BusinessFactory.getDefaultBusinessDto;
 import static com.scalefocus.midterm.trippyapp.testutils.User.UserConstants.*;
 import static com.scalefocus.midterm.trippyapp.testutils.User.UserFactory.*;
 import static org.hamcrest.Matchers.*;
@@ -34,6 +38,8 @@ public class UserControllerImplTest {
 
     @Mock
     private UserServiceImpl userService;
+    @Mock
+    private BusinessServiceImpl businessService;
 
     @InjectMocks
     private UserControllerImpl userController;
@@ -78,6 +84,24 @@ public class UserControllerImplTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$[0]").doesNotExist());
+    }
+
+ @Test
+    public void getBusinessesByUserCity_emptyList_success() throws Exception {
+        when(userService.getUserById(any())).thenReturn(getDefaultUserDto());
+        when(businessService.getBusinessesByCity(any())).thenReturn(Collections.singletonList(getDefaultBusinessDto()));
+
+        mockMvc.perform(get("/users/" + USER_ID+"/businesses"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value(BUSINESS_NAME))
+                .andExpect(jsonPath("$[0].city").value(BUSINESS_CITY))
+                .andExpect(jsonPath("$[0].businessType").value("BAR"))
+                .andExpect(jsonPath("$[0].averageRating").value(BUSINESS_AVERAGE_RATING))
+                .andExpect(jsonPath("$[0].numberOfReviews").value(BUSINESS_NUMBER_OF_REVIEWS))
+                .andExpect(jsonPath("$[0].address").value(BUSINESS_ADDRESS))
+                .andExpect(jsonPath("$[0].email").value(BUSINESS_EMAIL))
+                .andExpect(jsonPath("$[0].phone").value(BUSINESS_PHONE))
+                .andExpect(jsonPath("$[0].website").value(BUSINESS_WEBSITE));
     }
 
 

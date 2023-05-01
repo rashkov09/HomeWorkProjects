@@ -61,6 +61,10 @@
        1.6 Get user by email
                                  Request: GET http://localhost:8085/users?email={email}
 
+       1.7 Get businesses by user city
+
+                                 Request: GET http://localhost:8085/users/1/businesses
+      
 2. Business:
 
        2.1 Adding business 
@@ -170,5 +174,5 @@
                               
 ### Not implemented
 1. Testing is around 70% 
-2.
+2. 
 3.
