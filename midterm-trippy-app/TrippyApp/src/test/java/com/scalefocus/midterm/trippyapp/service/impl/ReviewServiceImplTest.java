@@ -107,7 +107,6 @@ public class ReviewServiceImplTest {
         Assert.assertEquals(REVIEW_ID, reviewDto.getId());
         Assert.assertEquals(REVIEW_USERNAME, reviewDto.getUsername());
         Assert.assertEquals(REVIEW_TEXT, reviewDto.getText());
-        Assert.assertEquals(REVIEW_BUSINESS.getId(), reviewDto.getBusiness().getId());
     }
 
 

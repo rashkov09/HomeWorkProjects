@@ -61,6 +61,10 @@
        1.6 Get user by email
                                  Request: GET http://localhost:8085/users?email={email}
 
+       1.7 Get businesses by user city
+
+                                 Request: GET http://localhost:8085/users/1/businesses
+      
 2. Business:
 
        2.1 Adding business 
@@ -124,6 +128,9 @@
 
        2.9 Get business by average review rate bigger than 
                              Request: GET http://localhost:8085/businesses?rate={rate}&query=biggerThan
+
+       2.10 Get reviews by business id 
+                             Request: GET http://localhost:8085/businesses/{business_id}/reviews
        
 3. Reviews
        
@@ -132,7 +139,7 @@
                               Body raw (json)
                                 json
                                 {
-                                "rating": "POOR",
+                                "rating": "1",             -> Allowed values from 1 to 5
                                 "text" : "Awful first try",
                                 "businessId": 1
                                 }
@@ -142,7 +149,7 @@
                               Body raw (json)
                                 json
                                 {
-                                "rating": "POOR",
+                                "rating": "1",             -> Allowed values from 1 to 5
                                 "text" : "Awful first try",
                                 "businessId": 1
                                 }
@@ -151,7 +158,7 @@
                               Body raw (json)
                                 json
                                 {
-                                "rating": "POOR",
+                                "rating": "1",             -> Allowed values from 1 to 5
                                 "text" : "Awful first try",
                                 "businessId": 1
                                 }
@@ -166,6 +173,6 @@
                              Request: GET http://localhost:8085/reviews
                               
 ### Not implemented
-1.
-2.
+1. Testing is around 70% 
+2. 
 3.

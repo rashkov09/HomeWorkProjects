@@ -18,7 +18,7 @@ public class ReviewFactory {
     }
 
     public static ReviewDto getDefaultReviewDto(){
-        return new ReviewDto(REVIEW_ID,REVIEW_USERNAME, REVIEW_STAMP_CREATED,ReviewRating.values()[Integer.parseInt(REVIEW_RATING)-1],REVIEW_TEXT,REVIEW_BUSINESS);
+        return new ReviewDto(REVIEW_ID,REVIEW_USERNAME, REVIEW_STAMP_CREATED,ReviewRating.values()[Integer.parseInt(REVIEW_RATING)-1],REVIEW_TEXT);
     }
 
     public static ReviewRequest getDefaultReviewRequest(){

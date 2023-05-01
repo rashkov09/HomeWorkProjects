@@ -12,15 +12,13 @@ public class ReviewDto {
     private ReviewRating rating;
     private String text;
 
-    private Business business;
-
-    public ReviewDto(Long id, String username, LocalDate createdOn, ReviewRating rating, String text, Business business) {
+    public ReviewDto(Long id, String username, LocalDate createdOn, ReviewRating rating, String text) {
         this.id = id;
         this.username = username;
         this.createdOn = createdOn;
         this.rating = rating;
         this.text = text;
-        this.business = business;
+
     }
 
     public ReviewDto() {
@@ -66,11 +64,4 @@ public class ReviewDto {
         this.text = text;
     }
 
-    public Business getBusiness() {
-        return business;
-    }
-
-    public void setBusiness(Business business) {
-        this.business = business;
-    }
 }

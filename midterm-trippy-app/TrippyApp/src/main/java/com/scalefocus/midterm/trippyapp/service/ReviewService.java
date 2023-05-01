@@ -3,6 +3,7 @@ package com.scalefocus.midterm.trippyapp.service;
 import com.scalefocus.midterm.trippyapp.controller.request.ReviewRequest;
 import com.scalefocus.midterm.trippyapp.model.Review;
 import com.scalefocus.midterm.trippyapp.model.dto.ReviewDto;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface ReviewService {
     List<ReviewDto> getAllReviews();
 
     List<Review> getReviewsByUsername(String username);
+
+   List<ReviewDto> getReviewsByBusinessId(Long id);
 }

@@ -1,6 +1,7 @@
 package com.scalefocus.midterm.trippyapp.controller;
 
 import com.scalefocus.midterm.trippyapp.controller.request.UserRequest;
+import com.scalefocus.midterm.trippyapp.model.dto.BusinessDto;
 import com.scalefocus.midterm.trippyapp.model.dto.UserDto;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,10 @@ public interface UserController {
 
     @GetMapping("/{id}")
     ResponseEntity<UserDto> getUserById(@PathVariable
+                                        Long id);
+
+    @GetMapping("/{id}/businesses")
+    ResponseEntity<List<BusinessDto>> getBusinessByUserCity(@PathVariable
                                         Long id);
 
     @GetMapping(params = "username")

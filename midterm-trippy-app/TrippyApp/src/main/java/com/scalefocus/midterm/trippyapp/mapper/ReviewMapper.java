@@ -19,7 +19,6 @@ public class ReviewMapper implements RowMapper<Review> {
         reviewDto.setUsername(review.getUsername());
         reviewDto.setCreatedOn(review.getCreatedOn());
         reviewDto.setText(review.getText());
-        reviewDto.setBusiness(review.getBusiness());
 
         return reviewDto;
     }

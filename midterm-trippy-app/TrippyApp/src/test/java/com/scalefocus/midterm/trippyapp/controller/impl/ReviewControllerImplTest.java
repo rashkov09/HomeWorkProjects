@@ -53,8 +53,8 @@ public class ReviewControllerImplTest {
                 .andExpect(jsonPath("$[0].id").value(REVIEW_ID))
                 .andExpect(jsonPath("$[0].username").value(REVIEW_USERNAME))
                 .andExpect(jsonPath("$[0].rating").value(ReviewRating.values()[1].name()))
-                .andExpect(jsonPath("$[0].text").value(REVIEW_TEXT))
-                .andExpect(jsonPath("$[0].business.id").value(REVIEW_BUSINESS.getId()));
+                .andExpect(jsonPath("$[0].text").value(REVIEW_TEXT));
+
     }
 
     @Test
@@ -65,8 +65,8 @@ public class ReviewControllerImplTest {
                 .andExpect(jsonPath("$.id").value(REVIEW_ID))
                 .andExpect(jsonPath("$.username").value(REVIEW_USERNAME))
                 .andExpect(jsonPath("$.rating").value(ReviewRating.values()[1].name()))
-                .andExpect(jsonPath("$.text").value(REVIEW_TEXT))
-                .andExpect(jsonPath("$.business.id").value(REVIEW_BUSINESS.getId()));
+                .andExpect(jsonPath("$.text").value(REVIEW_TEXT));
+
     }
 
     @Test
@@ -95,8 +95,7 @@ public class ReviewControllerImplTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value(REVIEW_USERNAME))
                 .andExpect(jsonPath("$.rating").value(ReviewRating.values()[1].name()))
-                .andExpect(jsonPath("$.text").value(REVIEW_TEXT))
-                .andExpect(jsonPath("$.business.id").value(REVIEW_BUSINESS.getId()));
+                .andExpect(jsonPath("$.text").value(REVIEW_TEXT));
 
     }
 
@@ -113,8 +112,7 @@ public class ReviewControllerImplTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value(REVIEW_USERNAME))
                 .andExpect(jsonPath("$.rating").value(ReviewRating.values()[1].name()))
-                .andExpect(jsonPath("$.text").value(REVIEW_TEXT))
-                .andExpect(jsonPath("$.business.id").value(REVIEW_BUSINESS.getId()));
+                .andExpect(jsonPath("$.text").value(REVIEW_TEXT));
 
     }
 
