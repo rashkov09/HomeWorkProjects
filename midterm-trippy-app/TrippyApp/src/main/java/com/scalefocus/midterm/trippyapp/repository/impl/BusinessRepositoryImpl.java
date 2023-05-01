@@ -3,6 +3,7 @@ package com.scalefocus.midterm.trippyapp.repository.impl;
 import com.scalefocus.midterm.trippyapp.constants.enums.BusinessType;
 import com.scalefocus.midterm.trippyapp.mapper.BusinessMapper;
 import com.scalefocus.midterm.trippyapp.model.Business;
+import com.scalefocus.midterm.trippyapp.model.Review;
 import com.scalefocus.midterm.trippyapp.model.dto.BusinessDto;
 import com.scalefocus.midterm.trippyapp.repository.BusinessRepository;
 import com.zaxxer.hikari.HikariDataSource;

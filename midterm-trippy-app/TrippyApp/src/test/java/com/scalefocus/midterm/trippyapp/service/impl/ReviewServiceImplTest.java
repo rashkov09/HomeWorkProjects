@@ -101,6 +101,8 @@ public class ReviewServiceImplTest {
     public void deleteReview_noException_success() {
         when(reviewRepository.getById(any())).thenReturn(getDefaultReview());
         when(reviewRepository.delete(any())).thenReturn(getDefaultReviewDto());
+        when(businessService.getBusinessById(any())).thenReturn(getDefaultBusinessDto());
+        when(businessMapper.mapFromDto(any())).thenReturn(getDefaultBusiness());
         ReviewDto reviewDto = reviewService.deleteReview(REVIEW_ID.intValue(), REVIEW_USERNAME);
         Assert.assertEquals(REVIEW_ID, reviewDto.getId());
         Assert.assertEquals(REVIEW_USERNAME, reviewDto.getUsername());

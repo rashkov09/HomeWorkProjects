@@ -36,6 +36,7 @@ public class BusinessMapper implements RowMapper<Business> {
             case 3 -> formatted = String.format("%.2f (%s)", averageRate, "AVERAGE");
             case 4 -> formatted = String.format("%.2f (%s)", averageRate, "GOOD");
             case 5 -> formatted = String.format("%.2f (%s)", averageRate, "VERY_GOOD");
+            default -> formatted = "0.00 (NOT RATED)";
         }
         return formatted;
     }
