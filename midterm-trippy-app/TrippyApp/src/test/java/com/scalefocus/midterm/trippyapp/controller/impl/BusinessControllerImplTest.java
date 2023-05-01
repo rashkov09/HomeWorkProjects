@@ -1,6 +1,7 @@
 package com.scalefocus.midterm.trippyapp.controller.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.scalefocus.midterm.trippyapp.constants.enums.BusinessType;
 import com.scalefocus.midterm.trippyapp.controller.request.BusinessRequest;
 import com.scalefocus.midterm.trippyapp.mapper.BusinessMapper;
 import com.scalefocus.midterm.trippyapp.model.dto.BusinessDto;
@@ -118,7 +119,7 @@ public class BusinessControllerImplTest {
     public void getByBusinessType_noException_success() throws Exception {
         when(businessService.getByBusinessType("BAR")).thenReturn(Collections.singletonList(getDefaultBusinessDto()));
 
-        mockMvc.perform(get("/businesses?type=" + BUSINESS_TYPE.name()))
+        mockMvc.perform(get("/businesses?type=" + BusinessType.valueOf(BUSINESS_TYPE)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").exists())
                 .andExpect(jsonPath("$[0].name").value(BUSINESS_NAME))
