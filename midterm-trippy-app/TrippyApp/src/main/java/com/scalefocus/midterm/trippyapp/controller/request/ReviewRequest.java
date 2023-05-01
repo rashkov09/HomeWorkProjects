@@ -8,8 +8,6 @@ public class ReviewRequest {
     @Pattern(regexp = "^[1-5]$", message = "Rating not valid must be between 1 and 5")
     private String rating;
     private String text;
-
-    @NotNull
     private Long businessId;
 
     public ReviewRequest() {
