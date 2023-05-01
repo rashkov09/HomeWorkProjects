@@ -2,6 +2,7 @@ package com.scalefocus.midterm.trippyapp.service.impl;
 
 import com.scalefocus.midterm.trippyapp.controller.request.ReviewRequest;
 import com.scalefocus.midterm.trippyapp.exception.BusinessExceptions.BusinessNotFoundException;
+import com.scalefocus.midterm.trippyapp.exception.NoDataFoundException;
 import com.scalefocus.midterm.trippyapp.exception.ReviewExceptions.ReviewAccessDeniedException;
 import com.scalefocus.midterm.trippyapp.exception.ReviewExceptions.ReviewNotFoundException;
 import com.scalefocus.midterm.trippyapp.mapper.BusinessMapper;
@@ -11,7 +12,6 @@ import com.scalefocus.midterm.trippyapp.model.Review;
 import com.scalefocus.midterm.trippyapp.model.User;
 import com.scalefocus.midterm.trippyapp.model.dto.ReviewDto;
 import com.scalefocus.midterm.trippyapp.repository.ReviewRepository;
-import com.scalefocus.midterm.trippyapp.repository.impl.ReviewRepositoryImpl;
 import com.scalefocus.midterm.trippyapp.service.BusinessService;
 import com.scalefocus.midterm.trippyapp.service.ReviewService;
 import com.scalefocus.midterm.trippyapp.util.ObjectChecker;
@@ -127,6 +127,9 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public List<ReviewDto> getAllReviews() {
         List<Review> reviews = reviewRepository.getAll();
+        if (reviews.isEmpty()) {
+            throw new NoDataFoundException();
+        }
         reviews.forEach(review -> review.setBusiness(getBusiness(review.getBusiness().getId())));
         return reviews.stream().map(reviewMapper::mapToDto).collect(Collectors.toList());
     }

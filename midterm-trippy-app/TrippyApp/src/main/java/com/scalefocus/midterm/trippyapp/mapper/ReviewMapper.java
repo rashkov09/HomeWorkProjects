@@ -27,7 +27,7 @@ public class ReviewMapper implements RowMapper<Review> {
 
     public Review mapFromRequest(ReviewRequest reviewRequest) {
         Review review = new Review();
-        review.setRating(ReviewRating.values()[Integer.parseInt(reviewRequest.getRating())-1]);
+        review.setRating(ReviewRating.values()[Integer.parseInt(reviewRequest.getRating()) - 1]);
         review.setText(reviewRequest.getText());
 
         return review;

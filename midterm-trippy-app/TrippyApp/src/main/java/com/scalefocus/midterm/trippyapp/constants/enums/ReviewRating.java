@@ -8,5 +8,4 @@ public enum ReviewRating {
     VERY_GOOD;
 
 
-
 }

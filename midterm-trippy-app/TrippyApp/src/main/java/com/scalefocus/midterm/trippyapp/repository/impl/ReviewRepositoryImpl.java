@@ -78,13 +78,13 @@ public class ReviewRepositoryImpl implements ReviewRepository {
         Review old = getById(id);
         try (Connection connection = hikariDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(EDIT_REVIEW_SQL_STATEMENT)) {
-            preparedStatement.setString(1, old.getUsername());
+            preparedStatement.setString(1, review.getUsername());
             preparedStatement.setDate(2, Date.valueOf(review.getCreatedOn()));
             preparedStatement.setObject(3, review.getRating().name(), Types.OTHER);
             preparedStatement.setString(4, review.getText());
-            preparedStatement.setObject(5, old.getBusiness().getId());
+            preparedStatement.setObject(5, review.getBusiness().getId());
             preparedStatement.setLong(6, id);
-            preparedStatement.setString(7, old.getUsername());
+            preparedStatement.setString(7, review.getUsername());
             preparedStatement.executeUpdate();
         }
         return old;
@@ -106,18 +106,18 @@ public class ReviewRepositoryImpl implements ReviewRepository {
 
     @Override
     public Review getById(Long id) {
-        Review review = null;
         try (Connection connection = hikariDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_REVIEWS_BY_ID_SQL_STATEMENT)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
+            Review review = null;
             if (resultSet.next()) {
                 review = reviewMapper.mapRow(resultSet, resultSet.getRow());
             }
+            return review;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return review;
     }
 
 

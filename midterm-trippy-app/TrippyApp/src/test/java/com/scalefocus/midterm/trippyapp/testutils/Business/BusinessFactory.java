@@ -17,7 +17,7 @@ public final class BusinessFactory {
     }
 
     public static BusinessDto getDefaultBusinessDto() {
-        return new BusinessDto(BUSINESS_ID, BUSINESS_NAME, BUSINESS_CITY,BusinessType.valueOf(BUSINESS_TYPE), BUSINESS_NUMBER_OF_REVIEWS, BUSINESS_AVERAGE_RATING, BUSINESS_ADDRESS, BUSINESS_EMAIL, BUSINESS_PHONE, BUSINESS_WEBSITE);
+        return new BusinessDto(BUSINESS_ID, BUSINESS_NAME, BUSINESS_CITY,BusinessType.valueOf(BUSINESS_TYPE), BUSINESS_NUMBER_OF_REVIEWS, String.valueOf(BUSINESS_AVERAGE_RATING), BUSINESS_ADDRESS, BUSINESS_EMAIL, BUSINESS_PHONE, BUSINESS_WEBSITE);
     }
 
     public static BusinessRequest getDefaultBusinessRequest() {
