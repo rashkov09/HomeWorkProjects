@@ -79,6 +79,8 @@ public class ReviewServiceImpl implements ReviewService {
         if (!old.getUsername().equals(username)) {
             throw new ReviewAccessDeniedException();
         }
+        newReview.setUsername(old.getUsername());
+        newReview.setBusiness(old.getBusiness());
         try {
             old = reviewRepository.edit(newReview, id.longValue());
             old.setBusiness(getBusiness(old.getBusiness().getId()));
@@ -104,8 +106,9 @@ public class ReviewServiceImpl implements ReviewService {
             throw new ReviewAccessDeniedException();
         }
         review.setBusiness(getBusiness(review.getBusiness().getId()));
-
-        return reviewRepository.delete(review);
+        ReviewDto result = reviewRepository.delete(review);
+        businessService.updateBusiness(getBusiness(review.getBusiness().getId()));
+        return result;
     }
 
     @Override
