@@ -1,5 +1,7 @@
 package com.scalefocus.midterm.trippyapp.service.impl;
 
+import com.scalefocus.midterm.trippyapp.constants.enums.BusinessType;
+import com.scalefocus.midterm.trippyapp.constants.enums.ReviewRating;
 import com.scalefocus.midterm.trippyapp.mapper.BusinessMapper;
 import com.scalefocus.midterm.trippyapp.mapper.ReviewMapper;
 import com.scalefocus.midterm.trippyapp.model.Review;
@@ -64,7 +66,7 @@ public class ReviewServiceImplTest {
         List<Review> reviewDtos = reviewService.getReviewsByUsername(REVIEW_USERNAME);
         Assert.assertEquals(REVIEW_ID,reviewDtos.get(0).getId());
         Assert.assertEquals(REVIEW_USERNAME,reviewDtos.get(0).getUsername());
-        Assert.assertEquals(REVIEW_RATING,reviewDtos.get(0).getRating());
+        Assert.assertEquals(ReviewRating.values()[Integer.parseInt(REVIEW_RATING)-1],reviewDtos.get(0).getRating());
         Assert.assertEquals(1, reviewDtos.size());
     }
 
