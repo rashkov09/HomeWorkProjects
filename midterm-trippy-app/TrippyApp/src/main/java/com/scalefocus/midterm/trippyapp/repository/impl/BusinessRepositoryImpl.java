@@ -7,6 +7,7 @@ import com.scalefocus.midterm.trippyapp.model.dto.BusinessDto;
 import com.scalefocus.midterm.trippyapp.repository.BusinessRepository;
 import com.zaxxer.hikari.HikariDataSource;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -48,6 +49,7 @@ public class BusinessRepositoryImpl implements BusinessRepository {
     private final HikariDataSource hikariDataSource;
     private final BusinessMapper businessMapper;
 
+    @Autowired
     public BusinessRepositoryImpl(HikariDataSource hikariDataSource, BusinessMapper businessMapper) {
         this.hikariDataSource = hikariDataSource;
         this.businessMapper = businessMapper;

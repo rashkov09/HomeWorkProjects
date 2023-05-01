@@ -14,19 +14,18 @@ import java.sql.*;
 
 import static com.scalefocus.midterm.trippyapp.testutils.User.UserConstants.USER_ID;
 import static com.scalefocus.midterm.trippyapp.testutils.User.UserFactory.getDefaultUser;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
-public class UserRepositoryImplTest {
+public class UserRepositoryTest {
     @Mock
     private HikariDataSource hikariDataSource;
     @Mock
     private UserMapper userMapper;
 
     @InjectMocks
-    private UserRepositoryImpl userRepositoryImpl;
+    private UserRepositoryImpl userRepository;
 
 
     @Test
@@ -45,7 +44,7 @@ public class UserRepositoryImplTest {
         when(resultSet.next()).thenReturn(true);
         when(resultSet.getLong(1)).thenReturn(1L);
         User user = getDefaultUser();
-        Long result = userRepositoryImpl.add(user);
+        Long result = userRepository.add(user);
 
         Assertions.assertEquals(1L, result);
         verify(preparedStatement, times(1)).setString(1, user.getUsername());
@@ -81,7 +80,7 @@ public class UserRepositoryImplTest {
         when(preparedStatement.executeUpdate()).thenReturn(1);
 
         User user = getDefaultUser();
-        userRepositoryImpl.edit(user, USER_ID);
+        userRepository.edit(user, USER_ID);
 
         verify(preparedStatement, times(1)).setString(1, user.getUsername());
         verify(preparedStatement, times(1)).setString(2, user.getEmail());

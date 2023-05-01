@@ -2,8 +2,6 @@ package com.scalefocus.midterm.trippyapp.model.dto;
 
 import com.scalefocus.midterm.trippyapp.constants.enums.BusinessType;
 
-import java.text.DecimalFormat;
-
 public class BusinessDto {
     private Long id;
     private String name;
@@ -19,13 +17,13 @@ public class BusinessDto {
     public BusinessDto() {
     }
 
-    public BusinessDto(Long id, String name, String city, BusinessType businessType, Integer numberOfReviews, Double averageRating, String address, String email, String phone, String website) {
+    public BusinessDto(Long id, String name, String city, BusinessType businessType, Integer numberOfReviews, String averageRating, String address, String email, String phone, String website) {
         this.id = id;
         this.name = name;
         this.city = city;
         this.businessType = businessType;
         this.numberOfReviews = numberOfReviews;
-        setAverageRating(averageRating);
+        this.averageRating = averageRating;
         this.address = address;
         this.email = email;
         this.phone = phone;
@@ -72,13 +70,12 @@ public class BusinessDto {
         this.numberOfReviews = numberOfReviews;
     }
 
-    public Double getAverageRating() {
-        return Double.parseDouble(averageRating);
+    public String getAverageRating() {
+        return averageRating;
     }
 
-    public void setAverageRating(Double averageRating) {
-        DecimalFormat df = new DecimalFormat("#.###");
-        this.averageRating = df.format(averageRating);
+    public void setAverageRating(String averageRating) {
+        this.averageRating = averageRating;
     }
 
     public String getAddress() {

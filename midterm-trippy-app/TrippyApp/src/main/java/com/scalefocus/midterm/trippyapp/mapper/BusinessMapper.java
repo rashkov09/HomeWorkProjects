@@ -16,7 +16,7 @@ public class BusinessMapper implements RowMapper<Business> {
         businessDto.setName(business.getName());
         businessDto.setCity(business.getCity());
         businessDto.setBusinessType(business.getBusinessType());
-        businessDto.setAverageRating(business.getAverageRate());
+        businessDto.setAverageRating(getResult(business.getAverageRate()));
         businessDto.setNumberOfReviews(business.getNumberOfReviews());
         businessDto.setAddress(business.getAddress());
         businessDto.setEmail(business.getEmail());
@@ -27,13 +27,26 @@ public class BusinessMapper implements RowMapper<Business> {
         return businessDto;
     }
 
+    private String getResult(Double averageRate) {
+        long result = Math.round(averageRate);
+        String formatted = "";
+        switch ((int) result) {
+            case 1 -> formatted = String.format("%.2f (%s)", averageRate, "VERY_POOR");
+            case 2 -> formatted = String.format("%.2f (%s)", averageRate, "POOR");
+            case 3 -> formatted = String.format("%.2f (%s)", averageRate, "AVERAGE");
+            case 4 -> formatted = String.format("%.2f (%s)", averageRate, "GOOD");
+            case 5 -> formatted = String.format("%.2f (%s)", averageRate, "VERY_GOOD");
+        }
+        return formatted;
+    }
+
     public Business mapFromDto(BusinessDto businessDto) {
         Business business = new Business();
         business.setId(businessDto.getId());
         business.setName(businessDto.getName());
         business.setCity(businessDto.getCity());
         business.setBusinessType(businessDto.getBusinessType());
-        business.setAverageRate(businessDto.getAverageRating());
+        business.setAverageRate(Double.parseDouble(businessDto.getAverageRating().split("\\s")[0]));
         business.setNumberOfReviews(businessDto.getNumberOfReviews());
         business.setAddress(businessDto.getAddress());
         business.setEmail(businessDto.getEmail());
@@ -49,7 +62,7 @@ public class BusinessMapper implements RowMapper<Business> {
         Business business = new Business();
         business.setName(businessRequest.getName());
         business.setCity(businessRequest.getCity());
-        business.setBusinessType(businessRequest.getBusinessType());
+        business.setBusinessType(BusinessType.valueOf(businessRequest.getBusinessType()));
         business.setAddress(businessRequest.getAddress());
         business.setEmail(businessRequest.getEmail());
         business.setPhone(businessRequest.getPhone());

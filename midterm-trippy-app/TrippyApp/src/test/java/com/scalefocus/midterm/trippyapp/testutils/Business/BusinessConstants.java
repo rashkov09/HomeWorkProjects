@@ -11,7 +11,7 @@ public final class BusinessConstants {
     public final static Long BUSINESS_ID = 1L;
     public final static String BUSINESS_NAME = "TestBusiness";
     public final static String BUSINESS_CITY= "Test city";
-    public final static BusinessType BUSINESS_TYPE= BusinessType.BAR;
+    public final static String BUSINESS_TYPE= "BAR";
     public final static Double BUSINESS_AVERAGE_RATING= 3.00;
     public final static Integer BUSINESS_NUMBER_OF_REVIEWS= 1;
     public final static String BUSINESS_ADDRESS= "Test address";

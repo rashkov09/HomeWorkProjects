@@ -1,5 +1,6 @@
 package com.scalefocus.midterm.trippyapp.service.impl;
 
+import com.scalefocus.midterm.trippyapp.constants.enums.BusinessType;
 import com.scalefocus.midterm.trippyapp.controller.request.BusinessRequest;
 import com.scalefocus.midterm.trippyapp.exception.BusinessExceptions.BusinessAlreadyExistsException;
 import com.scalefocus.midterm.trippyapp.exception.BusinessExceptions.BusinessNotFoundException;
@@ -80,13 +81,17 @@ public class BusinessServiceImplTest {
         Assert.assertEquals(BUSINESS_ID, businessDto.getId());
         Assert.assertEquals(BUSINESS_NAME, businessDto.getName());
         Assert.assertEquals(BUSINESS_CITY, businessDto.getCity());
-        Assert.assertEquals(BUSINESS_TYPE, businessDto.getBusinessType());
-        Assert.assertEquals(BUSINESS_AVERAGE_RATING, businessDto.getAverageRating());
+        Assert.assertEquals(BusinessType.valueOf(BUSINESS_TYPE), businessDto.getBusinessType());
+        Assert.assertEquals(BUSINESS_AVERAGE_RATING,getAverageRating(businessDto.getAverageRating()));
         Assert.assertEquals(BUSINESS_NUMBER_OF_REVIEWS, businessDto.getNumberOfReviews());
         Assert.assertEquals(BUSINESS_ADDRESS, businessDto.getAddress());
         Assert.assertEquals(BUSINESS_EMAIL, businessDto.getEmail());
         Assert.assertEquals(BUSINESS_PHONE, businessDto.getPhone());
         Assert.assertEquals(BUSINESS_WEBSITE, businessDto.getWebsite());
+    }
+
+    private Double getAverageRating(String averageRating) {
+        return Double.parseDouble(averageRating.split("\\s")[0]);
     }
 
     @Test
@@ -97,8 +102,8 @@ public class BusinessServiceImplTest {
         Assert.assertEquals(BUSINESS_ID, businessDto.getId());
         Assert.assertEquals(BUSINESS_NAME, businessDto.getName());
         Assert.assertEquals(BUSINESS_CITY, businessDto.getCity());
-        Assert.assertEquals(BUSINESS_TYPE, businessDto.getBusinessType());
-        Assert.assertEquals(BUSINESS_AVERAGE_RATING, businessDto.getAverageRating());
+        Assert.assertEquals(BusinessType.valueOf(BUSINESS_TYPE), businessDto.getBusinessType());
+        Assert.assertEquals(BUSINESS_AVERAGE_RATING,getAverageRating(businessDto.getAverageRating()));
         Assert.assertEquals(BUSINESS_NUMBER_OF_REVIEWS, businessDto.getNumberOfReviews());
         Assert.assertEquals(BUSINESS_ADDRESS, businessDto.getAddress());
         Assert.assertEquals(BUSINESS_EMAIL, businessDto.getEmail());
@@ -114,8 +119,8 @@ public class BusinessServiceImplTest {
         Assert.assertEquals(BUSINESS_ID, businessDto.getId());
         Assert.assertEquals(BUSINESS_NAME, businessDto.getName());
         Assert.assertEquals(BUSINESS_CITY, businessDto.getCity());
-        Assert.assertEquals(BUSINESS_TYPE, businessDto.getBusinessType());
-        Assert.assertEquals(BUSINESS_AVERAGE_RATING, businessDto.getAverageRating());
+        Assert.assertEquals(BusinessType.valueOf(BUSINESS_TYPE), businessDto.getBusinessType());
+        Assert.assertEquals(BUSINESS_AVERAGE_RATING,getAverageRating(businessDto.getAverageRating()));
         Assert.assertEquals(BUSINESS_NUMBER_OF_REVIEWS, businessDto.getNumberOfReviews());
         Assert.assertEquals(BUSINESS_ADDRESS, businessDto.getAddress());
         Assert.assertEquals(BUSINESS_EMAIL, businessDto.getEmail());
@@ -131,8 +136,8 @@ public class BusinessServiceImplTest {
         Assert.assertEquals(BUSINESS_ID, businessDto.getId());
         Assert.assertEquals(BUSINESS_NAME, businessDto.getName());
         Assert.assertEquals(BUSINESS_CITY, businessDto.getCity());
-        Assert.assertEquals(BUSINESS_TYPE, businessDto.getBusinessType());
-        Assert.assertEquals(BUSINESS_AVERAGE_RATING, businessDto.getAverageRating());
+        Assert.assertEquals(BusinessType.valueOf(BUSINESS_TYPE), businessDto.getBusinessType());
+        Assert.assertEquals(BUSINESS_AVERAGE_RATING,getAverageRating(businessDto.getAverageRating()));
         Assert.assertEquals(BUSINESS_NUMBER_OF_REVIEWS, businessDto.getNumberOfReviews());
         Assert.assertEquals(BUSINESS_ADDRESS, businessDto.getAddress());
         Assert.assertEquals(BUSINESS_EMAIL, businessDto.getEmail());
@@ -148,8 +153,8 @@ public class BusinessServiceImplTest {
         Assert.assertEquals(BUSINESS_ID, businesses.get(0).getId());
         Assert.assertEquals(BUSINESS_NAME, businesses.get(0).getName());
         Assert.assertEquals(BUSINESS_CITY, businesses.get(0).getCity());
-        Assert.assertEquals(BUSINESS_TYPE, businesses.get(0).getBusinessType());
-        Assert.assertEquals(BUSINESS_AVERAGE_RATING, businesses.get(0).getAverageRating());
+        Assert.assertEquals(BusinessType.valueOf(BUSINESS_TYPE), businesses.get(0).getBusinessType());
+        Assert.assertEquals(BUSINESS_AVERAGE_RATING,getAverageRating(businesses.get(0).getAverageRating()));
         Assert.assertEquals(BUSINESS_NUMBER_OF_REVIEWS, businesses.get(0).getNumberOfReviews());
         Assert.assertEquals(BUSINESS_ADDRESS, businesses.get(0).getAddress());
         Assert.assertEquals(BUSINESS_EMAIL, businesses.get(0).getEmail());
@@ -165,8 +170,8 @@ public class BusinessServiceImplTest {
         Assert.assertEquals(BUSINESS_ID, businessDto.get(0).getId());
         Assert.assertEquals(BUSINESS_NAME, businessDto.get(0).getName());
         Assert.assertEquals(BUSINESS_CITY, businessDto.get(0).getCity());
-        Assert.assertEquals(BUSINESS_TYPE, businessDto.get(0).getBusinessType());
-        Assert.assertEquals(BUSINESS_AVERAGE_RATING, businessDto.get(0).getAverageRating());
+        Assert.assertEquals(BusinessType.valueOf(BUSINESS_TYPE), businessDto.get(0).getBusinessType());
+        Assert.assertEquals(BUSINESS_AVERAGE_RATING,getAverageRating(businessDto.get(0).getAverageRating()));
         Assert.assertEquals(BUSINESS_NUMBER_OF_REVIEWS, businessDto.get(0).getNumberOfReviews());
         Assert.assertEquals(BUSINESS_ADDRESS, businessDto.get(0).getAddress());
         Assert.assertEquals(BUSINESS_EMAIL, businessDto.get(0).getEmail());
@@ -178,12 +183,12 @@ public class BusinessServiceImplTest {
     public void getByBusinessType_noException_success() {
         when(businessRepository.getBusinessByType(any())).thenReturn(Collections.singletonList(getDefaultBusiness()));
         when(businessMapper.mapToDto(any())).thenReturn(getDefaultBusinessDto());
-        List<BusinessDto> businessDto = businessService.getByBusinessType(BUSINESS_TYPE.name());
+        List<BusinessDto> businessDto = businessService.getByBusinessType(BUSINESS_TYPE);
         Assert.assertEquals(BUSINESS_ID, businessDto.get(0).getId());
         Assert.assertEquals(BUSINESS_NAME, businessDto.get(0).getName());
         Assert.assertEquals(BUSINESS_CITY, businessDto.get(0).getCity());
-        Assert.assertEquals(BUSINESS_TYPE, businessDto.get(0).getBusinessType());
-        Assert.assertEquals(BUSINESS_AVERAGE_RATING, businessDto.get(0).getAverageRating());
+        Assert.assertEquals(BusinessType.valueOf(BUSINESS_TYPE), businessDto.get(0).getBusinessType());
+        Assert.assertEquals(BUSINESS_AVERAGE_RATING,getAverageRating(businessDto.get(0).getAverageRating()));
         Assert.assertEquals(BUSINESS_NUMBER_OF_REVIEWS, businessDto.get(0).getNumberOfReviews());
         Assert.assertEquals(BUSINESS_ADDRESS, businessDto.get(0).getAddress());
         Assert.assertEquals(BUSINESS_EMAIL, businessDto.get(0).getEmail());
@@ -198,8 +203,8 @@ public class BusinessServiceImplTest {
         Assert.assertEquals(BUSINESS_ID, businessDto.get(0).getId());
         Assert.assertEquals(BUSINESS_NAME, businessDto.get(0).getName());
         Assert.assertEquals(BUSINESS_CITY, businessDto.get(0).getCity());
-        Assert.assertEquals(BUSINESS_TYPE, businessDto.get(0).getBusinessType());
-        Assert.assertEquals(BUSINESS_AVERAGE_RATING, businessDto.get(0).getAverageRating());
+        Assert.assertEquals(BusinessType.valueOf(BUSINESS_TYPE), businessDto.get(0).getBusinessType());
+        Assert.assertEquals(BUSINESS_AVERAGE_RATING,getAverageRating(businessDto.get(0).getAverageRating()));
         Assert.assertEquals(BUSINESS_NUMBER_OF_REVIEWS, businessDto.get(0).getNumberOfReviews());
         Assert.assertEquals(BUSINESS_ADDRESS, businessDto.get(0).getAddress());
         Assert.assertEquals(BUSINESS_EMAIL, businessDto.get(0).getEmail());
@@ -214,8 +219,8 @@ public class BusinessServiceImplTest {
         Assert.assertEquals(BUSINESS_ID, businessDto.get(0).getId());
         Assert.assertEquals(BUSINESS_NAME, businessDto.get(0).getName());
         Assert.assertEquals(BUSINESS_CITY, businessDto.get(0).getCity());
-        Assert.assertEquals(BUSINESS_TYPE, businessDto.get(0).getBusinessType());
-        Assert.assertEquals(BUSINESS_AVERAGE_RATING, businessDto.get(0).getAverageRating());
+        Assert.assertEquals(BusinessType.valueOf(BUSINESS_TYPE), businessDto.get(0).getBusinessType());
+        Assert.assertEquals(BUSINESS_AVERAGE_RATING, getAverageRating(businessDto.get(0).getAverageRating()));
         Assert.assertEquals(BUSINESS_NUMBER_OF_REVIEWS, businessDto.get(0).getNumberOfReviews());
         Assert.assertEquals(BUSINESS_ADDRESS, businessDto.get(0).getAddress());
         Assert.assertEquals(BUSINESS_EMAIL, businessDto.get(0).getEmail());
@@ -249,7 +254,7 @@ public class BusinessServiceImplTest {
 
     @Test(expected = BusinessNotFoundException.class)
     public void getByBusinessNoData_throwsException_throws() {
-        when(businessService.getByBusinessType(BUSINESS_TYPE.name())).thenReturn(Collections.emptyList());
+        when(businessService.getByBusinessType(BUSINESS_TYPE)).thenReturn(Collections.emptyList());
         businessService.getByBusinessType("BAR");
     }
 
