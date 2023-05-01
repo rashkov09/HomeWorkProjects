@@ -21,6 +21,7 @@ public class ReviewRepositoryImpl implements ReviewRepository {
     private final static String EDIT_REVIEW_SQL_STATEMENT = "UPDATE ta.review SET username=?, stamp_created= ?, rating=?, text_body=?, business_id=? WHERE id = ? AND username = ?";
     private final static String SELECT_ALL_REVIEWS_SQL_STATEMENT = "SELECT * FROM ta.review";
     private final static String SELECT_REVIEWS_BY_USERNAME_SQL_STATEMENT = "SELECT * FROM ta.review WHERE username=?";
+    private final static String SELECT_REVIEWS_BY_BUSINESS_ID_SQL_STATEMENT = "SELECT * FROM ta.review WHERE business_id=?";
     private final static String SELECT_REVIEWS_BY_ID_SQL_STATEMENT = "SELECT * FROM ta.review WHERE id=?";
     private final static String DELETE_REVIEWS_BY_USERNAME_SQL_STATEMENT = "DELETE FROM ta.review WHERE id=? AND username=?";
     private final UserRepository userRepository;
@@ -132,6 +133,22 @@ public class ReviewRepositoryImpl implements ReviewRepository {
             }
             return listOfReviews;
 
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<Review> getReviewsByBusinessId(Long id) {
+        List<Review> listOfReviews = new ArrayList<>();
+        try (Connection connection = hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_REVIEWS_BY_BUSINESS_ID_SQL_STATEMENT)) {
+            preparedStatement.setLong(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                listOfReviews.add(reviewMapper.mapRow(resultSet, resultSet.getRow()));
+            }
+            return listOfReviews;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

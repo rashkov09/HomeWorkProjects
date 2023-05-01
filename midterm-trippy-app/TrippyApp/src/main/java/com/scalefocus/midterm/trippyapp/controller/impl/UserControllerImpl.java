@@ -2,7 +2,9 @@ package com.scalefocus.midterm.trippyapp.controller.impl;
 
 import com.scalefocus.midterm.trippyapp.controller.UserController;
 import com.scalefocus.midterm.trippyapp.controller.request.UserRequest;
+import com.scalefocus.midterm.trippyapp.model.dto.BusinessDto;
 import com.scalefocus.midterm.trippyapp.model.dto.UserDto;
+import com.scalefocus.midterm.trippyapp.service.BusinessService;
 import com.scalefocus.midterm.trippyapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +17,12 @@ import java.util.List;
 @RestController
 public class UserControllerImpl implements UserController {
     private final UserService userService;
+    private final BusinessService businessService;
 
     @Autowired
-    public UserControllerImpl(UserService userService) {
+    public UserControllerImpl(UserService userService, BusinessService businessService) {
         this.userService = userService;
+        this.businessService = businessService;
     }
 
 
@@ -32,6 +36,12 @@ public class UserControllerImpl implements UserController {
     public ResponseEntity<UserDto> getUserById(Long id) {
         UserDto userDto = userService.getUserById(id);
         return ResponseEntity.ok(userDto);
+    }
+
+    @Override
+    public ResponseEntity<List<BusinessDto>> getBusinessByUserCity(Long id) {
+        UserDto userDto = userService.getUserById(id);
+        return ResponseEntity.ok(businessService.getBusinessesByCity(userDto.getCity()));
     }
 
     @Override

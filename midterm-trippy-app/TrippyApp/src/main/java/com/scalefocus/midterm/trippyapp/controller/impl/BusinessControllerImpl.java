@@ -3,7 +3,9 @@ package com.scalefocus.midterm.trippyapp.controller.impl;
 import com.scalefocus.midterm.trippyapp.controller.BusinessController;
 import com.scalefocus.midterm.trippyapp.controller.request.BusinessRequest;
 import com.scalefocus.midterm.trippyapp.model.dto.BusinessDto;
+import com.scalefocus.midterm.trippyapp.model.dto.ReviewDto;
 import com.scalefocus.midterm.trippyapp.service.BusinessService;
+import com.scalefocus.midterm.trippyapp.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,10 +17,12 @@ import java.util.List;
 @RestController
 public class BusinessControllerImpl implements BusinessController {
     private final BusinessService businessService;
+    private final ReviewService reviewService;
 
     @Autowired
-    public BusinessControllerImpl(BusinessService businessService) {
+    public BusinessControllerImpl(BusinessService businessService, ReviewService reviewService) {
         this.businessService = businessService;
+        this.reviewService = reviewService;
     }
 
     @Override
@@ -30,6 +34,11 @@ public class BusinessControllerImpl implements BusinessController {
     @Override
     public ResponseEntity<BusinessDto> getBusinessById(Long id) {
         return ResponseEntity.ok(businessService.getBusinessById(id));
+    }
+
+    @Override
+    public ResponseEntity<List<ReviewDto>> getBusinessReviews(Long id) {
+        return ResponseEntity.ok(reviewService.getReviewsByBusinessId(id));
     }
 
     @Override

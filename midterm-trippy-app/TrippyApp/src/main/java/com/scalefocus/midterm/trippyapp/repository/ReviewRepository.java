@@ -9,4 +9,6 @@ public interface ReviewRepository extends CustomRepository<Review> {
     ReviewDto delete(Review review);
 
     List<Review> getReviewsByUsername(String username);
+
+    List<Review> getReviewsByBusinessId(Long id);
 }

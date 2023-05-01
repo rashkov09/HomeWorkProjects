@@ -2,6 +2,7 @@ package com.scalefocus.midterm.trippyapp.controller;
 
 import com.scalefocus.midterm.trippyapp.controller.request.BusinessRequest;
 import com.scalefocus.midterm.trippyapp.model.dto.BusinessDto;
+import com.scalefocus.midterm.trippyapp.model.dto.ReviewDto;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,9 @@ public interface BusinessController {
 
     @GetMapping("/{id}")
     ResponseEntity<BusinessDto> getBusinessById(@PathVariable
+                                                Long id);
+    @GetMapping("/{id}/reviews")
+    ResponseEntity<List<ReviewDto>> getBusinessReviews(@PathVariable
                                                 Long id);
 
     @GetMapping(params = "city")
