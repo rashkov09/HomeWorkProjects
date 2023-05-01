@@ -18,6 +18,7 @@ import com.scalefocus.midterm.trippyapp.util.ObjectChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -142,5 +143,15 @@ public class ReviewServiceImpl implements ReviewService {
         List<Review> listOfReviews = reviewRepository.getReviewsByUsername(username);
         listOfReviews.forEach(review -> review.setBusiness(getBusiness(review.getBusiness().getId())));
         return listOfReviews.isEmpty() ? new ArrayList<>() : listOfReviews;
+    }
+
+    @Override
+    public List<ReviewDto> getReviewsByBusinessId(Long id) {
+        List<Review> reviews = reviewRepository.getReviewsByBusinessId(id);
+        if (reviews.isEmpty()){
+            throw new NoDataFoundException();
+        }
+        reviews.forEach(review -> review.setBusiness(getBusiness(review.getBusiness().getId())));
+        return reviews.stream().map(reviewMapper::mapToDto).collect(Collectors.toList());
     }
 }

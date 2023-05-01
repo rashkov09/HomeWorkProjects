@@ -6,6 +6,7 @@ import com.scalefocus.midterm.trippyapp.controller.request.BusinessRequest;
 import com.scalefocus.midterm.trippyapp.mapper.BusinessMapper;
 import com.scalefocus.midterm.trippyapp.model.dto.BusinessDto;
 import com.scalefocus.midterm.trippyapp.service.BusinessService;
+import com.scalefocus.midterm.trippyapp.service.ReviewService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,13 +20,19 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.sql.Date;
 import java.util.Collections;
+import java.util.List;
 
 import static com.scalefocus.midterm.trippyapp.testutils.Business.BusinessConstants.*;
 import static com.scalefocus.midterm.trippyapp.testutils.Business.BusinessFactory.*;
+import static com.scalefocus.midterm.trippyapp.testutils.Review.ReviewConstants.*;
+import static com.scalefocus.midterm.trippyapp.testutils.Review.ReviewFactory.getDefaultReviewDto;
 import static com.scalefocus.midterm.trippyapp.testutils.User.UserConstants.USER_ID;
 import static com.scalefocus.midterm.trippyapp.testutils.User.UserFactory.getDefaultUserDto;
 import static com.scalefocus.midterm.trippyapp.testutils.User.UserFactory.getDefaultUserRequest;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasToString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -39,6 +46,9 @@ public class BusinessControllerImplTest {
     private MockMvc mockMvc;
     @Mock
     private BusinessService businessService;
+
+    @Mock
+    private ReviewService reviewService;
     @InjectMocks
     private BusinessControllerImpl businessController;
 
@@ -66,6 +76,21 @@ public class BusinessControllerImplTest {
                 .andExpect(jsonPath("$[0].email").value(BUSINESS_EMAIL))
                 .andExpect(jsonPath("$[0].phone").value(BUSINESS_PHONE))
                 .andExpect(jsonPath("$[0].website").value(BUSINESS_WEBSITE));
+    }
+ @Test
+    public void getBusinessReviewsById_noException_success() throws Exception {
+        when(reviewService.getReviewsByBusinessId(BUSINESS_ID)).thenReturn(Collections.singletonList(getDefaultReviewDto()));
+        mockMvc.perform(get("/businesses/"+BUSINESS_ID+"/reviews"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].username").value(REVIEW_USERNAME))
+                .andExpect(jsonPath("$[0].createdOn", instanceOf(List.class)))
+                .andExpect(jsonPath("$[0].createdOn[0]").value(2023))
+                .andExpect(jsonPath("$[0].createdOn[1]").value(4))
+                .andExpect(jsonPath("$[0].createdOn[2]").value(27))
+                .andExpect(jsonPath("$[0].createdOn", hasSize(3)))
+                .andExpect(jsonPath("$[0].createdOn", hasItems(2023, 4, 27)))
+                .andExpect(jsonPath("$[0].createdOn").value(hasToString("[2023,4,27]")))
+                .andExpect(jsonPath("$[0].text").value(REVIEW_TEXT));
     }
 
     @Test
