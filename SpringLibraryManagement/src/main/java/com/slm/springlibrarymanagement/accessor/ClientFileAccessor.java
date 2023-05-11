@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.slm.springlibrarymanagement.constants.Paths.CLIENT_FILE_PATH;
-import static com.slm.springlibrarymanagement.constants.messages.GeneralMessages.FILE_NOT_FOUND_MESSAGE;
 
 @Component
 public class ClientFileAccessor {
@@ -18,7 +17,7 @@ public class ClientFileAccessor {
         try {
             reader = new BufferedReader(new FileReader(CLIENT_FILE_PATH));
         } catch (IOException e) {
-            throw new RuntimeException(String.format(FILE_NOT_FOUND_MESSAGE, CLIENT_FILE_PATH), e);
+            throw new RuntimeException(e);
         }
     }
 

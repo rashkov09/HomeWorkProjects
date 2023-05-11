@@ -1,27 +1,35 @@
 package com.slm.springlibrarymanagement.model.entities;
 
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.Set;
 
-
-public class Book extends BaseEntity implements Comparable<Book> {
+@Entity
+@Table(name = "books")
+@SequenceGenerator(name = "default_gen", sequenceName = "books_seq", allocationSize = 1)
+public class Book extends BaseEntity {
+    private static final Integer DEFAULT_NUMBER_OF_COPIES = 0;
     private String name;
     private Author author;
     private LocalDate issueDate;
     private Integer numberOfCopies;
 
+    private Set<Order> orders;
+
 
     public Book() {
     }
 
+    @Column(nullable = false, unique = true)
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
-        this.name = name;
     }
 
+    @ManyToOne
     public Author getAuthor() {
         return author;
     }
@@ -30,7 +38,7 @@ public class Book extends BaseEntity implements Comparable<Book> {
         this.author = author;
     }
 
-
+    @Column(nullable = false)
     public LocalDate getIssueDate() {
         return issueDate;
     }
@@ -39,7 +47,7 @@ public class Book extends BaseEntity implements Comparable<Book> {
         this.issueDate = issueDate;
     }
 
-
+    @Column(nullable = false)
     public Integer getNumberOfCopies() {
         return numberOfCopies;
     }
@@ -48,29 +56,13 @@ public class Book extends BaseEntity implements Comparable<Book> {
         this.numberOfCopies = numberOfCopies;
     }
 
-    public void removeBooks(Integer bookCount) {
-        setNumberOfCopies(this.numberOfCopies - bookCount);
+    @OneToMany(mappedBy = "book", fetch = FetchType.EAGER)
+    public Set<Order> getOrders() {
+        return orders;
     }
 
-    public void addCopies(Integer numberOfCopies) {
-        setNumberOfCopies(getNumberOfCopies() + numberOfCopies);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("""
-                --------------------------------------------------
-                | Book ID: %d
-                | Book name: %s
-                | Written by: %s
-                | Issued on: %s
-                | Copies: %d
-                --------------------------------------------------
-                """, this.getId(), this.getName(), this.author.getName(), this.issueDate, this.getNumberOfCopies());
-    }
-
-    @Override
-    public int compareTo(Book o) {
-        return this.getId().compareTo(o.getId());
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
     }
 }
+

@@ -1,27 +1,17 @@
 package com.slm.springlibrarymanagement.controller;
 
-import com.slm.springlibrarymanagement.controller.request.AuthorRequest;
-import com.slm.springlibrarymanagement.model.dto.AuthorDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.validation.Valid;
-import java.util.List;
-
-
+@RequestMapping("/authors")
 public interface AuthorController {
 
-    @GetMapping("/authors/{id}")
-    ResponseEntity<AuthorDto> getAuthorById(@PathVariable
-                                            String id);
+    @GetMapping()
+    public ResponseEntity<String> add();
 
-    @GetMapping("/authors")
-    ResponseEntity<List<AuthorDto>> getAllAuthor();
-
-    @PostMapping("/authors")
-    ResponseEntity<Void> createItem(@RequestBody @Valid AuthorRequest authorRequest);
-
+    @GetMapping("/")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    ResponseEntity<String> sayHello();
 }

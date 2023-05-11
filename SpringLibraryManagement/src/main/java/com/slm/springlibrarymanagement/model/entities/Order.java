@@ -1,31 +1,38 @@
 package com.slm.springlibrarymanagement.model.entities;
 
-import com.slm.springlibrarymanagement.constants.IncreasePeriod;
+import io.micrometer.common.lang.Nullable;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
-
-public class Order extends BaseEntity implements Comparable<Order> {
-    private static final Integer DEFAULT_DUE_DATE_PERIOD = 1;
+@Entity
+@Table(name = "orders")
+@SequenceGenerator(name = "default_gen", sequenceName = "orders_seq", allocationSize = 1)
+public class Order extends BaseEntity {
     private Client client;
+
     private Book book;
     private LocalDate issueDate;
     private LocalDate dueDate;
     private Integer bookCount;
     private LocalDate stampModified;
 
+    private static final Integer DEFAULT_DUE_DATE_PERIOD = 1;
+
     public Order() {
     }
 
+    @ManyToOne
     public Client getClient() {
         return client;
     }
+
 
     public void setClient(Client client) {
         this.client = client;
     }
 
-
+    @ManyToOne
     public Book getBook() {
         return book;
     }
@@ -34,31 +41,28 @@ public class Order extends BaseEntity implements Comparable<Order> {
         this.book = book;
     }
 
-
+    @Column(nullable = false)
     public LocalDate getIssueDate() {
         return issueDate;
     }
 
     public void setIssueDate(LocalDate issueDate) {
-        this.issueDate = issueDate;
-        setDueDate(issueDate);
         setStampModified(issueDate);
     }
 
+    @Column(nullable = false)
     public LocalDate getDueDate() {
         return dueDate;
     }
+
 
     private void setDueDate(LocalDate issueDate) {
         this.dueDate = issueDate.plusMonths(DEFAULT_DUE_DATE_PERIOD);
     }
 
+    @Nullable
     public LocalDate getStampModified() {
         return stampModified;
-    }
-
-    public void setStampModified(LocalDate stampModified) {
-        this.stampModified = stampModified;
     }
 
     public Integer getBookCount() {
@@ -69,21 +73,7 @@ public class Order extends BaseEntity implements Comparable<Order> {
         this.bookCount = bookCount;
     }
 
-
-    public void extendDueDate(Integer count, IncreasePeriod period) {
-        switch (period) {
-            case DAY -> this.dueDate = dueDate.plusDays(count);
-            case WEEK -> this.dueDate = dueDate.plusWeeks(count);
-            case MONTH -> this.dueDate = dueDate.plusMonths(count);
-        }
-    }
-
-    public void updateDueDate(LocalDate date) {
-        this.dueDate = date;
-    }
-
-    @Override
-    public int compareTo(Order o) {
-        return this.getId().compareTo(o.getId());
+    public void setStampModified(LocalDate stampModified) {
+        this.stampModified = stampModified;
     }
 }
