@@ -1,5 +1,3 @@
-Certainly! Here's a formatted version for your README.md file:
-
 # Homework
 
 ## This repo consists of 3 projects:
